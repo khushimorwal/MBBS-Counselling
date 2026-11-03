@@ -1,0 +1,63 @@
+const jwt = require("jsonwebtoken");
+const User = require("./Models/User");
+const Role = require("./Models/Role");
+
+const Auth = async (req, res, next) => {
+  try {
+    // Authorization header check
+    const authHeader = req.headers.authorization;
+
+    if (!authHeader || !authHeader.startsWith("Bearer ")) {
+      return res.status(401).json({
+        status: false,
+        message: "Token required",
+      });
+    }
+
+    // Extract token
+    const token = authHeader.split(" ")[1];
+
+    // Verify JWT token
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+
+    // Find user
+    const user = await User.findById(decoded.userId).select("-password");
+
+    if (!user) {
+      return res.status(401).json({
+        status: false,
+        message: "User not found",
+      });
+    }
+
+    // Find user's role
+    const role = await Role.findById(user.roleId);
+
+    if (!role) {
+      return res.status(403).json({
+        status: false,
+        message: "Role not found",
+      });
+    }
+
+    // Store authenticated user information
+    req.user = {
+      id: user._id,
+      name: user.name,
+      email: user.email,
+      role: role.role,
+      permissions: role.permissions || {},
+    };
+
+    next();
+  } catch (error) {
+    console.log("Authentication Error:", error.message);
+
+    return res.status(401).json({
+      status: false,
+      message: "Invalid or expired token",
+    });
+  }
+};
+
+module.exports = Auth;
