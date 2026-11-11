@@ -88,27 +88,27 @@ function Settings() {
   if (loading) {
     return (
       <div className="flex min-h-[300px] items-center justify-center">
-        <p className="text-gray-500">Loading settings...</p>
+        <p className="text-muted">Loading settings...</p>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 p-6">
+    <div className="min-h-screen bg-surface p-6">
       {/* Page Heading */}
       <div className="mb-6">
-        <h1 className="text-2xl font-bold text-gray-800">
+        <h1 className="font-display text-2xl font-bold text-brand-dark">
           Settings
         </h1>
 
-        <p className="mt-1 text-sm text-gray-500">
+        <p className="mt-1 text-sm text-muted">
           Manage your portal and system settings
         </p>
       </div>
 
       {/* Portal Information */}
-      <div className="mb-6 rounded-xl bg-white p-6 shadow-sm">
-        <h2 className="mb-5 text-lg font-semibold text-gray-800">
+      <div className="mb-6 rounded-2xl border border-line bg-white p-6">
+        <h2 className="mb-5 text-lg font-semibold text-brand-dark">
           Portal Information
         </h2>
 
@@ -124,7 +124,7 @@ function Settings() {
               value={formData.portalName}
               onChange={handleChange}
               placeholder="Enter portal name"
-              className="w-full rounded-lg border border-gray-300 px-4 py-2 outline-none focus:border-green-600"
+              className="w-full rounded-xl border border-line bg-surface px-4 py-2.5 text-sm outline-none transition focus:border-brand focus:ring-2 focus:ring-brand/15"
             />
           </div>
 
@@ -139,7 +139,7 @@ function Settings() {
               value={formData.academicSession}
               onChange={handleChange}
               placeholder="2026-27"
-              className="w-full rounded-lg border border-gray-300 px-4 py-2 outline-none focus:border-green-600"
+              className="w-full rounded-xl border border-line bg-surface px-4 py-2.5 text-sm outline-none transition focus:border-brand focus:ring-2 focus:ring-brand/15"
             />
           </div>
 
@@ -154,15 +154,15 @@ function Settings() {
               onChange={handleChange}
               placeholder="Enter portal description"
               rows="3"
-              className="w-full rounded-lg border border-gray-300 px-4 py-2 outline-none focus:border-green-600"
+              className="w-full rounded-xl border border-line bg-surface px-4 py-2.5 text-sm outline-none transition focus:border-brand focus:ring-2 focus:ring-brand/15"
             />
           </div>
         </div>
       </div>
 
       {/* Contact Information */}
-      <div className="mb-6 rounded-xl bg-white p-6 shadow-sm">
-        <h2 className="mb-5 text-lg font-semibold text-gray-800">
+      <div className="mb-6 rounded-2xl border border-line bg-white p-6">
+        <h2 className="mb-5 text-lg font-semibold text-brand-dark">
           Contact Information
         </h2>
 
@@ -178,7 +178,7 @@ function Settings() {
               value={formData.supportEmail}
               onChange={handleChange}
               placeholder="Enter support email"
-              className="w-full rounded-lg border border-gray-300 px-4 py-2 outline-none focus:border-green-600"
+              className="w-full rounded-xl border border-line bg-surface px-4 py-2.5 text-sm outline-none transition focus:border-brand focus:ring-2 focus:ring-brand/15"
             />
           </div>
 
@@ -193,7 +193,7 @@ function Settings() {
               value={formData.supportPhone}
               onChange={handleChange}
               placeholder="Enter support phone"
-              className="w-full rounded-lg border border-gray-300 px-4 py-2 outline-none focus:border-green-600"
+              className="w-full rounded-xl border border-line bg-surface px-4 py-2.5 text-sm outline-none transition focus:border-brand focus:ring-2 focus:ring-brand/15"
             />
           </div>
 
@@ -208,15 +208,15 @@ function Settings() {
               onChange={handleChange}
               placeholder="Enter address"
               rows="3"
-              className="w-full rounded-lg border border-gray-300 px-4 py-2 outline-none focus:border-green-600"
+              className="w-full rounded-xl border border-line bg-surface px-4 py-2.5 text-sm outline-none transition focus:border-brand focus:ring-2 focus:ring-brand/15"
             />
           </div>
         </div>
       </div>
 
       {/* Other Settings */}
-      <div className="rounded-xl bg-white p-6 shadow-sm">
-        <h2 className="mb-5 text-lg font-semibold text-gray-800">
+      <div className="rounded-2xl border border-line bg-white p-6">
+        <h2 className="mb-5 text-lg font-semibold text-brand-dark">
           Other Settings
         </h2>
 
@@ -232,17 +232,17 @@ function Settings() {
               value={formData.websiteUrl}
               onChange={handleChange}
               placeholder="https://example.com"
-              className="w-full rounded-lg border border-gray-300 px-4 py-2 outline-none focus:border-green-600"
+              className="w-full rounded-xl border border-line bg-surface px-4 py-2.5 text-sm outline-none transition focus:border-brand focus:ring-2 focus:ring-brand/15"
             />
           </div>
 
-          <div className="flex items-center justify-between rounded-lg border border-gray-200 px-4 py-3">
+          <div className="flex items-center justify-between rounded-xl border border-line px-4 py-3">
             <div>
-              <p className="font-medium text-gray-800">
+              <p className="font-medium text-brand-dark">
                 Maintenance Mode
               </p>
 
-              <p className="text-sm text-gray-500">
+              <p className="text-sm text-muted">
                 Enable maintenance mode for the portal
               </p>
             </div>
@@ -252,7 +252,7 @@ function Settings() {
               onClick={handleToggle}
               className={`relative h-7 w-12 rounded-full transition ${
                 formData.maintenanceMode
-                  ? "bg-green-600"
+                  ? "bg-brand"
                   : "bg-gray-300"
               }`}
             >
@@ -273,7 +273,7 @@ function Settings() {
             type="button"
             onClick={handleSave}
             disabled={saving}
-            className="rounded-lg bg-green-600 px-6 py-2.5 font-medium text-white transition hover:bg-green-700 disabled:cursor-not-allowed disabled:opacity-60"
+            className="rounded-xl bg-accent px-6 py-2.5 font-bold text-white transition hover:bg-[#cf4a24] disabled:cursor-not-allowed disabled:opacity-60"
           >
             {saving ? "Saving..." : "Save Changes"}
           </button>

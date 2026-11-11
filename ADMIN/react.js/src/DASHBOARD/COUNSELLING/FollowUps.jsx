@@ -393,9 +393,6 @@ function FollowUps() {
       {/* Heading */}
       <div className="mb-6 flex flex-col justify-between gap-4 sm:flex-row sm:items-end">
         <div>
-          <p className="text-xs font-bold uppercase tracking-[0.18em] text-accent">
-            COUNSELLING MANAGEMENT
-          </p>
 
           <h1 className="mt-2 font-display text-3xl font-bold text-brand-dark">
             Follow-ups
@@ -417,7 +414,7 @@ function FollowUps() {
 
           <button
             onClick={openCreateModal}
-            className="flex items-center gap-2 rounded-xl bg-brand px-4 py-3 text-sm font-semibold text-white hover:opacity-90"
+            className="flex items-center gap-2 rounded-xl bg-accent px-4 py-3 text-sm font-bold text-white hover:bg-[#cf4a24]"
           >
             <FiPlus />
             Add Follow-up
@@ -510,7 +507,7 @@ function FollowUps() {
 
         <div className="overflow-x-auto">
           <table className="w-full min-w-[950px] text-left">
-            <thead className="bg-surface">
+            <thead className="bg-[#F9FBFA]">
               <tr className="text-xs font-semibold uppercase tracking-wide text-muted">
                 <th className="px-5 py-4">Student</th>
                 <th className="px-5 py-4">Counsellor</th>
@@ -796,7 +793,7 @@ function FollowUps() {
                 <button
                   type="submit"
                   disabled={saving}
-                  className="rounded-xl bg-brand px-6 py-3 text-sm font-semibold text-white hover:opacity-90 disabled:opacity-60"
+                  className="rounded-xl bg-accent px-6 py-3 text-sm font-bold text-white hover:bg-[#cf4a24] disabled:opacity-60"
                 >
                   {saving
                     ? "Saving..."

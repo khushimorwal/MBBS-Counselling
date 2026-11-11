@@ -448,7 +448,7 @@ function College() {
               fileInputRef.current?.click()
             }
             disabled={isImporting}
-            className="rounded-lg border border-brand px-5 py-2.5 text-sm font-semibold text-brand hover:bg-brand-soft disabled:cursor-not-allowed disabled:opacity-60"
+            className="rounded-xl border border-line bg-white px-5 py-2.5 text-sm font-semibold text-brand-dark transition hover:bg-surface disabled:cursor-not-allowed disabled:opacity-60"
           >
             {isImporting
               ? "Importing..."
@@ -458,7 +458,7 @@ function College() {
           {/* ADD COLLEGE */}
           <button
             onClick={handleAdd}
-            className="rounded-lg bg-accent px-5 py-2.5 text-sm font-semibold text-white hover:opacity-90"
+            className="rounded-xl bg-accent px-5 py-2.5 text-sm font-bold text-white transition hover:bg-[#cf4a24]"
           >
             + Add College
           </button>
@@ -473,14 +473,14 @@ function College() {
         onChange={(e) =>
           setSearch(e.target.value)
         }
-        className="w-full max-w-sm rounded-lg border border-line bg-white px-4 py-2.5 outline-none focus:border-brand"
+        className="w-full max-w-sm rounded-xl border border-line bg-white px-4 py-2.5 text-sm outline-none transition placeholder:text-gray-400 focus:border-brand focus:ring-2 focus:ring-brand/15"
       />
 
       {/* COLLEGES TABLE */}
-      <div className="overflow-x-auto rounded-xl border border-line bg-white">
+      <div className="overflow-x-auto rounded-2xl border border-line bg-white">
         <table className="w-full min-w-[950px] text-left text-sm">
 
-          <thead className="bg-brand-soft text-brand-dark">
+          <thead className="bg-[#F9FBFA] text-[11px] font-bold uppercase tracking-wider text-muted">
             <tr>
               <th className="px-4 py-4">
                 College Name
@@ -522,7 +522,7 @@ function College() {
               filteredColleges.map((college) => (
                 <tr
                   key={college._id}
-                  className="border-t border-line"
+                  className="border-t border-line hover:bg-surface/70"
                 >
                   <td className="px-4 py-4 font-medium text-brand-dark">
                     {college.name}

@@ -106,23 +106,58 @@ function Dashboard() {
         <div className="mx-auto w-full max-w-[1500px]">
 
           {/* Page heading */}
-          <div className="mb-6 flex flex-col justify-between gap-4 sm:flex-row sm:items-end">
-            <div>
-              <p className="mb-2 text-xs font-bold uppercase tracking-[0.18em] text-accent">
-                MBBS COUNSELLING PORTAL
-              </p>
+          <div className="mb-6">
+            <h1 className="font-display text-3xl font-bold tracking-tight text-brand-dark sm:text-4xl">
+              Welcome, {user?.name || "Admin"}
+            </h1>
 
-              <h1 className="font-display text-3xl font-bold tracking-tight text-brand-dark sm:text-4xl">
-                Dashboard Overview
-              </h1>
-
-              <p className="mt-2 text-sm text-muted sm:text-base">
-                Manage medical admissions, student records, colleges and counselling information.
-              </p>
-            </div>
-
-            
+            <p className="mt-2 text-sm text-muted sm:text-base">
+              {new Date().toLocaleDateString("en-IN", {
+                weekday: "long",
+                day: "numeric",
+                month: "long",
+                year: "numeric",
+              })}
+            </p>
           </div>
+
+          {/* Counselling desk */}
+          <section className="relative mb-6 overflow-hidden rounded-2xl bg-brand p-6 text-white sm:p-7">
+            <div className="absolute -right-16 -top-28 h-80 w-80 rounded-full border border-white/10" />
+
+            <div className="relative flex flex-col justify-between gap-5 lg:flex-row lg:items-center">
+              <div>
+                <p className="text-[11px] font-bold uppercase tracking-[0.16em] text-[#8FC9BF]">
+                  Counselling desk
+                </p>
+
+                <h2 className="mt-1 font-display text-2xl font-bold sm:text-3xl">
+                  Sessions, follow-ups and new requests
+                </h2>
+
+                <p className="mt-1 text-sm text-[#B9D8D2]">
+                  Jump straight into today&apos;s counselling work.
+                </p>
+              </div>
+
+              <div className="flex flex-wrap gap-2">
+                {[
+                  ["Counselling Requests", "New requests"],
+                  ["Appointments", "Appointments"],
+                  ["Follow-ups", "Follow-ups"],
+                ].map(([page, label]) => (
+                  <button
+                    key={page}
+                    type="button"
+                    onClick={() => setActivePage(page)}
+                    className="rounded-xl bg-white/15 px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-white/25"
+                  >
+                    {label}
+                  </button>
+                ))}
+              </div>
+            </div>
+          </section>
 
           {/* Dashboard search */}
           <div className="mb-6 rounded-2xl border border-line bg-white p-3 sm:p-4">
@@ -177,34 +212,34 @@ function Dashboard() {
             )}
           </div>
 
-          {/* Statistics cards */}
-          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-4">
-            {cards.map((card) => (
+          {/* Statistics */}
+          <div className="grid grid-cols-1 rounded-2xl border border-line bg-white py-5 sm:grid-cols-2 xl:grid-cols-4">
+            {cards.map((card, i) => (
               <div
                 key={card.title}
-                className="rounded-2xl border border-line bg-white p-5 transition hover:border-brand/25 hover:shadow-md"
+                className={`flex items-start justify-between gap-3 px-6 py-2 ${
+                  i > 0 ? "xl:border-l xl:border-line" : ""
+                }`}
               >
-                <div className="flex items-start justify-between gap-3">
-                  <div>
-                    <p className="text-sm font-medium text-muted">
-                      {card.title}
-                    </p>
+                <div>
+                  <p className="text-sm font-medium text-muted">
+                    {card.title}
+                  </p>
 
-                    <h2 className="mt-3 font-display text-3xl font-bold tracking-tight text-brand-dark">
-                      {card.count}
-                    </h2>
-                  </div>
+                  <h2 className="mt-2 font-display text-3xl font-bold tracking-tight text-brand-dark">
+                    {card.count}
+                  </h2>
 
-                  <div
-                    className={`flex h-11 w-11 shrink-0 items-center justify-center rounded-xl ${card.color}`}
-                  >
-                    {card.icon}
-                  </div>
+                  <p className="mt-1 text-xs font-medium text-brand">
+                    {card.note}
+                  </p>
                 </div>
 
-                <p className="mt-5 border-t border-line pt-3 text-xs text-muted">
-                  {card.note}
-                </p>
+                <div
+                  className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-xl ${card.color}`}
+                >
+                  {card.icon}
+                </div>
               </div>
             ))}
           </div>

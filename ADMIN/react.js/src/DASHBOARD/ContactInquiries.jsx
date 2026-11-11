@@ -45,11 +45,7 @@ function ContactInquiries() {
 
       {/* Heading */}
       <div className="mb-6">
-        <p className="mb-2 text-xs font-bold uppercase tracking-wider text-accent">
-          Communication
-        </p>
-
-        <h1 className="text-3xl font-bold text-brand-dark">
+        <h1 className="font-display text-3xl font-bold text-brand-dark">
           Contact Inquiries
         </h1>
 
@@ -85,7 +81,7 @@ function ContactInquiries() {
 
           <table className="w-full text-left text-sm">
 
-            <thead className="bg-surface text-muted">
+            <thead className="bg-[#F9FBFA] text-[11px] font-bold uppercase tracking-wider text-muted">
               <tr>
                 <th className="px-5 py-4 font-semibold">Name</th>
                 <th className="px-5 py-4 font-semibold">Email</th>
@@ -217,7 +213,7 @@ function ContactInquiries() {
             <button
               type="button"
               onClick={() => setSelectedContact(null)}
-              className="mt-6 w-full rounded-xl bg-brand px-4 py-3 text-sm font-semibold text-white hover:opacity-90"
+              className="mt-6 w-full rounded-xl bg-accent px-4 py-3 text-sm font-bold text-white hover:bg-[#cf4a24]"
             >
               Close
             </button>

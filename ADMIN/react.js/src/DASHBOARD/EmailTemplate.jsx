@@ -190,7 +190,7 @@ export default function EmailTemplate() {
         <button
           type="button"
           onClick={handleAdd}
-          className="rounded-lg bg-brand px-5 py-2.5 font-medium text-white transition hover:bg-brand-dark"
+          className="rounded-lg bg-accent px-5 py-2.5 font-bold text-white transition hover:bg-[#cf4a24]"
         >
           + Add Email
         </button>
@@ -210,7 +210,7 @@ export default function EmailTemplate() {
       {/* EMAIL TEMPLATES TABLE */}
       <div className="overflow-x-auto rounded-xl border border-line bg-white">
         <table className="w-full min-w-[750px] text-left">
-          <thead className="bg-brand-soft">
+          <thead className="bg-[#F9FBFA]">
             <tr>
               <th className="px-5 py-4 text-sm font-semibold text-brand">
                 Title
@@ -243,15 +243,15 @@ export default function EmailTemplate() {
                   key={template._id}
                   className="border-t border-line hover:bg-surface"
                 >
-                  <td className="px-5 py-4 font-medium text-gray-800">
+                  <td className="px-5 py-4 font-medium text-brand-dark">
                     {template.Title}
                   </td>
 
-                  <td className="px-5 py-4 text-gray-700">
+                  <td className="px-5 py-4 text-brand-dark">
                     {template.Description}
                   </td>
 
-                  <td className="max-w-xs px-5 py-4 text-gray-600">
+                  <td className="max-w-xs px-5 py-4 text-muted">
                     <p className="truncate">{template.Content}</p>
                   </td>
 
@@ -271,7 +271,7 @@ export default function EmailTemplate() {
                         type="button"
                         onClick={() => handleEdit(template)}
                         title="Edit"
-                        className="text-blue-600 hover:text-blue-800"
+                        className="text-brand hover:text-brand-dark"
                       >
                         <Pencil size={18} />
                       </button>
@@ -313,7 +313,7 @@ export default function EmailTemplate() {
               <button
                 type="button"
                 onClick={resetForm}
-                className="text-2xl text-gray-500 hover:text-red-500"
+                className="text-2xl text-muted hover:text-red-500"
               >
                 &times;
               </button>
@@ -395,7 +395,7 @@ export default function EmailTemplate() {
 
                 <button
                   type="submit"
-                  className="rounded-lg bg-brand px-5 py-2.5 font-medium text-white hover:bg-brand-dark"
+                  className="rounded-lg bg-accent px-5 py-2.5 font-bold text-white hover:bg-[#cf4a24]"
                 >
                   {editId ? "Update Template" : "Save Template"}
                 </button>
@@ -417,7 +417,7 @@ export default function EmailTemplate() {
               <button
                 type="button"
                 onClick={() => setViewTemplate(null)}
-                className="text-2xl text-gray-500 hover:text-red-500"
+                className="text-2xl text-muted hover:text-red-500"
               >
                 &times;
               </button>
@@ -450,7 +450,7 @@ export default function EmailTemplate() {
               <button
                 type="button"
                 onClick={() => setViewTemplate(null)}
-                className="rounded-lg bg-brand px-5 py-2.5 text-white hover:bg-brand-dark"
+                className="rounded-lg bg-accent px-5 py-2.5 text-white hover:bg-[#cf4a24]"
               >
                 Close
               </button>

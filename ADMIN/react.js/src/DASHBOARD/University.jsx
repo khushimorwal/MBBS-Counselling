@@ -311,10 +311,6 @@ function University() {
       {/* PAGE HEADER */}
       <div className="mb-6 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <div>
-          <p className="mb-1 text-sm font-semibold uppercase tracking-wider text-accent">
-            Management
-          </p>
-
           <h1 className="font-display text-2xl font-bold text-brand-dark sm:text-3xl">
             Universities
           </h1>
@@ -338,7 +334,7 @@ function University() {
             type="button"
             onClick={() => fileInputRef.current?.click()}
             disabled={isBulkUploading}
-            className={`${buttonClass} border border-brand bg-white text-brand hover:bg-brand-soft disabled:cursor-not-allowed disabled:opacity-60`}
+            className={`${buttonClass} border border-line bg-white text-brand-dark hover:bg-surface disabled:cursor-not-allowed disabled:opacity-60`}
           >
             {isBulkUploading ? "Uploading..." : "Bulk Import"}
           </button>
@@ -346,7 +342,7 @@ function University() {
           <button
             type="button"
             onClick={handleAdd}
-            className={`${buttonClass} flex items-center justify-center gap-2 bg-brand text-white shadow-sm hover:bg-brand-dark`}
+            className={`${buttonClass} flex items-center justify-center gap-2 bg-accent font-bold text-white hover:bg-[#cf4a24]`}
           >
             <svg
               width="18"
@@ -427,7 +423,7 @@ function University() {
         {/* TABLE */}
         <div className="overflow-x-auto">
           <table className="w-full min-w-[900px] text-left">
-            <thead className="bg-brand text-white">
+            <thead className="bg-[#F9FBFA] text-muted">
               <tr>
                 <th className="px-5 py-4 text-xs font-semibold uppercase tracking-wider">
                   #

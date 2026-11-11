@@ -417,9 +417,6 @@ function CounsellingRequests() {
       {/* Heading */}
       <div className="mb-6 flex flex-col justify-between gap-4 sm:flex-row sm:items-center">
         <div>
-          <p className="text-xs font-bold uppercase tracking-[0.18em] text-accent">
-            COUNSELLING MANAGEMENT
-          </p>
 
           <h1 className="mt-2 font-display text-3xl font-bold text-brand-dark">
             Counselling Requests
@@ -434,7 +431,7 @@ function CounsellingRequests() {
           type="button"
           onClick={fetchRequests}
           disabled={loading}
-          className="rounded-xl bg-brand px-5 py-3 text-sm font-semibold text-white hover:opacity-90 disabled:opacity-50"
+          className="rounded-xl bg-accent px-5 py-3 text-sm font-bold text-white hover:bg-[#cf4a24] disabled:opacity-50"
         >
           {loading ? "Loading..." : "↻ Refresh"}
         </button>
@@ -586,7 +583,7 @@ function CounsellingRequests() {
         <div className="overflow-x-auto">
           <table className="w-full min-w-[1100px] text-left">
 
-            <thead className="bg-surface">
+            <thead className="bg-[#F9FBFA]">
               <tr className="text-xs font-semibold uppercase tracking-wide text-muted">
                 <th className="px-5 py-4">Student</th>
                 <th className="px-5 py-4">Request Number</th>
@@ -711,7 +708,7 @@ function CounsellingRequests() {
                           type="button"
                           onClick={() => openStatusModal(request)}
                           title="Update Status"
-                          className="rounded-lg bg-brand px-3 py-2 text-xs font-semibold text-white hover:opacity-90"
+                          className="rounded-lg bg-accent px-3 py-2 text-xs font-bold text-white hover:bg-[#cf4a24]"
                         >
                           Update
                         </button>
@@ -864,7 +861,7 @@ function CounsellingRequests() {
               <button
                 type="button"
                 onClick={() => setShowDetails(false)}
-                className="rounded-xl bg-brand px-5 py-2.5 text-sm font-semibold text-white"
+                className="rounded-xl bg-accent px-5 py-2.5 text-sm font-bold text-white"
               >
                 Close
               </button>
@@ -1213,7 +1210,7 @@ function CounsellingRequests() {
               <button
                 type="submit"
                 disabled={updating || newStatus === selectedRequest.status}
-                className="rounded-xl bg-brand px-5 py-2.5 text-sm font-semibold text-white disabled:cursor-not-allowed disabled:opacity-50"
+                className="rounded-xl bg-accent px-5 py-2.5 text-sm font-bold text-white disabled:cursor-not-allowed disabled:opacity-50"
               >
                 {updating ? "Updating..." : "Save Changes"}
               </button>

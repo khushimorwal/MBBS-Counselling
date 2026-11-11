@@ -201,25 +201,25 @@ const Login = () => {
   };
 
   const inputStyle =
-    "w-full rounded-xl border border-line bg-white px-4 py-3.5 text-sm text-brand-dark outline-none transition placeholder:text-gray-400 focus:border-brand focus:ring-2 focus:ring-brand/15";
+    "w-full rounded-xl border border-line bg-surface px-4 py-3.5 text-sm text-brand-dark outline-none transition placeholder:text-gray-400 focus:border-brand focus:ring-2 focus:ring-brand/15";
 
   const buttonStyle =
-    "w-full rounded-xl bg-brand px-4 py-3.5 text-sm font-semibold text-white transition hover:bg-brand-dark active:scale-[0.99]";
+    "w-full rounded-xl bg-accent px-4 py-3.5 text-sm font-bold text-white transition hover:bg-[#cf4a24] active:scale-[0.99]";
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-surface px-4 py-8 sm:px-6">
-      <div className="grid w-full max-w-5xl overflow-hidden rounded-3xl bg-white shadow-xl shadow-brand/10 md:min-h-[580px] md:grid-cols-2">
+    <div className="min-h-screen bg-white">
+      <div className="grid min-h-screen w-full md:grid-cols-[5fr_6fr]">
 
         {/* Left section */}
-        <div className="relative hidden flex-col justify-between overflow-hidden bg-brand p-10 text-white md:flex lg:p-12">
+        <div className="relative hidden flex-col justify-between overflow-hidden bg-brand-dark p-10 text-white md:flex lg:p-16">
           <div className="absolute -right-20 -top-20 h-64 w-64 rounded-full border border-white/10" />
           <div className="absolute -bottom-24 -left-20 h-72 w-72 rounded-full bg-white/5" />
           <div className="absolute bottom-24 right-10 h-28 w-28 rounded-full border border-accent/60" />
 
           <div className="relative z-10">
             <div className="mb-12 flex items-center gap-3">
-              <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-white text-lg font-bold text-brand">
-                M
+              <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-accent text-lg font-bold text-white">
+                ✚
               </div>
 
               <div>
@@ -234,17 +234,17 @@ const Login = () => {
             </div>
 
             <p className="mb-4 text-xs font-semibold uppercase tracking-[0.25em] text-white/65">
-              Welcome Back
+              Admin Console
             </p>
 
             <h1 className="max-w-sm text-4xl font-bold leading-tight lg:text-5xl">
-              Your dashboard,
-              <span className="text-accent"> your control.</span>
+              Every seat counselled.
+              <span className="text-accent"> Every student guided.</span>
             </h1>
 
             <p className="mt-6 max-w-sm text-sm leading-7 text-white/70">
-              Manage students, colleges, universities and counselling
-              information from one secure place.
+              Manage colleges, applications, documents and counselling
+              sessions from one place.
             </p>
           </div>
 

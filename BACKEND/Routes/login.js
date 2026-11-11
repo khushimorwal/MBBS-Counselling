@@ -8,7 +8,22 @@ require("dotenv").config();
 const { User, Verification } = require("../Models/loginSchma");
 const Role = require("../Models/Role");
 
+const rateLimit = require("express-rate-limit");
+
 const router = express.Router();
+
+// Brute-force protection for credential and OTP endpoints.
+const authLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000,
+  max: 10,
+  standardHeaders: true,
+  legacyHeaders: false,
+  message: {
+    success: false,
+    message: "Too many attempts. Please try again later.",
+  },
+});
+router.use(["/login", "/forgotpassword", "/verifyforgototp", "/resetpassword"], authLimiter);
 
 // ======================================================
 // EMAIL TRANSPORTER
@@ -111,7 +126,7 @@ router.post("/login", async (req, res) => {
         email: user.email,
         roleId: role._id,
         role: role.role,
-        permissions: role.permissions || {},
+        permissions: role.permissions || [],
       },
     });
   } catch (error) {

@@ -341,9 +341,6 @@ function CounsellingNotes() {
 
       <div className="mb-6 flex flex-col justify-between gap-4 sm:flex-row sm:items-end">
         <div>
-          <p className="text-xs font-bold uppercase tracking-[0.18em] text-accent">
-            COUNSELLING MANAGEMENT
-          </p>
 
           <h1 className="mt-2 font-display text-3xl font-bold text-brand-dark">
             Counselling Notes
@@ -493,7 +490,7 @@ function CounsellingNotes() {
         <div className="overflow-x-auto">
           <table className="w-full min-w-[1000px] text-left">
 
-            <thead className="bg-surface">
+            <thead className="bg-[#F9FBFA]">
               <tr className="text-xs font-semibold uppercase tracking-wide text-muted">
                 <th className="px-5 py-4">Student</th>
                 <th className="px-5 py-4">Counsellor</th>

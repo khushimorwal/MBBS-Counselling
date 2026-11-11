@@ -131,14 +131,14 @@ export default function DocumentVerification() {
             Document Verification
           </h1>
 
-          <p className="mt-1 text-sm text-slate-500">
+          <p className="mt-1 text-sm text-muted">
             Review and verify student admission documents.
           </p>
         </div>
 
         <button
           onClick={fetchDocuments}
-          className="flex items-center justify-center gap-2 rounded-xl bg-white px-4 py-3 text-sm font-semibold text-slate-700 shadow-sm border border-slate-200 hover:bg-slate-50"
+          className="flex items-center justify-center gap-2 rounded-xl bg-white px-4 py-3 text-sm font-semibold text-brand-dark shadow-sm border border-line hover:bg-surface"
         >
           <FiRefreshCw />
           Refresh
@@ -152,7 +152,7 @@ export default function DocumentVerification() {
           title="Total Documents"
           value={allDocuments.length}
           icon={<FiFileText />}
-          color="bg-blue-50 text-blue-600"
+          color="bg-brand-soft text-brand"
         />
 
         <SummaryCard
@@ -179,8 +179,8 @@ export default function DocumentVerification() {
       </div>
 
       {/* SEARCH */}
-      <div className="flex items-center gap-3 rounded-xl border border-slate-200 bg-white px-4 py-3">
-        <FiSearch className="text-slate-400" />
+      <div className="flex items-center gap-3 rounded-xl border border-line bg-white px-4 py-3">
+        <FiSearch className="text-muted" />
 
         <input
           type="text"
@@ -192,9 +192,9 @@ export default function DocumentVerification() {
       </div>
 
       {/* DOCUMENT TABLE */}
-      <div className="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
+      <div className="overflow-hidden rounded-2xl border border-line bg-white shadow-sm">
 
-        <div className="border-b border-slate-100 px-5 py-5">
+        <div className="border-b border-line px-5 py-5">
           <h2 className="text-lg font-bold text-[#142653]">
             Uploaded Documents
           </h2>
@@ -203,7 +203,7 @@ export default function DocumentVerification() {
         <div className="overflow-x-auto">
           <table className="w-full min-w-[1050px] text-left">
 
-            <thead className="bg-slate-50 text-xs uppercase text-slate-500">
+            <thead className="bg-[#F9FBFA] text-[11px] font-bold uppercase tracking-wider text-muted">
               <tr>
                 <th className="px-6 py-4">Student</th>
                 <th className="px-6 py-4">Document</th>
@@ -214,17 +214,17 @@ export default function DocumentVerification() {
               </tr>
             </thead>
 
-            <tbody className="divide-y divide-slate-100">
+            <tbody className="divide-y divide-line">
 
               {loading ? (
                 <tr>
-                  <td colSpan="6" className="px-6 py-12 text-center text-slate-500">
+                  <td colSpan="6" className="px-6 py-12 text-center text-muted">
                     Loading documents...
                   </td>
                 </tr>
               ) : filteredDocuments.length === 0 ? (
                 <tr>
-                  <td colSpan="6" className="px-6 py-12 text-center text-slate-500">
+                  <td colSpan="6" className="px-6 py-12 text-center text-muted">
                     No documents found.
                   </td>
                 </tr>
@@ -233,27 +233,27 @@ export default function DocumentVerification() {
                   const key = `${doc.userId}-${doc.documentType}`;
 
                   return (
-                    <tr key={`${key}-${index}`} className="transition hover:bg-slate-50">
+                    <tr key={`${key}-${index}`} className="transition hover:bg-surface">
 
                       <td className="px-6 py-5">
-                        <p className="text-sm font-semibold text-slate-800">
+                        <p className="text-sm font-semibold text-brand-dark">
                           {doc.studentName}
                         </p>
 
-                        <p className="mt-1 text-xs text-slate-400">
+                        <p className="mt-1 text-xs text-muted">
                           {doc.studentEmail}
                         </p>
                       </td>
 
-                      <td className="px-6 py-5 text-sm font-medium text-slate-700">
+                      <td className="px-6 py-5 text-sm font-medium text-brand-dark">
                         {doc.documentType}
                       </td>
 
-                      <td className="px-6 py-5 text-sm text-slate-500">
+                      <td className="px-6 py-5 text-sm text-muted">
                         {doc.fileName}
                       </td>
 
-                      <td className="px-6 py-5 text-sm text-slate-500">
+                      <td className="px-6 py-5 text-sm text-muted">
                         {doc.uploadedAt
                           ? new Date(doc.uploadedAt).toLocaleDateString()
                           : "N/A"}
@@ -337,14 +337,14 @@ export default function DocumentVerification() {
                   Document Preview
                 </h2>
 
-                <p className="mt-1 text-sm text-slate-500">
+                <p className="mt-1 text-sm text-muted">
                   {preview.documentType} - {preview.studentName}
                 </p>
               </div>
 
               <button
                 onClick={() => setPreview(null)}
-                className="text-xl text-slate-500 hover:text-red-500"
+                className="text-xl text-muted hover:text-red-500"
               >
                 <FiX />
               </button>
@@ -357,10 +357,10 @@ export default function DocumentVerification() {
                 className="mx-auto max-h-[65vh] rounded-xl object-contain"
               />
             ) : (
-              <div className="rounded-xl bg-slate-50 p-8 text-center">
-                <FiFileText className="mx-auto mb-3 text-5xl text-blue-600" />
+              <div className="rounded-xl bg-surface p-8 text-center">
+                <FiFileText className="mx-auto mb-3 text-5xl text-brand" />
 
-                <p className="font-semibold text-slate-700">
+                <p className="font-semibold text-brand-dark">
                   {preview.fileName}
                 </p>
 
@@ -385,10 +385,10 @@ export default function DocumentVerification() {
 
 function SummaryCard({ title, value, icon, color }) {
   return (
-    <div className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
+    <div className="rounded-2xl border border-line bg-white p-5 shadow-sm">
       <div className="flex items-center justify-between">
         <div>
-          <p className="text-sm font-medium text-slate-500">
+          <p className="text-sm font-medium text-muted">
             {title}
           </p>
 

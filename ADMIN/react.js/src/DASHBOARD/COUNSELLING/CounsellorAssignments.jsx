@@ -472,7 +472,7 @@ const CounsellorAssignments = () => {
 
           <button
             onClick={openAssignModal}
-            className="flex items-center gap-2 rounded-xl bg-brand px-5 py-3 text-sm font-semibold text-white hover:bg-brand-dark"
+            className="flex items-center gap-2 rounded-xl bg-accent px-5 py-3 text-sm font-bold text-white hover:bg-[#cf4a24]"
           >
             <FiPlus />
             Assign Counsellor
@@ -601,7 +601,7 @@ const CounsellorAssignments = () => {
         <div className="overflow-x-auto">
           <table className="w-full min-w-[850px] text-left">
 
-            <thead className="bg-surface text-xs uppercase text-muted">
+            <thead className="bg-[#F9FBFA] text-[11px] font-bold uppercase tracking-wider text-muted">
               <tr>
                 <th className="px-5 py-4">#</th>
                 <th className="px-5 py-4">Student</th>
@@ -881,7 +881,7 @@ const CounsellorAssignments = () => {
                 <button
                   type="submit"
                   disabled={saving || loadingCounsellors || counsellors.length === 0}
-                  className="rounded-xl bg-brand px-6 py-3 text-sm font-semibold text-white hover:bg-brand-dark disabled:cursor-not-allowed disabled:opacity-50"
+                  className="rounded-xl bg-accent px-6 py-3 text-sm font-bold text-white hover:bg-[#cf4a24] disabled:cursor-not-allowed disabled:opacity-50"
                 >
                   {saving
                     ? "Saving..."
@@ -973,7 +973,7 @@ const CounsellorAssignments = () => {
             <div className="border-t border-line px-6 py-4 text-right">
               <button
                 onClick={closeModal}
-                className="rounded-xl bg-brand px-5 py-2.5 text-sm font-semibold text-white hover:bg-brand-dark"
+                className="rounded-xl bg-accent px-5 py-2.5 text-sm font-bold text-white hover:bg-[#cf4a24]"
               >
                 Close
               </button>

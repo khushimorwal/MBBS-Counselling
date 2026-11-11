@@ -412,9 +412,6 @@ function CounsellingSessions() {
       {/* Heading */}
       <div className="mb-6 flex flex-col justify-between gap-3 sm:flex-row sm:items-end">
         <div>
-          <p className="text-xs font-bold uppercase tracking-[0.18em] text-accent">
-            COUNSELLING MANAGEMENT
-          </p>
 
           <h1 className="mt-2 font-display text-3xl font-bold text-brand-dark">
             Counselling Sessions
@@ -534,7 +531,7 @@ function CounsellingSessions() {
         <div className="overflow-x-auto">
           <table className="w-full min-w-[1100px] text-left">
 
-            <thead className="bg-surface">
+            <thead className="bg-[#F9FBFA]">
               <tr className="text-xs font-semibold uppercase tracking-wide text-muted">
                 <th className="px-5 py-4">Student</th>
                 <th className="px-5 py-4">Counsellor</th>
@@ -823,7 +820,7 @@ function CounsellingSessions() {
               <button
                 type="button"
                 onClick={() => setShowDetails(false)}
-                className="rounded-xl bg-brand px-5 py-2.5 text-sm font-semibold text-white hover:opacity-90"
+                className="rounded-xl bg-accent px-5 py-2.5 text-sm font-bold text-white hover:bg-[#cf4a24]"
               >
                 Close
               </button>
@@ -1111,7 +1108,7 @@ function ModalActions({
       <button
         type="submit"
         disabled={submitting}
-        className="rounded-xl bg-brand px-5 py-2.5 text-sm font-semibold text-white transition hover:opacity-90 disabled:opacity-60"
+        className="rounded-xl bg-accent px-5 py-2.5 text-sm font-bold text-white transition hover:bg-[#cf4a24] disabled:opacity-60"
       >
         {submitting ? "Please wait..." : submitText}
       </button>

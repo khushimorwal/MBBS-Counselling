@@ -3,6 +3,8 @@ require("dotenv").config();
 
 const express = require("express");
 const cors = require("cors");
+const helmet = require("helmet");
+const superAdmin = require("./Middleware/SuperAdmin");
 
 // Import application configurations.
 const cloudinary = require("./config/cloudnary");
@@ -47,7 +49,18 @@ const workflowRoutes = require("./Routes/WorkflowRoutes");
 const app = express();
 
 // Configure application-level middleware.
-app.use(cors());
+if (process.env.NODE_ENV === "production" && !process.env.CORS_ORIGIN) {
+  throw new Error("CORS_ORIGIN is required in production");
+}
+
+app.use(helmet());
+app.use(
+  cors({
+    origin: (process.env.CORS_ORIGIN || "http://localhost:5173")
+      .split(",")
+      .map((o) => o.trim()),
+  })
+);
 app.use(express.json());
 
 // --------------------------------------------------
@@ -117,7 +130,7 @@ app.use("/workflow", workflowRoutes);
 // --------------------------------------------------
 
 // Verify that the application API is accessible.
-app.get("/test-application", (req, res) => {
+app.get("/test-application", auth, (req, res) => {
   res.status(200).json({
     success: true,
     message: "Application route working",
@@ -134,7 +147,7 @@ app.get("/profile", auth, (req, res) => {
 });
 
 // Verify the Cloudinary connection.
-app.get("/test-cloudinary", async (req, res) => {
+app.get("/test-cloudinary", auth, superAdmin, async (req, res) => {
   try {
     const result = await cloudinary.api.ping();
 
