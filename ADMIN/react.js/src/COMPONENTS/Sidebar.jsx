@@ -219,7 +219,7 @@ return ( <aside className="flex h-full w-64 shrink-0 flex-col overflow-hidden bg
   <div className="border-b border-white/10 px-5 py-5">
     <div className="flex items-center gap-3">
 
-      <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-white text-brand">
+      <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-accent text-white">
         <span className="text-xl">✚</span>
       </div>
 
@@ -244,8 +244,8 @@ return ( <aside className="flex h-full w-64 shrink-0 flex-col overflow-hidden bg
         onClick={() => setActivePage(item.name)}
         className={`flex min-h-10 w-full items-center gap-3 rounded-xl px-3 py-2.5 text-left text-sm font-medium transition ${
           activePage === item.name
-            ? "bg-accent text-white"
-            : "text-white/75 hover:bg-white/10 hover:text-white"
+            ? "bg-white/15 text-white"
+            : "text-white/70 hover:bg-white/10 hover:text-white"
         }`}
       >
 
@@ -253,16 +253,15 @@ return ( <aside className="flex h-full w-64 shrink-0 flex-col overflow-hidden bg
 
         <span>{item.name}</span>
 
-        {activePage === item.name && (
-          <span className="ml-auto h-1.5 w-1.5 rounded-full bg-white" />
-        )}
-
       </button>
 
     ))}
 
     {showCounsellingMenu && (
-  <div className="pt-2">
+  <div className="pt-3">
+    <p className="px-3 pb-1 text-[10px] font-bold uppercase tracking-[0.15em] text-[#6FA79E]">
+      Counselling
+    </p>
     <button
       type="button"
       onClick={() => setCounsellingOpen(!counsellingOpen)}
@@ -281,7 +280,7 @@ return ( <aside className="flex h-full w-64 shrink-0 flex-col overflow-hidden bg
             onClick={() => setActivePage(name)}
             className={`flex min-h-9 w-full items-center rounded-lg px-3 py-2 text-left text-sm transition ${
               activePage === name
-                ? "bg-accent text-white"
+                ? "bg-white/15 font-semibold text-white"
                 : "text-white/70 hover:bg-white/10 hover:text-white"
             }`}
           >

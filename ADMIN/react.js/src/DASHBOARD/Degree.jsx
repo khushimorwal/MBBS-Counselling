@@ -439,7 +439,7 @@ function Degree() {
           <button
             type="button"
             onClick={openAdd}
-            className="rounded-xl bg-brand px-4 py-2.5 text-sm font-semibold text-white hover:bg-brand-dark"
+            className="rounded-xl bg-accent px-4 py-2.5 text-sm font-bold text-white hover:bg-[#cf4a24]"
           >
             + Add Degree
           </button>

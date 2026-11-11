@@ -430,7 +430,7 @@ function Course() {
           <button
             type="button"
             onClick={handleBulkClick}
-            className="flex items-center gap-2 rounded-xl border border-brand px-4 py-2.5 text-sm font-semibold text-brand hover:bg-brand-soft"
+            className="flex items-center gap-2 rounded-xl border border-line bg-white px-4 py-2.5 text-sm font-semibold text-brand-dark hover:bg-surface"
           >
             <FiUpload size={17} />
             Bulk Add
@@ -440,7 +440,7 @@ function Course() {
 
           <button
             onClick={openAdd}
-            className="flex items-center gap-2 rounded-xl bg-brand px-4 py-2.5 text-sm font-semibold text-white hover:bg-brand-dark"
+            className="flex items-center gap-2 rounded-xl bg-accent px-4 py-2.5 text-sm font-bold text-white hover:bg-[#cf4a24]"
           >
             <FiPlus size={17} />
             Add Course

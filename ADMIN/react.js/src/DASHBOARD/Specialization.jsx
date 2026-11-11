@@ -570,7 +570,7 @@ return ( <div className="mx-auto w-full max-w-[1200px] space-y-5 px-3 py-4 sm:px
         type="button"
         onClick={handleBulkButtonClick}
         disabled={bulkLoading}
-        className="flex items-center gap-2 rounded-xl border border-brand px-4 py-2.5 text-sm font-semibold text-brand hover:bg-brand-soft disabled:cursor-not-allowed disabled:opacity-60"
+        className="flex items-center gap-2 rounded-xl border border-line bg-white px-4 py-2.5 text-sm font-semibold text-brand-dark hover:bg-surface disabled:cursor-not-allowed disabled:opacity-60"
       >
         <FiUpload size={17} />
 
@@ -582,7 +582,7 @@ return ( <div className="mx-auto w-full max-w-[1200px] space-y-5 px-3 py-4 sm:px
       <button
         type="button"
         onClick={openAdd}
-        className="flex items-center gap-2 rounded-xl bg-brand px-4 py-2.5 text-sm font-semibold text-white hover:bg-brand-dark"
+        className="flex items-center gap-2 rounded-xl bg-accent px-4 py-2.5 text-sm font-bold text-white hover:bg-[#cf4a24]"
       >
         <FiPlus size={17} />
         Add Specialization

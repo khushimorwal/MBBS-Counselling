@@ -117,9 +117,6 @@ function CounsellingDashboard() {
       {/* Heading */}
       <div className="mb-6 flex flex-col justify-between gap-4 sm:flex-row sm:items-center">
         <div>
-          <p className="text-xs font-bold uppercase tracking-[0.18em] text-accent">
-            MBBS COUNSELLING PORTAL
-          </p>
 
           <h1 className="mt-2 font-display text-3xl font-bold text-brand-dark">
             Counselling Dashboard
@@ -134,7 +131,7 @@ function CounsellingDashboard() {
           type="button"
           onClick={fetchDashboard}
           disabled={loading}
-          className="rounded-xl bg-brand px-5 py-3 text-sm font-semibold text-white transition hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-60"
+          className="rounded-xl bg-accent px-5 py-3 text-sm font-bold text-white transition hover:bg-[#cf4a24] disabled:cursor-not-allowed disabled:opacity-60"
         >
           {loading ? "Refreshing..." : "↻ Refresh"}
         </button>

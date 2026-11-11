@@ -337,7 +337,7 @@ function Stream() {
           <button
             type="button"
             onClick={openAdd}
-            className="flex items-center gap-2 rounded-xl bg-brand px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-brand-dark"
+            className="flex items-center gap-2 rounded-xl bg-accent px-4 py-2.5 text-sm font-bold text-white transition hover:bg-[#cf4a24]"
           >
             <FiPlus size={17} />
             Add Stream

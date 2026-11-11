@@ -292,10 +292,6 @@ function Student() {
       {/* Page Heading */}
       <div className="mb-8 flex flex-wrap items-end justify-between gap-4">
         <div>
-          <p className="mb-2 text-xs font-bold uppercase tracking-[0.2em] text-accent">
-            Management
-          </p>
-
           <h1 className="font-display text-3xl font-bold text-brand-dark sm:text-4xl">
             Students
           </h1>
@@ -321,7 +317,7 @@ function Student() {
               type="button"
               onClick={handleBulkButtonClick}
               disabled={isBulkUploading}
-              className="rounded-xl border border-brand px-5 py-3 text-sm font-semibold text-brand transition hover:bg-brand-soft disabled:cursor-not-allowed disabled:opacity-60"
+              className="rounded-xl border border-line bg-white px-5 py-3 text-sm font-semibold text-brand-dark transition hover:bg-surface disabled:cursor-not-allowed disabled:opacity-60"
             >
               {isBulkUploading
                 ? "Uploading..."
@@ -331,7 +327,7 @@ function Student() {
             <button
               type="button"
               onClick={handleAdd}
-              className="rounded-xl bg-accent px-5 py-3 text-sm font-semibold text-white transition hover:opacity-90"
+              className="rounded-xl bg-accent px-5 py-3 text-sm font-bold text-white transition hover:bg-[#cf4a24]"
             >
               + Add New Student
             </button>
@@ -379,17 +375,14 @@ function Student() {
         <>
 
           {/* Search */}
-          <div className="mb-6 rounded-2xl border border-line bg-white p-4 sm:p-5">
-            <label className="mb-3 block text-sm font-semibold text-brand-dark">
-              Search Students
-            </label>
-
+          <div className="mb-5">
             <input
               type="text"
+              aria-label="Search students"
               placeholder="Search by name, email or phone..."
               value={search}
               onChange={(e) => setSearch(e.target.value)}
-              className={inputStyle}
+              className={`${inputStyle} sm:max-w-md`}
             />
           </div>
 
@@ -415,7 +408,7 @@ function Student() {
             <div className="overflow-x-auto">
               <table className="w-full min-w-[750px] text-left">
 
-                <thead className="bg-brand text-xs uppercase tracking-wider text-white">
+                <thead className="bg-[#F9FBFA] text-[11px] font-bold uppercase tracking-wider text-muted">
                   <tr>
                     <th className="px-5 py-4">#</th>
                     <th className="px-5 py-4">Name</th>
@@ -438,7 +431,17 @@ function Student() {
                       </td>
 
                       <td className="px-5 py-4 text-sm font-semibold text-brand-dark">
-                        {student.name}
+                        <div className="flex items-center gap-3">
+                          <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-brand-soft text-xs font-bold text-brand">
+                            {(student.name || "?")
+                              .split(" ")
+                              .map((part) => part[0])
+                              .join("")
+                              .slice(0, 2)
+                              .toUpperCase()}
+                          </span>
+                          {student.name}
+                        </div>
                       </td>
 
                       <td className="px-5 py-4 text-sm text-muted">
@@ -626,7 +629,7 @@ function Student() {
             <div className="overflow-x-auto">
               <table className="w-full min-w-[650px] text-left">
 
-                <thead className="bg-brand text-xs uppercase tracking-wider text-white">
+                <thead className="bg-[#F9FBFA] text-[11px] font-bold uppercase tracking-wider text-muted">
                   <tr>
                     <th className="px-5 py-4">#</th>
                     <th className="px-5 py-4">Name</th>

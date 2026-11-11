@@ -410,7 +410,7 @@ const filteredRoles = useMemo(() => {
         <button
           type="button"
           onClick={openCreate}
-          className="inline-flex items-center justify-center gap-2 rounded-xl bg-brand px-5 py-2.5 text-sm font-semibold text-white shadow-sm transition hover:bg-brand-dark"
+          className="inline-flex items-center justify-center gap-2 rounded-xl bg-accent px-5 py-2.5 text-sm font-bold text-white shadow-sm transition hover:bg-[#cf4a24]"
         >
           <FiPlus size={18} />
           Create Role
@@ -516,7 +516,7 @@ const filteredRoles = useMemo(() => {
         {/* TABLE */}
         <div className="overflow-x-auto">
           <table className="w-full min-w-[750px] text-left">
-            <thead className="bg-surface">
+            <thead className="bg-[#F9FBFA]">
               <tr>
                 <th className="px-5 py-3 text-[11px] font-bold uppercase tracking-wider text-muted">
                   Role Name
@@ -619,7 +619,7 @@ const filteredRoles = useMemo(() => {
                           className={`text-xs font-semibold ${
                             getStatus(role)
                               ? "text-green-600"
-                              : "text-gray-500"
+                              : "text-muted"
                           }`}
                         >
                           {role.role === "Super Admin"
@@ -649,7 +649,7 @@ const filteredRoles = useMemo(() => {
                               type="button"
                               onClick={() => openEdit(role)}
                               title="Edit role"
-                              className="flex h-8 w-8 items-center justify-center rounded-lg border border-line text-blue-600 hover:bg-blue-50"
+                              className="flex h-8 w-8 items-center justify-center rounded-lg border border-line text-brand hover:bg-brand-soft"
                             >
                               <FiEdit2 size={15} />
                             </button>
@@ -764,7 +764,7 @@ const filteredRoles = useMemo(() => {
 
                   <div className="overflow-x-auto rounded-xl border border-line">
                     <table className="w-full min-w-[650px] text-left">
-                      <thead className="bg-surface">
+                      <thead className="bg-[#F9FBFA]">
                         <tr>
                           <th className="px-4 py-3 text-xs font-bold uppercase tracking-wide text-muted">
                             Module
@@ -850,7 +850,7 @@ const filteredRoles = useMemo(() => {
                 <button
                   type="submit"
                   disabled={saving}
-                  className="rounded-xl bg-brand px-5 py-2.5 text-sm font-semibold text-white hover:bg-brand-dark disabled:opacity-60"
+                  className="rounded-xl bg-accent px-5 py-2.5 text-sm font-bold text-white hover:bg-[#cf4a24] disabled:opacity-60"
                 >
                   {saving
                     ? "Saving..."
@@ -943,7 +943,7 @@ const filteredRoles = useMemo(() => {
               <button
                 type="button"
                 onClick={() => setShowViewModal(false)}
-                className="rounded-xl bg-brand px-5 py-2.5 text-sm font-semibold text-white hover:bg-brand-dark"
+                className="rounded-xl bg-accent px-5 py-2.5 text-sm font-bold text-white hover:bg-[#cf4a24]"
               >
                 Close
               </button>

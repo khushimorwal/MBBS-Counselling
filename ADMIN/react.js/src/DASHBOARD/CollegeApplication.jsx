@@ -108,17 +108,17 @@ const CollegeApplications = () => {
       {/* Header */}
       <div className="flex flex-col justify-between gap-4 sm:flex-row sm:items-center">
         <div>
-          <h1 className="text-2xl font-bold text-gray-800">
+          <h1 className="font-display text-2xl font-bold text-brand-dark">
             College Applications
           </h1>
-          <p className="mt-1 text-sm text-gray-500">
+          <p className="mt-1 text-sm text-muted">
             Manage and track student college applications.
           </p>
         </div>
 
         <button
           onClick={fetchApplications}
-          className="rounded-xl bg-brand px-5 py-2.5 text-sm font-semibold text-white transition hover:opacity-90"
+          className="rounded-xl bg-accent px-5 py-2.5 text-sm font-bold text-white transition hover:bg-[#cf4a24]"
         >
           ↻ Refresh
         </button>
@@ -126,18 +126,18 @@ const CollegeApplications = () => {
 
       {/* Statistics */}
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-4">
-        <div className="rounded-2xl border border-gray-100 bg-white p-5 shadow-sm">
-          <p className="text-sm text-gray-500">Total Applications</p>
-          <h2 className="mt-2 text-3xl font-bold text-gray-800">
+        <div className="rounded-2xl border border-line bg-white p-5 shadow-sm">
+          <p className="text-sm text-muted">Total Applications</p>
+          <h2 className="mt-2 text-3xl font-bold text-brand-dark">
             {totalApplications}
           </h2>
-          <span className="mt-2 block text-xs text-blue-600">
+          <span className="mt-2 block text-xs text-brand">
             All applications
           </span>
         </div>
 
-        <div className="rounded-2xl border border-gray-100 bg-white p-5 shadow-sm">
-          <p className="text-sm text-gray-500">In Progress</p>
+        <div className="rounded-2xl border border-line bg-white p-5 shadow-sm">
+          <p className="text-sm text-muted">In Progress</p>
           <h2 className="mt-2 text-3xl font-bold text-yellow-600">
             {pendingApplications}
           </h2>
@@ -146,8 +146,8 @@ const CollegeApplications = () => {
           </span>
         </div>
 
-        <div className="rounded-2xl border border-gray-100 bg-white p-5 shadow-sm">
-          <p className="text-sm text-gray-500">Approved</p>
+        <div className="rounded-2xl border border-line bg-white p-5 shadow-sm">
+          <p className="text-sm text-muted">Approved</p>
           <h2 className="mt-2 text-3xl font-bold text-green-600">
             {approvedApplications}
           </h2>
@@ -156,8 +156,8 @@ const CollegeApplications = () => {
           </span>
         </div>
 
-        <div className="rounded-2xl border border-gray-100 bg-white p-5 shadow-sm">
-          <p className="text-sm text-gray-500">Rejected</p>
+        <div className="rounded-2xl border border-line bg-white p-5 shadow-sm">
+          <p className="text-sm text-muted">Rejected</p>
           <h2 className="mt-2 text-3xl font-bold text-red-600">
             {rejectedApplications}
           </h2>
@@ -168,11 +168,11 @@ const CollegeApplications = () => {
       </div>
 
       {/* Applications Table */}
-      <div className="overflow-hidden rounded-2xl border border-gray-100 bg-white shadow-sm">
-        <div className="flex flex-col justify-between gap-3 border-b border-gray-100 p-5 sm:flex-row sm:items-center">
+      <div className="overflow-hidden rounded-2xl border border-line bg-white shadow-sm">
+        <div className="flex flex-col justify-between gap-3 border-b border-line p-5 sm:flex-row sm:items-center">
           <div>
-            <h2 className="font-bold text-gray-800">All Applications</h2>
-            <p className="mt-1 text-xs text-gray-500">
+            <h2 className="font-bold text-brand-dark">All Applications</h2>
+            <p className="mt-1 text-xs text-muted">
               {filteredApplications.length} applications found
             </p>
           </div>
@@ -182,12 +182,12 @@ const CollegeApplications = () => {
             placeholder="Search student, college, course..."
             value={search}
             onChange={(event) => setSearch(event.target.value)}
-            className="w-full rounded-xl border border-gray-200 px-4 py-2.5 text-sm outline-none focus:border-brand sm:max-w-xs"
+            className="w-full rounded-xl border border-line px-4 py-2.5 text-sm outline-none focus:border-brand sm:max-w-xs"
           />
         </div>
 
         {loading ? (
-          <div className="p-12 text-center text-sm text-gray-500">
+          <div className="p-12 text-center text-sm text-muted">
             Loading applications...
           </div>
         ) : filteredApplications.length === 0 ? (
@@ -203,7 +203,7 @@ const CollegeApplications = () => {
         ) : (
           <div className="overflow-x-auto">
             <table className="w-full min-w-[1050px] text-left text-sm">
-              <thead className="bg-gray-50 text-xs uppercase text-gray-500">
+              <thead className="bg-gray-50 text-xs uppercase text-muted">
                 <tr>
                   <th className="px-5 py-4">Application ID</th>
                   <th className="px-5 py-4">Student</th>
@@ -227,7 +227,7 @@ const CollegeApplications = () => {
                     </td>
 
                     <td className="px-5 py-4">
-                      <p className="font-semibold text-gray-800">
+                      <p className="font-semibold text-brand-dark">
                         {application.student?.name || "Student unavailable"}
                       </p>
                       <p className="mt-1 text-xs text-gray-400">
@@ -267,7 +267,7 @@ const CollegeApplications = () => {
                       </select>
                     </td>
 
-                    <td className="px-5 py-4 text-gray-500">
+                    <td className="px-5 py-4 text-muted">
                       {application.submittedAt
                         ? new Date(application.submittedAt).toLocaleDateString()
                         : "—"}
@@ -276,7 +276,7 @@ const CollegeApplications = () => {
                     <td className="px-5 py-4">
                       <button
                         onClick={() => setSelectedApplication(application)}
-                        className="rounded-lg border border-gray-200 px-3 py-1.5 text-xs font-semibold text-brand transition hover:bg-brand hover:text-white"
+                        className="rounded-lg border border-line px-3 py-1.5 text-xs font-semibold text-brand transition hover:bg-brand hover:text-white"
                       >
                         View
                       </button>
@@ -295,7 +295,7 @@ const CollegeApplications = () => {
           <div className="max-h-[90vh] w-full max-w-xl overflow-y-auto rounded-2xl bg-white shadow-xl">
             <div className="flex items-center justify-between border-b p-5">
               <div>
-                <h2 className="text-lg font-bold text-gray-800">
+                <h2 className="text-lg font-bold text-brand-dark">
                   Application Details
                 </h2>
                 <p className="mt-1 text-xs text-gray-400">
@@ -305,7 +305,7 @@ const CollegeApplications = () => {
 
               <button
                 onClick={() => setSelectedApplication(null)}
-                className="rounded-lg px-3 py-1 text-xl text-gray-500 hover:bg-gray-100"
+                className="rounded-lg px-3 py-1 text-xl text-muted hover:bg-gray-100"
               >
                 ×
               </button>
@@ -314,49 +314,49 @@ const CollegeApplications = () => {
             <div className="grid grid-cols-1 gap-5 p-5 sm:grid-cols-2">
               <div>
                 <p className="text-xs text-gray-400">Student Name</p>
-                <p className="mt-1 font-semibold text-gray-800">
+                <p className="mt-1 font-semibold text-brand-dark">
                   {selectedApplication.student?.name || "—"}
                 </p>
               </div>
 
               <div>
                 <p className="text-xs text-gray-400">Student Email</p>
-                <p className="mt-1 font-semibold text-gray-800">
+                <p className="mt-1 font-semibold text-brand-dark">
                   {selectedApplication.student?.email || "—"}
                 </p>
               </div>
 
               <div>
                 <p className="text-xs text-gray-400">College Name</p>
-                <p className="mt-1 font-semibold text-gray-800">
+                <p className="mt-1 font-semibold text-brand-dark">
                   {selectedApplication.collegeName}
                 </p>
               </div>
 
               <div>
                 <p className="text-xs text-gray-400">Course</p>
-                <p className="mt-1 font-semibold text-gray-800">
+                <p className="mt-1 font-semibold text-brand-dark">
                   {selectedApplication.course}
                 </p>
               </div>
 
               <div>
                 <p className="text-xs text-gray-400">State</p>
-                <p className="mt-1 font-semibold text-gray-800">
+                <p className="mt-1 font-semibold text-brand-dark">
                   {selectedApplication.state}
                 </p>
               </div>
 
               <div>
                 <p className="text-xs text-gray-400">Round</p>
-                <p className="mt-1 font-semibold text-gray-800">
+                <p className="mt-1 font-semibold text-brand-dark">
                   {selectedApplication.round}
                 </p>
               </div>
 
               <div>
                 <p className="text-xs text-gray-400">Submitted Date</p>
-                <p className="mt-1 font-semibold text-gray-800">
+                <p className="mt-1 font-semibold text-brand-dark">
                   {selectedApplication.submittedAt
                     ? new Date(
                         selectedApplication.submittedAt
