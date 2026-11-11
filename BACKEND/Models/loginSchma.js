@@ -70,9 +70,14 @@ const verificationSchema = new mongoose.Schema({
   },
 });
 
-// Create the Mongoose models.
-const User = mongoose.model("User", userSchema);
-const Verification = mongoose.model("Verification", verificationSchema);
+// Create or reuse existing Mongoose models.
+const User =
+  mongoose.models.User || mongoose.model("User", userSchema);
 
-// Export both models for use in routes.
+const Verification =
+  mongoose.models.Verification ||
+  mongoose.model("Verification", verificationSchema);
+
+// Export both models for use in routes and controllers.
 module.exports = { User, Verification };
+

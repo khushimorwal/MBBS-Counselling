@@ -1,32 +1,48 @@
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import {
-  FiSearch,
   FiPlus,
   FiEdit2,
   FiShield,
   FiEye,
   FiTrash2,
+  FiCheckCircle,
+  FiClock,
+  FiX,
 } from "react-icons/fi";
 import { toast } from "react-toastify";
 import { API } from "../api/axios.js";
 
 const MODULES = [
+  { key: "dashboard", label: "Dashboard" },
   { key: "students", label: "Students" },
   { key: "colleges", label: "Colleges" },
-  { key: "universities", label: "Universities" },
-  { key: "streams", label: "Streams" },
-  { key: "degrees", label: "Degrees" },
-  { key: "courses", label: "Courses" },
-  { key: "specializations", label: "Specializations" },
-  { key: "roles", label: "Role & Permissions" },
-  { key: "emailTemplates", label: "Email Templates" },
+  { key: "university", label: "University" },
+  { key: "streams", label: "Stream" },
+  { key: "degrees", label: "Degree" },
+  { key: "courses", label: "Course" },
+  { key: "contactInquiries", label: "Contact Inquiries" },
+  { key: "collegeApplications", label: "College Applications" },
+  { key: "documentVerification", label: "Document Verification" },
+  { key: "counsellingmanagement", label: "Counselling Management" },
 ];
 
 const ACTIONS = ["view", "add", "edit", "delete"];
 
-const createEmptyForm = () => ({
-  role: "",
-  permissions: Object.fromEntries(
+const ROLE_OPTIONS = [
+  "Admin",
+  "Student",
+  "Manager",
+  "Teacher",
+  "Counsellor",
+  "Editor",
+  "Admission Officer",
+  "Document Manager",
+  "Support Executive",
+  "Other",
+];
+
+const createEmptyPermissions = () =>
+  Object.fromEntries(
     MODULES.map(({ key }) => [
       key,
       {
@@ -36,22 +52,47 @@ const createEmptyForm = () => ({
         delete: false,
       },
     ])
-  ),
-});
+  );
+
+const getRolePermissions = (role) => {
+  const saved = Array.isArray(role.permissions) ? role.permissions : [];
+
+  return Object.fromEntries(
+    MODULES.map(({ key }) => [
+      key,
+      Object.fromEntries(
+        ACTIONS.map((action) => [
+          action,
+          saved.includes(`${key}_${action}`),
+        ])
+      ),
+    ])
+  );
+};
 
 function RolePermissions() {
   const [roles, setRoles] = useState([]);
-  const [allRoles, setAllRoles] = useState([]);
-  const [search, setSearch] = useState("");
-  const [showModal, setShowModal] = useState(false);
-  const [isEdit, setIsEdit] = useState(false);
-  const [isView, setIsView] = useState(false);
-  const [editId, setEditId] = useState(null);
-  const [dataLoading, setDataLoading] = useState(true);
-  const [isSaving, setIsSaving] = useState(false);
-  const [formData, setFormData] = useState(createEmptyForm());
+  const [roleType, setRoleType] = useState("all");
 
-  // FETCH EXISTING ROLES
+  const [showEditor, setShowEditor] = useState(false);
+  const [showViewModal, setShowViewModal] = useState(false);
+
+  const [selectedRole, setSelectedRole] = useState(null);
+
+  const [mode, setMode] = useState("create");
+  const [editId, setEditId] = useState(null);
+
+  const [loading, setLoading] = useState(true);
+  const [saving, setSaving] = useState(false);
+  const [updatingStatus, setUpdatingStatus] = useState(null);
+
+  const [formData, setFormData] = useState({
+    roleType: "",
+    customRole: "",
+    permissions: createEmptyPermissions(),
+  });
+
+  // FETCH ROLES
   const fetchRoles = async () => {
     try {
       const response = await API.get("/role/get-role");
@@ -60,19 +101,21 @@ function RolePermissions() {
         ? response.data.role
         : [];
 
-      setAllRoles(databaseRoles);
+      // Only Super Admin and roles created/assigned by Super Admin
+      databaseRoles.sort((a, b) => {
+  if (a.role === "Super Admin") return -1;
+  if (b.role === "Super Admin") return 1;
 
-      const visibleRoles = databaseRoles.filter(
-        (role) =>
-          role.role === "Super Admin" ||
-          (["Admin", "Student"].includes(role.role) &&
-            role.isAssigned === true)
-      );
+  return a.role.localeCompare(b.role);
+});
+
+setRoles(databaseRoles);
 
       visibleRoles.sort((a, b) => {
         if (a.role === "Super Admin") return -1;
         if (b.role === "Super Admin") return 1;
-        return 0;
+
+        return a.role.localeCompare(b.role);
       });
 
       setRoles(visibleRoles);
@@ -81,7 +124,7 @@ function RolePermissions() {
         error.response?.data?.message || "Failed to fetch roles"
       );
     } finally {
-      setDataLoading(false);
+      setLoading(false);
     }
   };
 
@@ -89,401 +132,537 @@ function RolePermissions() {
     fetchRoles();
   }, []);
 
-  // OPEN ADD ROLE MODAL
-  const handleAddRoleModal = () => {
-    setIsEdit(false);
-    setIsView(false);
+  // COUNTS
+  const totalRoles = roles.length;
+
+  const activeRoles = roles.filter(
+    (role) => role.role === "Super Admin" || role.isAssigned === true
+  ).length
+
+  const inactiveRoles = roles.filter(
+    (role) => role.role !== "Super Admin" && role.isAssigned === false
+  ).length;
+
+  // FILTER
+const filteredRoles = useMemo(() => {
+  if (roleType === "all") return roles;
+
+  return roles.filter(
+    (role) => role.role.toLowerCase() === roleType.toLowerCase()
+  );
+}, [roles, roleType]);
+
+
+  // OPEN CREATE
+  const openCreate = () => {
+    setMode("create");
     setEditId(null);
-    setFormData(createEmptyForm());
-    setShowModal(true);
+
+    setFormData({
+      roleType: "",
+      customRole: "",
+      permissions: createEmptyPermissions(),
+    });
+
+    setShowEditor(true);
   };
 
-  const handleRoleChange = (event) => {
-    const selectedRole = event.target.value;
+  // OPEN EDIT
+  const openEdit = (role) => {
+    const matchedType = ROLE_OPTIONS.includes(role.role)
+      ? role.role
+      : "Other";
 
-    setFormData((previous) => ({
-      ...previous,
-      role: selectedRole,
-    }));
-  };
-
-  // OPEN VIEW / EDIT MODAL
-  const openRoleModal = (role, mode) => {
-    const savedPermissions = Array.isArray(role.permissions)
-      ? role.permissions
-      : [];
-
-    const permissions = Object.fromEntries(
-      MODULES.map(({ key }) => [
-        key,
-        {
-          view:
-            role.role === "Super Admin" ||
-            savedPermissions.includes(`${key}_view`),
-
-          add:
-            role.role === "Super Admin" ||
-            savedPermissions.includes(`${key}_add`),
-
-          edit:
-            role.role === "Super Admin" ||
-            savedPermissions.includes(`${key}_edit`),
-
-          delete:
-            role.role === "Super Admin" ||
-            savedPermissions.includes(`${key}_delete`),
-        },
-      ])
-    );
-
-    setIsEdit(mode === "edit");
-    setIsView(mode === "view");
+    setMode("edit");
     setEditId(role._id);
 
     setFormData({
-      role: role.role,
-      permissions,
+      roleType: matchedType,
+      customRole: matchedType === "Other" ? role.role : "",
+      permissions: getRolePermissions(role),
     });
 
-    setShowModal(true);
+    setShowEditor(true);
   };
 
-  // GET ASSIGNED PERMISSIONS
-  const getAssignedPermissions = (permissions) => {
-    const assigned = [];
-
-    MODULES.forEach((module) => {
-      const modulePermissions = permissions?.[module.key];
-
-      if (!modulePermissions) return;
-
-      const actions = ACTIONS.filter(
-        (action) => modulePermissions[action] === true
-      );
-
-      if (actions.length > 0) {
-        assigned.push({
-          module: module.label,
-          actions,
-        });
-      }
-    });
-
-    return assigned;
+  // OPEN VIEW
+  const openView = (role) => {
+    setSelectedRole(role);
+    setShowViewModal(true);
   };
 
-  // HANDLE CHECKBOX CHANGES
-  const handleChange = (event) => {
-    const { name, checked } = event.target;
+  // CLOSE EDITOR
+  const closeEditor = () => {
+    if (saving) return;
 
-    if (name.startsWith("permissions.")) {
-      const [, module, action] = name.split(".");
+    setShowEditor(false);
+    setEditId(null);
+  };
 
-      setFormData((previous) => ({
-        ...previous,
-        permissions: {
-          ...previous.permissions,
-          [module]: {
-            ...previous.permissions[module],
-            [action]: checked,
-          },
+  // ROLE TYPE CHANGE
+  const handleRoleTypeChange = (event) => {
+    setFormData((previous) => ({
+      ...previous,
+      roleType: event.target.value,
+      customRole: "",
+    }));
+  };
+
+  // PERMISSION CHANGE
+  const handlePermissionChange = (moduleKey, action, checked) => {
+    setFormData((previous) => ({
+      ...previous,
+      permissions: {
+        ...previous.permissions,
+        [moduleKey]: {
+          ...previous.permissions[moduleKey],
+          [action]: checked,
         },
-      }));
-    }
+      },
+    }));
   };
 
-  // CONVERT CHECKBOXES INTO STRING ARRAY
+  // MODULE SELECT ALL
+  const toggleModule = (moduleKey, checked) => {
+    setFormData((previous) => ({
+      ...previous,
+      permissions: {
+        ...previous.permissions,
+        [moduleKey]: Object.fromEntries(
+          ACTIONS.map((action) => [action, checked])
+        ),
+      },
+    }));
+  };
+
+  // CONVERT PERMISSIONS
   const getSelectedPermissions = () => {
-    const selectedPermissions = [];
+    const selected = [];
 
     MODULES.forEach(({ key }) => {
       ACTIONS.forEach((action) => {
         if (formData.permissions[key]?.[action]) {
-          selectedPermissions.push(`${key}_${action}`);
+          selected.push(`${key}_${action}`);
         }
       });
     });
 
-    return selectedPermissions;
+    return selected;
   };
 
-  // SAVE PERMISSIONS
-  const handleSavePermissions = async (event) => {
+  // CREATE / UPDATE
+  const handleSubmit = async (event) => {
     event.preventDefault();
 
-    const roleName = formData.role.trim();
+    const roleName =
+      formData.roleType === "Other"
+        ? formData.customRole.trim()
+        : formData.roleType;
 
-    if (!["Admin", "Student"].includes(roleName)) {
-      toast.error("Please enter Admin or Student");
+    if (!roleName) {
+      toast.error("Please select or enter a role name");
       return;
     }
 
-    const selectedPermissions = getSelectedPermissions();
-
-    if (selectedPermissions.length === 0) {
-      toast.error("Please select at least one permission");
+    if (roleName.toLowerCase() === "super admin") {
+      toast.error("Super Admin is a protected role");
       return;
     }
 
-    const selectedRole = allRoles.find(
-      (role) => role.role === roleName
-    );
+    const permissions = getSelectedPermissions();
 
-    if (!selectedRole) {
-      toast.error(`${roleName} role not found in the database`);
+    if (permissions.length === 0) {
+      toast.error("Please assign at least one permission");
       return;
     }
 
-    setIsSaving(true);
+    setSaving(true);
 
     try {
-      const response = await API.put(
-        `/role/update/${selectedRole._id}`,
-        {
-          permissions: selectedPermissions,
-        }
-      );
+      if (mode === "edit") {
+        await API.put(`/role/update/${editId}`, {
+          permissions,
+          isAssigned: true,
+        });
 
-      toast.success(
-        response.data.message || "Permissions saved successfully"
-      );
+        toast.success("Role permissions updated successfully");
+      } else {
+        await API.post("/role/create", {
+          role: roleName,
+          permissions,
+        });
 
-      setShowModal(false);
-      setEditId(null);
-      setFormData(createEmptyForm());
+        toast.success("Role created successfully");
+      }
 
+      setShowEditor(false);
       await fetchRoles();
     } catch (error) {
       toast.error(
-        error.response?.data?.message ||
-          "Failed to save permissions"
+        error.response?.data?.message || "Something went wrong"
       );
     } finally {
-      setIsSaving(false);
+      setSaving(false);
     }
   };
 
-  // UPDATE PERMISSIONS
-  const handleEditRole = async (event) => {
-    event.preventDefault();
-
-    if (!editId) {
-      toast.error("Role ID not found");
+  // STATUS TOGGLE
+  const handleStatusToggle = async (role) => {
+    if (role.role === "Super Admin") {
       return;
     }
 
-    const selectedPermissions = getSelectedPermissions();
+    const newStatus = !role.isAssigned;
 
-    if (selectedPermissions.length === 0) {
-      toast.error("Please select at least one permission");
-      return;
-    }
-
-    setIsSaving(true);
+    setUpdatingStatus(role._id);
 
     try {
-      const response = await API.put(`/role/update/${editId}`, {
-        permissions: selectedPermissions,
+      await API.put(`/role/update/${role._id}`, {
+        permissions: role.permissions || [],
+        isAssigned: newStatus,
       });
 
       toast.success(
-        response.data.message || "Permissions updated successfully"
+        newStatus
+          ? "Role activated successfully"
+          : "Role deactivated successfully"
       );
-
-      setShowModal(false);
-      setEditId(null);
-      setFormData(createEmptyForm());
 
       await fetchRoles();
     } catch (error) {
       toast.error(
-        error.response?.data?.message ||
-          "Failed to update permissions"
+        error.response?.data?.message || "Unable to update role status"
       );
     } finally {
-      setIsSaving(false);
+      setUpdatingStatus(null);
     }
   };
 
-  // DELETE ROLE
-  const handleDeleteRole = async (role) => {
-    if (role.role === "Super Admin") {
-      toast.error("Super Admin role cannot be deleted");
-      return;
-    }
+  // DELETE / DEACTIVATE
+  const handleDelete = async (role) => {
+    if (role.role === "Super Admin") return;
 
     const confirmDelete = window.confirm(
-      `Are you sure you want to delete ${role.role} role?`
+      `Are you sure you want to deactivate ${role.role}?`
     );
 
     if (!confirmDelete) return;
 
     try {
-      const response = await API.delete(
-        `/role/delete/${role._id}`
-      );
+      await API.delete(`/role/delete/${role._id}`);
 
-      toast.success(
-        response.data.message || "Role deleted successfully"
-      );
-
+      toast.success("Role deactivated successfully");
       await fetchRoles();
     } catch (error) {
       toast.error(
-        error.response?.data?.message || "Failed to delete role"
+        error.response?.data?.message || "Unable to deactivate role"
       );
     }
   };
 
-  // SEARCH ROLES
-  const filteredRoles = roles.filter((role) =>
-    role.role?.toLowerCase().includes(search.toLowerCase())
-  );
+  // VIEW PERMISSION GROUPS
+  const getPermissionGroups = (role) => {
+    if (role.role === "Super Admin") {
+      return MODULES.map((module) => ({
+        label: module.label,
+        permissions: ["View", "Add", "Edit", "Delete"],
+      }));
+    }
+
+    const saved = Array.isArray(role.permissions)
+      ? role.permissions
+      : [];
+
+    return MODULES.map((module) => ({
+      label: module.label,
+      permissions: ACTIONS.filter((action) =>
+        saved.includes(`${module.key}_${action}`)
+      ).map(
+        (action) => action.charAt(0).toUpperCase() + action.slice(1)
+      ),
+    })).filter((item) => item.permissions.length > 0);
+  };
+
+  // STATUS LABEL
+  const getStatus = (role) =>
+    role.role === "Super Admin" || role.isAssigned === true;
 
   return (
-    <div className="mx-auto w-full max-w-[1200px] space-y-5 px-3 sm:px-5">
-      {/* PAGE HEADER */}
-      <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+    <div className="mx-auto w-full max-w-[1400px] space-y-6 px-3 pb-8 sm:px-5">
+
+      {/* HEADER */}
+      <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <div>
-          <h1 className="text-2xl font-bold text-brand-dark">
-            Role Management
+          <div className="mb-1 flex items-center gap-2 text-xs font-semibold uppercase tracking-wider text-brand">
+            <FiShield size={14} />
+            Access Control
+          </div>
+
+          <h1 className="text-2xl font-bold text-brand-dark sm:text-3xl">
+            Roles & Permissions
           </h1>
 
           <p className="mt-1 text-sm text-muted">
-            Manage roles and their permissions.
+            Manage user roles and control access across your counselling organization.
           </p>
         </div>
 
         <button
           type="button"
-          onClick={handleAddRoleModal}
-          className="flex items-center justify-center gap-2 rounded-xl bg-brand px-5 py-3 text-sm font-semibold text-white hover:bg-brand-dark"
+          onClick={openCreate}
+          className="inline-flex items-center justify-center gap-2 rounded-xl bg-brand px-5 py-2.5 text-sm font-semibold text-white shadow-sm transition hover:bg-brand-dark"
         >
           <FiPlus size={18} />
-          Add Role
+          Create Role
         </button>
       </div>
 
-      {/* SEARCH */}
-      <div className="rounded-2xl border border-line bg-white p-3">
-        <div className="relative w-full sm:max-w-md">
-          <FiSearch
-            size={18}
-            className="absolute left-3 top-1/2 -translate-y-1/2 text-muted"
-          />
+      {/* SUMMARY CARDS */}
+      <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
 
-          <input
-            type="text"
-            placeholder="Search role..."
-            value={search}
-            onChange={(event) => setSearch(event.target.value)}
-            className="w-full rounded-xl border border-line bg-surface py-3 pl-10 pr-4 text-sm outline-none focus:border-brand"
-          />
+        <div className="rounded-2xl border border-line bg-white p-5 shadow-sm">
+          <div className="flex items-center justify-between">
+            <span className="text-sm font-medium text-muted">
+              Total Roles
+            </span>
+
+            <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-brand-soft text-brand">
+              <FiShield size={19} />
+            </span>
+          </div>
+
+          <p className="mt-3 text-3xl font-bold text-brand-dark">
+            {loading ? "—" : totalRoles}
+          </p>
+
+          <p className="mt-1 text-xs text-muted">
+            All created roles
+          </p>
+        </div>
+
+        <div className="rounded-2xl border border-line bg-white p-5 shadow-sm">
+          <div className="flex items-center justify-between">
+            <span className="text-sm font-medium text-muted">
+              Active Roles
+            </span>
+
+            <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-green-50 text-green-600">
+              <FiCheckCircle size={19} />
+            </span>
+          </div>
+
+          <p className="mt-3 text-3xl font-bold text-brand-dark">
+            {loading ? "—" : activeRoles}
+          </p>
+
+          <p className="mt-1 text-xs text-muted">
+            Currently available roles
+          </p>
+        </div>
+
+        <div className="rounded-2xl border border-line bg-white p-5 shadow-sm">
+          <div className="flex items-center justify-between">
+            <span className="text-sm font-medium text-muted">
+              Inactive Roles
+            </span>
+
+            <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-amber-50 text-amber-600">
+              <FiClock size={19} />
+            </span>
+          </div>
+
+          <p className="mt-3 text-3xl font-bold text-brand-dark">
+            {loading ? "—" : inactiveRoles}
+          </p>
+
+          <p className="mt-1 text-xs text-muted">
+            Deactivated roles
+          </p>
         </div>
       </div>
 
-      {/* ROLES TABLE */}
-      <div className="overflow-hidden rounded-2xl border border-line bg-white">
-        <div className="overflow-x-auto">
-          <table className="w-full min-w-[650px] text-left">
-            <thead className="border-b border-line bg-surface">
-              <tr>
-                <th className="px-5 py-4 text-xs font-bold uppercase text-muted">
-                  #
-                </th>
+      {/* ROLE DIRECTORY */}
+      <section className="overflow-hidden rounded-2xl border border-line bg-white shadow-sm">
 
-                <th className="px-5 py-4 text-xs font-bold uppercase text-muted">
+        <div className="flex flex-col gap-3 border-b border-line p-4 sm:flex-row sm:items-center sm:justify-between sm:px-5">
+          <div>
+            <h2 className="text-base font-bold text-brand-dark">
+              Role Directory
+            </h2>
+
+            <p className="mt-1 text-xs text-muted">
+              View and manage access levels for your team.
+            </p>
+          </div>
+
+          <select
+            value={roleType}
+            onChange={(event) => setRoleType(event.target.value)}
+            className="rounded-xl border border-line bg-white px-4 py-2.5 text-sm text-brand-dark outline-none focus:border-brand"
+          >
+            <option value="all">All Roles</option>
+            
+
+            {ROLE_OPTIONS.filter((item) => item !== "Other").map(
+              (item) => (
+                <option key={item} value={item}>
+                  {item}
+                </option>
+              )
+            )}
+          </select>
+        </div>
+
+        {/* TABLE */}
+        <div className="overflow-x-auto">
+          <table className="w-full min-w-[750px] text-left">
+            <thead className="bg-surface">
+              <tr>
+                <th className="px-5 py-3 text-[11px] font-bold uppercase tracking-wider text-muted">
                   Role Name
                 </th>
 
-                <th className="px-5 py-4 text-right text-xs font-bold uppercase text-muted">
+                <th className="px-5 py-3 text-[11px] font-bold uppercase tracking-wider text-muted">
+                  Permissions
+                </th>
+
+                <th className="px-5 py-3 text-[11px] font-bold uppercase tracking-wider text-muted">
+                  Current Status
+                </th>
+
+                <th className="px-5 py-3 text-right text-[11px] font-bold uppercase tracking-wider text-muted">
                   Actions
                 </th>
               </tr>
             </thead>
 
             <tbody className="divide-y divide-line">
-              {dataLoading ? (
+              {loading ? (
                 <tr>
-                  <td
-                    colSpan="3"
-                    className="px-5 py-10 text-center text-sm text-muted"
-                  >
+                  <td colSpan="4" className="px-5 py-12 text-center text-sm text-muted">
                     Loading roles...
                   </td>
                 </tr>
               ) : filteredRoles.length === 0 ? (
                 <tr>
-                  <td
-                    colSpan="3"
-                    className="px-5 py-12 text-center text-sm text-muted"
-                  >
-                    No roles found.
+                  <td colSpan="4" className="px-5 py-12 text-center">
+                    <p className="text-sm font-semibold text-brand-dark">
+                      No roles found
+                    </p>
+
+                    <p className="mt-1 text-xs text-muted">
+                      Select another filter or create a new role.
+                    </p>
                   </td>
                 </tr>
               ) : (
-                filteredRoles.map((role, index) => (
-                  <tr
-                    key={role._id}
-                    className="transition hover:bg-surface/70"
-                  >
-                    <td className="px-5 py-4 align-middle">
-                      {index + 1}
-                    </td>
+                filteredRoles.map((role) => (
+                  <tr key={role._id} className="transition hover:bg-surface/60">
 
-                    <td className="px-5 py-4 align-middle">
+                    {/* ROLE NAME */}
+                    <td className="px-5 py-4">
                       <div className="flex items-center gap-3">
-                        <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-brand-soft text-brand">
-                          <FiShield size={18} />
-                        </div>
+                        <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-brand-soft text-brand">
+                          <FiShield size={17} />
+                        </span>
 
                         <div>
-                          <p className="font-semibold text-brand-dark">
+                          <p className="text-sm font-semibold text-brand-dark">
                             {role.role}
                           </p>
+
+                          {role.role === "Super Admin" && (
+                            <span className="mt-0.5 inline-block text-[10px] font-semibold uppercase text-brand">
+                              System Role
+                            </span>
+                          )}
                         </div>
                       </div>
                     </td>
 
-                    {/* ICON ACTIONS */}
-                    <td className="px-5 py-4 align-middle">
+                    {/* PERMISSIONS */}
+                    <td className="px-5 py-4 text-sm text-muted">
+                      {role.role === "Super Admin"
+                        ? "Full Access"
+                        : `${role.permissions?.length || 0} permissions`}
+                    </td>
+
+                    {/* STATUS TOGGLE */}
+                    <td className="px-5 py-4">
+                      <div className="flex items-center gap-3">
+                        <button
+                          type="button"
+                          disabled={
+                            role.role === "Super Admin" ||
+                            updatingStatus === role._id
+                          }
+                          onClick={() => handleStatusToggle(role)}
+                          className={`relative h-6 w-11 rounded-full transition ${
+                            getStatus(role)
+                              ? "bg-green-500"
+                              : "bg-gray-300"
+                          } ${
+                            role.role === "Super Admin"
+                              ? "cursor-not-allowed opacity-70"
+                              : "cursor-pointer"
+                          }`}
+                          aria-label={`Toggle ${role.role} status`}
+                        >
+                          <span
+                            className={`absolute top-1 h-4 w-4 rounded-full bg-white transition ${
+                              getStatus(role) ? "left-6" : "left-1"
+                            }`}
+                          />
+                        </button>
+
+                        <span
+                          className={`text-xs font-semibold ${
+                            getStatus(role)
+                              ? "text-green-600"
+                              : "text-gray-500"
+                          }`}
+                        >
+                          {role.role === "Super Admin"
+                            ? "Full Access"
+                            : getStatus(role)
+                            ? "Active"
+                            : "Inactive"}
+                        </span>
+                      </div>
+                    </td>
+
+                    {/* ACTIONS */}
+                    <td className="px-5 py-4">
                       <div className="flex justify-end gap-2">
-                        {/* VIEW */}
                         <button
                           type="button"
-                          disabled={dataLoading}
-                          onClick={() => openRoleModal(role, "view")}
+                          onClick={() => openView(role)}
                           title="View permissions"
-                          aria-label="View permissions"
-                          className="flex h-9 w-9 items-center justify-center rounded-lg bg-brand text-white hover:bg-brand-dark disabled:opacity-60"
+                          className="flex h-8 w-8 items-center justify-center rounded-lg border border-line text-brand hover:bg-brand-soft"
                         >
-                          <FiEye size={17} />
+                          <FiEye size={15} />
                         </button>
 
-                        {/* EDIT */}
-                        <button
-                          type="button"
-                          disabled={dataLoading}
-                          onClick={() => openRoleModal(role, "edit")}
-                          title="Edit permissions"
-                          aria-label="Edit permissions"
-                          className="flex h-9 w-9 items-center justify-center rounded-lg bg-blue-600 text-white hover:bg-blue-700 disabled:opacity-60"
-                        >
-                          <FiEdit2 size={16} />
-                        </button>
-
-                        {/* DELETE */}
                         {role.role !== "Super Admin" && (
-                          <button
-                            type="button"
-                            disabled={dataLoading}
-                            onClick={() => handleDeleteRole(role)}
-                            title="Delete role"
-                            aria-label="Delete role"
-                            className="flex h-9 w-9 items-center justify-center rounded-lg bg-red-600 text-white hover:bg-red-700 disabled:opacity-60"
-                          >
-                            <FiTrash2 size={16} />
-                          </button>
+                          <>
+                            <button
+                              type="button"
+                              onClick={() => openEdit(role)}
+                              title="Edit role"
+                              className="flex h-8 w-8 items-center justify-center rounded-lg border border-line text-blue-600 hover:bg-blue-50"
+                            >
+                              <FiEdit2 size={15} />
+                            </button>
+
+                            <button
+                              type="button"
+                              onClick={() => handleDelete(role)}
+                              title="Deactivate role"
+                              className="flex h-8 w-8 items-center justify-center rounded-lg border border-line text-red-600 hover:bg-red-50"
+                            >
+                              <FiTrash2 size={15} />
+                            </button>
+                          </>
                         )}
                       </div>
                     </td>
@@ -493,122 +672,108 @@ function RolePermissions() {
             </tbody>
           </table>
         </div>
-      </div>
 
-      {/* ASSIGN / VIEW / EDIT MODAL */}
-      {showModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4">
-          <div className="max-h-[90vh] w-full max-w-4xl overflow-y-auto rounded-2xl bg-white p-5 sm:p-6">
-            {/* MODAL HEADER */}
-            <div className="mb-6 flex items-center justify-between gap-3">
+        <div className="border-t border-line px-5 py-3 text-xs text-muted">
+          Showing {filteredRoles.length} of {totalRoles} roles
+        </div>
+      </section>
+
+      {/* CREATE / EDIT MODAL */}
+      {showEditor && (
+        <div className="fixed inset-0 z-[60] overflow-y-auto bg-black/50 p-3 sm:p-6">
+          <div className="mx-auto my-4 w-full max-w-5xl overflow-hidden rounded-2xl bg-white shadow-2xl">
+
+            <div className="flex items-start justify-between border-b border-line px-5 py-4 sm:px-7">
               <div>
-                <h2 className="text-xl font-bold text-brand-dark">
-                  {isView
-                    ? "View Permissions"
-                    : isEdit
-                      ? "Edit Permissions"
-                      : "Assign Permissions"}
+                <div className="flex items-center gap-2 text-xs font-semibold uppercase tracking-wider text-brand">
+                  <FiShield size={14} />
+                  Access Configuration
+                </div>
+
+                <h2 className="mt-1 text-xl font-bold text-brand-dark">
+                  {mode === "edit" ? "Edit Role" : "Create New Role"}
                 </h2>
 
                 <p className="mt-1 text-sm text-muted">
-                  Select an existing role and assign its permissions.
+                  Configure module-wise access for this role.
                 </p>
               </div>
 
               <button
                 type="button"
-                onClick={() => setShowModal(false)}
-                className="rounded-lg px-3 py-2 text-gray-500 hover:bg-gray-100"
-                aria-label="Close modal"
+                onClick={closeEditor}
+                className="rounded-lg p-2 text-muted hover:bg-surface"
               >
-                ✕
+                <FiX size={20} />
               </button>
             </div>
 
-            <form
-              onSubmit={isEdit ? handleEditRole : handleSavePermissions}
-            >
-              {/* EXISTING ROLE INPUT */}
-              <div className="mb-6">
-                <label
-                  htmlFor="role"
-                  className="mb-2 block text-sm font-semibold text-brand-dark"
-                >
-                  Enter Role
-                </label>
+            <form onSubmit={handleSubmit}>
+              <div className="space-y-6 p-5 sm:p-7">
 
-                <input
-                  type="text"
-                  id="role"
-                  name="role"
-                  value={formData.role}
-                  onChange={handleRoleChange}
-                  placeholder="Type Admin or Student"
-                  disabled={isEdit || isView}
-                  required
-                  className="w-full rounded-xl border border-line bg-white p-3 text-sm outline-none focus:border-brand disabled:bg-gray-100"
-                />
-              </div>
-
-              {/* VIEW PERMISSIONS */}
-              {isView ? (
+                {/* ROLE TYPE */}
                 <div className="rounded-xl border border-line p-4">
-                  <h3 className="mb-4 text-base font-bold text-brand-dark">
-                    Permissions Assigned
-                  </h3>
+                  <label className="mb-2 block text-sm font-semibold text-brand-dark">
+                    Select Role Type
+                  </label>
 
-                  {getAssignedPermissions(formData.permissions).length > 0 ? (
-                    <div className="space-y-3">
-                      {getAssignedPermissions(
-                        formData.permissions
-                      ).map((item) => (
-                        <div
-                          key={item.module}
-                          className="flex flex-col gap-1 rounded-lg bg-surface p-3 sm:flex-row sm:items-center sm:justify-between"
-                        >
-                          <span className="text-sm font-semibold text-brand-dark">
-                            {item.module}
-                          </span>
+                  <select
+                    value={formData.roleType}
+                    onChange={handleRoleTypeChange}
+                    disabled={mode === "edit"}
+                    required
+                    className="w-full rounded-xl border border-line bg-white px-4 py-3 text-sm outline-none focus:border-brand disabled:bg-surface"
+                  >
+                    <option value="">Select a role</option>
 
-                          <span className="text-sm capitalize text-muted">
-                            {item.actions.join(", ")}
-                          </span>
-                        </div>
-                      ))}
-                    </div>
-                  ) : (
-                    <p className="text-sm text-muted">
-                      No permissions assigned to this role.
-                    </p>
+                    {ROLE_OPTIONS.map((option) => (
+                      <option key={option} value={option}>
+                        {option}
+                      </option>
+                    ))}
+                  </select>
+
+                  {formData.roleType === "Other" && (
+                    <input
+                      type="text"
+                      value={formData.customRole}
+                      onChange={(event) =>
+                        setFormData((previous) => ({
+                          ...previous,
+                          customRole: event.target.value,
+                        }))
+                      }
+                      placeholder="Enter custom role name"
+                      required
+                      className="mt-3 w-full rounded-xl border border-line px-4 py-3 text-sm outline-none focus:border-brand"
+                    />
                   )}
                 </div>
-              ) : (
-                <>
-                  {/* PERMISSIONS HEADING */}
+
+                {/* PERMISSIONS */}
+                <div>
                   <div className="mb-3">
                     <h3 className="text-base font-bold text-brand-dark">
-                      Add Role
+                      Module Permissions
                     </h3>
 
-                    <p className="mt-1 text-sm text-muted">
-                      Select which actions this role can perform in each
-                      module.
+                    <p className="mt-1 text-xs text-muted">
+                      Select the actions this role can perform in each module.
                     </p>
                   </div>
 
-                  {/* PERMISSIONS CHECKBOX TABLE */}
                   <div className="overflow-x-auto rounded-xl border border-line">
-                    <table className="w-full min-w-[600px] border-collapse text-left">
+                    <table className="w-full min-w-[650px] text-left">
                       <thead className="bg-surface">
                         <tr>
-                          <th className="p-3 text-sm font-semibold">
+                          <th className="px-4 py-3 text-xs font-bold uppercase tracking-wide text-muted">
                             Module
                           </th>
 
                           {ACTIONS.map((action) => (
                             <th
                               key={action}
-                              className="p-3 text-center text-sm font-semibold capitalize"
+                              className="px-3 py-3 text-center text-xs font-bold uppercase tracking-wide text-muted"
                             >
                               {action}
                             </th>
@@ -617,60 +782,172 @@ function RolePermissions() {
                       </thead>
 
                       <tbody className="divide-y divide-line">
-                        {MODULES.map((module) => (
-                          <tr key={module.key}>
-                            <td className="p-3 text-sm font-medium text-brand-dark">
-                              {module.label}
-                            </td>
+                        {MODULES.map((module) => {
+                          const allChecked = ACTIONS.every(
+                            (action) =>
+                              formData.permissions[module.key]?.[action]
+                          );
 
-                            {ACTIONS.map((action) => (
-                              <td
-                                key={action}
-                                className="p-3 text-center"
-                              >
-                                <input
-                                  type="checkbox"
-                                  name={`permissions.${module.key}.${action}`}
-                                  checked={Boolean(
-                                    formData.permissions[module.key]?.[
-                                      action
-                                    ]
-                                  )}
-                                  onChange={handleChange}
-                                  disabled={!formData.role}
-                                  className="h-4 w-4 cursor-pointer accent-current"
-                                />
+                          return (
+                            <tr key={module.key} className="hover:bg-surface/50">
+                              <td className="px-4 py-3">
+                                <label className="flex cursor-pointer items-center gap-2 text-sm font-medium text-brand-dark">
+                                  <input
+                                    type="checkbox"
+                                    checked={allChecked}
+                                    onChange={(event) =>
+                                      toggleModule(
+                                        module.key,
+                                        event.target.checked
+                                      )
+                                    }
+                                    className="h-4 w-4 accent-current"
+                                  />
+                                  {module.label}
+                                </label>
                               </td>
-                            ))}
-                          </tr>
-                        ))}
+
+                              {ACTIONS.map((action) => (
+                                <td
+                                  key={action}
+                                  className="px-3 py-3 text-center"
+                                >
+                                  <input
+                                    type="checkbox"
+                                    checked={Boolean(
+                                      formData.permissions[module.key]?.[action]
+                                    )}
+                                    onChange={(event) =>
+                                      handlePermissionChange(
+                                        module.key,
+                                        action,
+                                        event.target.checked
+                                      )
+                                    }
+                                    className="h-4 w-4 cursor-pointer accent-current"
+                                  />
+                                </td>
+                              ))}
+                            </tr>
+                          );
+                        })}
                       </tbody>
                     </table>
                   </div>
-                </>
-              )}
+                </div>
+              </div>
 
-              {/* MODAL BUTTONS */}
-              <div className="mt-6 flex flex-wrap justify-end gap-3">
+              {/* FOOTER */}
+              <div className="flex justify-end gap-3 border-t border-line bg-surface/60 px-5 py-4 sm:px-7">
                 <button
                   type="button"
-                  onClick={() => setShowModal(false)}
-                  className="rounded-xl border border-line px-5 py-2.5 text-sm font-semibold text-brand-dark hover:bg-surface"
+                  onClick={closeEditor}
+                  className="rounded-xl border border-line bg-white px-5 py-2.5 text-sm font-semibold text-brand-dark"
                 >
-                  {isView ? "Close" : "Cancel"}
+                  Cancel
                 </button>
 
-                {!isView && (
-                  <button
-                    type="submit"
-                    disabled={isSaving || !formData.role.trim()}
-                    className="rounded-xl bg-brand px-5 py-2.5 text-sm font-semibold text-white hover:bg-brand-dark disabled:cursor-not-allowed disabled:opacity-60"
-                  >
-                    {isSaving ? "Saving..." : "Save Permissions"}
-                  </button>
-                )}
+                <button
+                  type="submit"
+                  disabled={saving}
+                  className="rounded-xl bg-brand px-5 py-2.5 text-sm font-semibold text-white hover:bg-brand-dark disabled:opacity-60"
+                >
+                  {saving
+                    ? "Saving..."
+                    : mode === "edit"
+                    ? "Save Changes"
+                    : "Create Role"}
+                </button>
               </div>
             </form>
+          </div>
+        </div>
+      )}
+
+      {/* VIEW PERMISSIONS MODAL */}
+      {showViewModal && selectedRole && (
+        <div className="fixed inset-0 z-[70] flex items-center justify-center bg-black/50 p-4">
+          <div className="w-full max-w-md overflow-hidden rounded-2xl bg-white shadow-2xl">
+
+            <div className="flex items-center justify-between border-b border-line px-5 py-4">
+              <div>
+                <p className="text-xs font-semibold uppercase tracking-wider text-brand">
+                  Role Details
+                </p>
+
+                <h2 className="mt-1 text-lg font-bold text-brand-dark">
+                  {selectedRole.role}
+                </h2>
+              </div>
+
+              <button
+                type="button"
+                onClick={() => setShowViewModal(false)}
+                className="rounded-lg p-2 text-muted hover:bg-surface"
+              >
+                <FiX size={19} />
+              </button>
+            </div>
+
+            <div className="max-h-[65vh] space-y-4 overflow-y-auto p-5">
+              <div className="rounded-xl bg-brand-soft/50 p-3">
+                <p className="text-xs font-medium text-muted">
+                  Assigned Permissions
+                </p>
+
+                <p className="mt-1 text-lg font-bold text-brand-dark">
+                  {selectedRole.role === "Super Admin"
+                    ? "Full Access"
+                    : `${selectedRole.permissions?.length || 0} Permissions`}
+                </p>
+              </div>
+
+              <div>
+                <h3 className="mb-3 text-sm font-bold text-brand-dark">
+                  Module-wise Access
+                </h3>
+
+                <div className="space-y-2">
+                  {getPermissionGroups(selectedRole).length === 0 ? (
+                    <p className="rounded-xl bg-surface p-3 text-sm text-muted">
+                      No permissions assigned.
+                    </p>
+                  ) : (
+                    getPermissionGroups(selectedRole).map((item) => (
+                      <div
+                        key={item.label}
+                        className="rounded-xl border border-line p-3"
+                      >
+                        <p className="text-sm font-semibold text-brand-dark">
+                          {item.label}
+                        </p>
+
+                        <div className="mt-2 flex flex-wrap gap-2">
+                          {item.permissions.map((permission) => (
+                            <span
+                              key={permission}
+                              className="rounded-full bg-green-50 px-2.5 py-1 text-xs font-semibold text-green-700"
+                            >
+                              {permission}
+                            </span>
+                          ))}
+                        </div>
+                      </div>
+                    ))
+                  )}
+                </div>
+              </div>
+            </div>
+
+            <div className="border-t border-line px-5 py-4 text-right">
+              <button
+                type="button"
+                onClick={() => setShowViewModal(false)}
+                className="rounded-xl bg-brand px-5 py-2.5 text-sm font-semibold text-white hover:bg-brand-dark"
+              >
+                Close
+              </button>
+            </div>
           </div>
         </div>
       )}

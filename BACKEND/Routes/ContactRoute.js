@@ -1,40 +1,29 @@
-
 const express = require("express");
 const router = express.Router();
-const Contact = require("../Models/Contact");
 
-router.post("/", async (req, res) => {
-  try {
-    const { name, email, phone, subject, message } = req.body;
+const {
+  createContact,
+  getContacts,
+} = require("../CONTROLLERS/ContactController");
 
-    if (!name || !email || !subject || !message) {
-      return res.status(400).json({
-        success: false,
-        message: "Please fill all required fields",
-      });
-    }
+const Auth = require("../Auth");
 
-    const newContact = new Contact({
-      name,
-      email,
-      phone,
-      subject,
-      message,
-    });
+// Only Super Admin can view contact inquiries
+router.get("/", Auth, requireSuperAdmin, getContacts);
 
-    await newContact.save();
+// Public contact form submission
+router.post("/", createContact);
 
-    res.status(201).json({
-      success: true,
-      message: "Your message has been submitted successfully!",
-    });
-  } catch (error) {
-    res.status(500).json({
-      success: false,
-      message: "Failed to submit your message",
+// Super Admin access check
+function requireSuperAdmin(req, res, next) {
+  if (req.user?.role !== "Super Admin") {
+    return res.status(403).json({
+      status: false,
+      message: "Only Super Admin can view contact inquiries",
     });
   }
-});
+
+  next();
+}
 
 module.exports = router;
-

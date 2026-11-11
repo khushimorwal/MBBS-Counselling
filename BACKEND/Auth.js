@@ -1,10 +1,10 @@
+
 const jwt = require("jsonwebtoken");
 const User = require("./Models/User");
 const Role = require("./Models/Role");
 
 const Auth = async (req, res, next) => {
   try {
-    // Authorization header check
     const authHeader = req.headers.authorization;
 
     if (!authHeader || !authHeader.startsWith("Bearer ")) {
@@ -14,13 +14,10 @@ const Auth = async (req, res, next) => {
       });
     }
 
-    // Extract token
     const token = authHeader.split(" ")[1];
 
-    // Verify JWT token
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
 
-    // Find user
     const user = await User.findById(decoded.userId).select("-password");
 
     if (!user) {
@@ -40,16 +37,27 @@ const Auth = async (req, res, next) => {
       });
     }
 
-    // Store authenticated user information
+    
+    // Check whether user's role is active
+if (!role.isAssigned && role.role !== "Super Admin") {
+  return res.status(403).json({
+    status: false,
+    message: "Your role is inactive",
+  });
+}
+
+
+    // Store user information
     req.user = {
       id: user._id,
       name: user.name,
       email: user.email,
       role: role.role,
-      permissions: role.permissions || {},
+      permissions: role.permissions || [],
     };
 
-    next();
+    return next();
+
   } catch (error) {
     console.log("Authentication Error:", error.message);
 

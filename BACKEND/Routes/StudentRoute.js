@@ -5,11 +5,13 @@ const Auth = require("../Auth");
 const Permission = require("../Middleware/Permission");
 
 const {
-createStudent,
-getStudents,
-getStudentById,
-updateStudent,
-deleteStudent,
+  createStudent,
+  getStudents,
+  getStudentById,
+  updateStudent,
+  deleteStudent,
+  getRegisteredStudents,
+  getRegisteredStudentProfile
 } = require("../CONTROLLERS/StudentControllers");
 
 // Create student
@@ -24,7 +26,7 @@ createStudent
 router.get(
 "/get-all",
 Auth,
-Permission("students_view"),
+Permission("students.view"),
 getStudents
 );
 
@@ -50,6 +52,41 @@ router.delete(
 Auth,
 Permission("students.delete"),
 deleteStudent
+);
+
+
+router.get(
+  "/registered",
+  Auth,
+  Permission("students.view"),
+  (req, res, next) => {
+    if (req.user.role === "Student") {
+      return res.status(403).json({
+        status: false,
+        message: "Access denied",
+      });
+    }
+
+    next();
+  },
+  getRegisteredStudents
+);
+
+
+router.get(
+  "/registered/:userId/profile",
+  Auth,
+  Permission("students.view"),
+  (req, res, next) => {
+    if (req.user.role === "Student") {
+      return res.status(403).json({
+        status: false,
+        message: "Access denied",
+      });
+    }
+    next();
+  },
+  getRegisteredStudentProfile
 );
 
 module.exports = router;

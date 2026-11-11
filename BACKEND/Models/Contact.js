@@ -1,4 +1,3 @@
-
 const mongoose = require("mongoose");
 
 const contactSchema = new mongoose.Schema(
@@ -8,20 +7,24 @@ const contactSchema = new mongoose.Schema(
       required: true,
       trim: true,
     },
+
     email: {
       type: String,
       required: true,
       trim: true,
     },
+
     phone: {
       type: String,
       trim: true,
     },
+
     subject: {
       type: String,
       required: true,
       trim: true,
     },
+
     message: {
       type: String,
       required: true,
@@ -34,4 +37,3 @@ const contactSchema = new mongoose.Schema(
 );
 
 module.exports = mongoose.model("Contact", contactSchema);
-

@@ -25,6 +25,9 @@ const buttonClass =
   "rounded-xl px-5 py-2.5 text-sm font-semibold transition";
 
 function University() {
+
+  const role = localStorage.getItem("role");
+
   const [universities, setUniversities] = useState([]);
   const [search, setSearch] = useState("");
 
@@ -83,7 +86,7 @@ function University() {
       console.error("Error fetching universities:", err);
       setError(
         err.response?.data?.message ||
-          "Universities load nahi ho paayi."
+        "Universities load nahi ho paayi."
       );
     } finally {
       setLoading(false);
@@ -152,8 +155,8 @@ function University() {
 
       setError(
         err.response?.data?.message ||
-          err.response?.data?.error ||
-          "University save nahi ho paayi."
+        err.response?.data?.error ||
+        "University save nahi ho paayi."
       );
     } finally {
       setSaving(false);
@@ -199,7 +202,7 @@ function University() {
 
       setError(
         err.response?.data?.message ||
-          "University delete nahi ho paayi."
+        "University delete nahi ho paayi."
       );
     }
   };
@@ -218,7 +221,7 @@ function University() {
 
       setError(
         err.response?.data?.message ||
-          "University details load nahi ho paayi."
+        "University details load nahi ho paayi."
       );
     }
   };
@@ -248,8 +251,7 @@ function University() {
       );
 
       alert(
-        `${response.data.message || "Import completed"}\nImported: ${
-          response.data.importedCount ?? "—"
+        `${response.data.message || "Import completed"}\nImported: ${response.data.importedCount ?? "—"
         }`
       );
 
@@ -259,8 +261,8 @@ function University() {
 
       alert(
         err.response?.data?.message ||
-          err.response?.data?.error ||
-          "University bulk import failed."
+        err.response?.data?.error ||
+        "University bulk import failed."
       );
     } finally {
       setIsBulkUploading(false);
@@ -560,23 +562,20 @@ function University() {
                             aria-label={`Toggle ${university.name} status`}
                             title="UI only — not saved to database yet"
                             onClick={() => handleStatusToggle(university)}
-                            className={`relative inline-flex h-6 w-11 shrink-0 items-center rounded-full transition-colors ${
-                              isActive ? "bg-emerald-500" : "bg-gray-300"
-                            }`}
+                            className={`relative inline-flex h-6 w-11 shrink-0 items-center rounded-full transition-colors ${isActive ? "bg-emerald-500" : "bg-gray-300"
+                              }`}
                           >
                             <span
-                              className={`inline-block h-4 w-4 rounded-full bg-white shadow transition-transform ${
-                                isActive ? "translate-x-6" : "translate-x-1"
-                              }`}
+                              className={`inline-block h-4 w-4 rounded-full bg-white shadow transition-transform ${isActive ? "translate-x-6" : "translate-x-1"
+                                }`}
                             />
                           </button>
 
                           <span
-                            className={`text-xs font-semibold ${
-                              isActive
+                            className={`text-xs font-semibold ${isActive
                                 ? "text-emerald-700"
                                 : "text-gray-500"
-                            }`}
+                              }`}
                           >
                             {isActive ? "Active" : "Inactive"}
                           </span>
@@ -635,31 +634,33 @@ function University() {
                           </button>
 
                           {/* DELETE */}
-                          <button
-                            type="button"
-                            onClick={() => handleDelete(university._id)}
-                            title="Delete"
-                            aria-label="Delete university"
-                            className="flex h-9 w-9 items-center justify-center rounded-lg border border-red-200 bg-red-50 text-red-600 transition hover:bg-red-600 hover:text-white"
-                          >
-                            <svg
-                              width="18"
-                              height="18"
-                              viewBox="0 0 24 24"
-                              fill="none"
-                              stroke="currentColor"
-                              strokeWidth="2"
-                              strokeLinecap="round"
-                              strokeLinejoin="round"
-                              aria-hidden="true"
+                          {role === "Super Admin" && (
+                            <button
+                              type="button"
+                              onClick={() => handleDelete(university._id)}
+                              title="Delete"
+                              aria-label="Delete university"
+                              className="flex h-9 w-9 items-center justify-center rounded-lg border border-red-200 bg-red-50 text-red-600 transition hover:bg-red-600 hover:text-white"
                             >
-                              <path d="M3 6h18" />
-                              <path d="M8 6V4h8v2" />
-                              <path d="m19 6-1 14H6L5 6" />
-                              <path d="M10 11v5" />
-                              <path d="M14 11v5" />
-                            </svg>
-                          </button>
+                              <svg
+                                width="18"
+                                height="18"
+                                viewBox="0 0 24 24"
+                                fill="none"
+                                stroke="currentColor"
+                                strokeWidth="2"
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                                aria-hidden="true"
+                              >
+                                <path d="M3 6h18" />
+                                <path d="M8 6V4h8v2" />
+                                <path d="m19 6-1 14H6L5 6" />
+                                <path d="M10 11v5" />
+                                <path d="M14 11v5" />
+                              </svg>
+                            </button>
+                          )}
                         </div>
                       </td>
                     </tr>

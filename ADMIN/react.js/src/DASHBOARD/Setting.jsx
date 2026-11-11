@@ -1,32 +1,97 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { API } from "../api/axios";
+
+const emptyForm = {
+  portalName: "",
+  portalDescription: "",
+  supportEmail: "",
+  supportPhone: "",
+  address: "",
+  websiteUrl: "",
+  academicSession: "",
+  maintenanceMode: false,
+};
 
 function Settings() {
-  const [formData, setFormData] = useState({
-    portalName: "",
-    portalDescription: "",
-    supportEmail: "",
-    supportPhone: "",
-    address: "",
-    websiteUrl: "",
-    academicSession: "",
-    maintenanceMode: false,
-  });
+  const [formData, setFormData] = useState({ ...emptyForm });
+  const [loading, setLoading] = useState(true);
+  const [saving, setSaving] = useState(false);
 
+  // Fetch previously saved settings
+  useEffect(() => {
+    const fetchSettings = async () => {
+      try {
+        const response = await API.get("/setting");
+
+        const savedSettings = response.data.data;
+
+        if (response.data.success && savedSettings) {
+          setFormData({
+            ...emptyForm,
+            ...savedSettings,
+          });
+        }
+      } catch (error) {
+        console.log("Fetch Settings Error:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchSettings();
+  }, []);
+
+  // Handle input changes
   const handleChange = (e) => {
     const { name, value } = e.target;
 
-    setFormData({
-      ...formData,
+    setFormData((prev) => ({
+      ...prev,
       [name]: value,
-    });
+    }));
   };
 
+  // Handle maintenance toggle
   const handleToggle = () => {
-    setFormData({
-      ...formData,
-      maintenanceMode: !formData.maintenanceMode,
-    });
+    setFormData((prev) => ({
+      ...prev,
+      maintenanceMode: !prev.maintenanceMode,
+    }));
   };
+
+  // Save settings
+  const handleSave = async () => {
+    try {
+      setSaving(true);
+
+      const response = await API.put("/setting", formData);
+
+      if (response.data.success) {
+        // Clear all inputs immediately after successful save
+        setFormData({ ...emptyForm });
+
+        alert("Settings saved successfully!");
+      } else {
+        alert(response.data.message || "Failed to save settings");
+      }
+    } catch (error) {
+      console.log("Save Settings Error:", error);
+
+      alert(
+        error.response?.data?.message || "Failed to save settings"
+      );
+    } finally {
+      setSaving(false);
+    }
+  };
+
+  if (loading) {
+    return (
+      <div className="flex min-h-[300px] items-center justify-center">
+        <p className="text-gray-500">Loading settings...</p>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-gray-50 p-6">
@@ -202,12 +267,15 @@ function Settings() {
           </div>
         </div>
 
+        {/* Save Button */}
         <div className="mt-6 flex justify-end">
           <button
             type="button"
-            className="rounded-lg bg-green-600 px-6 py-2.5 font-medium text-white hover:bg-green-700"
+            onClick={handleSave}
+            disabled={saving}
+            className="rounded-lg bg-green-600 px-6 py-2.5 font-medium text-white transition hover:bg-green-700 disabled:cursor-not-allowed disabled:opacity-60"
           >
-            Save Changes
+            {saving ? "Saving..." : "Save Changes"}
           </button>
         </div>
       </div>
@@ -216,4 +284,3 @@ function Settings() {
 }
 
 export default Settings;
-

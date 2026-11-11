@@ -1,3 +1,7 @@
+import { useState } from "react";
+
+
+
 const icon = (path) => (
 <svg
 width="20"
@@ -19,6 +23,7 @@ aria-hidden="true"
 );
 
 function Sidebar({ activePage, setActivePage, user }) {
+  const [counsellingOpen, setCounsellingOpen] = useState(false);
 
 const menu = [
 {
@@ -105,14 +110,51 @@ icon: icon(
 </>
 ),
 },
+
 {
-name: "Section",
-permission: "sections",
-icon: icon(
-<> <rect x="4" y="4" width="16" height="16" rx="2" /> <path d="M4 10h16M10 10v10" />
-</>
-),
+  name: "Contact Inquiries",
+  permission: null,
+  icon: icon(
+    <>
+      <path d="M4 5h16v14H4z" />
+      <path d="m4 7 8 6 8-6" />
+    </>
+  ),
 },
+
+{
+  name: "College Applications",
+  permission: "applications",
+  icon: icon(
+    <>
+      <rect x="4" y="3" width="16" height="18" rx="2" />
+      <path d="M8 8h8M8 12h8M8 16h5" />
+    </>
+  ),
+},
+
+{
+  name: "Document Verification",
+  permission: "documents",
+  icon: icon(
+    <>
+      <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
+      <path d="M14 2v6h6M8 13h8M8 17h8" />
+    </>
+  ),
+},
+
+
+];
+
+const counsellingMenu = [
+  "Counselling Dashboard",
+  "Counselling Requests",
+  "Counsellor Assignments",
+  "Appointments",
+  "Counselling Sessions",
+  "Counselling Notes",
+  "Follow-ups",
 ];
 
 // Super Admin can see everything
@@ -124,6 +166,7 @@ const adminMenu = [
   "Students",
   "Colleges",
   "University",
+  "College Applications",
 ];
 
 // User permissions
@@ -163,6 +206,11 @@ const visibleMenu = menu.filter((item) => {
 
   return hasPermission(item.permission);
 });
+
+const showCounsellingMenu =
+  isSuperAdmin ||
+  isAdmin ||
+  user?.role === "Counsellor";
 
 return ( <aside className="flex h-full w-64 shrink-0 flex-col overflow-hidden bg-brand-dark text-white">
 
@@ -212,6 +260,38 @@ return ( <aside className="flex h-full w-64 shrink-0 flex-col overflow-hidden bg
       </button>
 
     ))}
+
+    {showCounsellingMenu && (
+  <div className="pt-2">
+    <button
+      type="button"
+      onClick={() => setCounsellingOpen(!counsellingOpen)}
+      className="flex min-h-10 w-full items-center justify-between rounded-xl px-3 py-2.5 text-left text-sm font-semibold text-white/75 transition hover:bg-white/10 hover:text-white"
+    >
+      <span>Counselling Management</span>
+      <span>{counsellingOpen ? "−" : "+"}</span>
+    </button>
+
+    {counsellingOpen && (
+      <div className="mt-1 space-y-1 pl-3">
+        {counsellingMenu.map((name) => (
+          <button
+            key={name}
+            type="button"
+            onClick={() => setActivePage(name)}
+            className={`flex min-h-9 w-full items-center rounded-lg px-3 py-2 text-left text-sm transition ${
+              activePage === name
+                ? "bg-accent text-white"
+                : "text-white/70 hover:bg-white/10 hover:text-white"
+            }`}
+          >
+            {name}
+          </button>
+        ))}
+      </div>
+    )}
+  </div>
+)}
 
   </nav>
 

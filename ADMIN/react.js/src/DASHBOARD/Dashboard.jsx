@@ -14,7 +14,16 @@ import Course from "./Course";
 import Specialization from "./Specialization";
 import EmailTemplate from "./EmailTemplate";
 import Setting from "./Setting";
-
+import ContactInquiries from "./ContactInquiries";
+import CollegeApplication from "./CollegeApplication";
+import DocumentVerification from "./DocumentVerification";
+import CounsellingDashboard from "./COUNSELLING/CounsellingDashboard";
+import CounsellingRequests from "./COUNSELLING/CounsellingRequests";
+import CounsellorAssignments from "./COUNSELLING/CounsellorAssignments";
+import Appointments from "./COUNSELLING/Appointments";
+import CounsellingSessions from "./COUNSELLING/CounsellingSessions";
+import CounsellingNotes from "./COUNSELLING/CounsellingNotes";
+import FollowUps from "./COUNSELLING/FollowUps";
 
 const iconProps = {
   width: 25,
@@ -258,6 +267,36 @@ function Dashboard() {
     }
 
 
+
+  if (activePage === "Counselling Dashboard") {
+  return <CounsellingDashboard />;
+}
+
+if (activePage === "Counselling Requests") {
+  return <CounsellingRequests />;
+}
+
+if (activePage === "Counsellor Assignments") {
+  return <CounsellorAssignments />;
+}
+
+if (activePage === "Appointments") {
+  return <Appointments />;
+}
+
+if (activePage === "Counselling Sessions") {
+  return <CounsellingSessions />;
+}
+
+if (activePage === "Counselling Notes") {
+  return <CounsellingNotes />;
+}
+
+if (activePage === "Follow-ups") {
+  return <FollowUps />;
+}
+
+
 if (activePage === "Students") return <Student />;
 if (activePage === "Colleges") return <Colleges />;
 if (activePage === "University") return <University />;
@@ -268,6 +307,13 @@ if (activePage === "Course") return <Course />;
 if (activePage === "Specialization") return <Specialization />;
 if (activePage === "Email Template") return <EmailTemplate />;
 if (activePage === "Settings") return <Setting />;
+if (activePage === "Contact Inquiries") return <ContactInquiries />;
+if (activePage === "College Applications") {
+  return <CollegeApplication />;
+}
+if (activePage === "Document Verification") {
+  return <DocumentVerification />;
+}
 
 
     return (

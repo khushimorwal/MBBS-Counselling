@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import { API } from "../api/axios.js";
 
 function College() {
+  const role = localStorage.getItem("role");
   const [colleges, setColleges] = useState([]);
   const [showForm, setShowForm] = useState(false);
   const [viewCollege, setViewCollege] = useState(null);
@@ -77,9 +78,8 @@ function College() {
 
       const result = response.data;
 
-      let message = `${
-        result.importedCount || 0
-      } colleges imported successfully.`;
+      let message = `${result.importedCount || 0
+        } colleges imported successfully.`;
 
       if (result.errors?.length > 0) {
         message +=
@@ -88,11 +88,10 @@ function College() {
             .map((error) =>
               typeof error === "string"
                 ? error
-                : `Row ${error.row || ""}: ${
-                    error.message ||
-                    error.error ||
-                    "Invalid data"
-                  }`
+                : `Row ${error.row || ""}: ${error.message ||
+                error.error ||
+                "Invalid data"
+                }`
             )
             .join("\n");
       }
@@ -105,7 +104,7 @@ function College() {
 
       alert(
         error.response?.data?.message ||
-          "Failed to import colleges."
+        "Failed to import colleges."
       );
     } finally {
       setIsImporting(false);
@@ -218,8 +217,8 @@ function College() {
 
         facilities: formData.facilities
           ? formData.facilities
-              .split(",")
-              .map((item) => item.trim())
+            .split(",")
+            .map((item) => item.trim())
           : [],
 
         isVerified: formData.isVerified,
@@ -245,7 +244,7 @@ function College() {
 
       alert(
         error.response?.data?.message ||
-          "Failed to save college."
+        "Failed to save college."
       );
     }
   };
@@ -358,7 +357,7 @@ function College() {
 
       alert(
         error.response?.data?.message ||
-          "Failed to delete college."
+        "Failed to delete college."
       );
     }
   };
@@ -386,7 +385,7 @@ function College() {
 
       alert(
         error.response?.data?.message ||
-          "Status update nahi hua."
+        "Status update nahi hua."
       );
     }
   };
@@ -573,18 +572,16 @@ function College() {
                         onClick={() =>
                           handleStatusToggle(college)
                         }
-                        className={`relative h-7 w-12 rounded-full transition ${
-                          college.status === "active"
+                        className={`relative h-7 w-12 rounded-full transition ${college.status === "active"
                             ? "bg-brand"
                             : "bg-gray-300"
-                        }`}
+                          }`}
                       >
                         <span
-                          className={`absolute top-1 h-5 w-5 rounded-full bg-white transition ${
-                            college.status === "active"
+                          className={`absolute top-1 h-5 w-5 rounded-full bg-white transition ${college.status === "active"
                               ? "left-6"
                               : "left-1"
-                          }`}
+                            }`}
                         />
 
                         <span className="sr-only">
@@ -656,29 +653,28 @@ function College() {
                       </button>
 
                       {/* DELETE */}
-                      <button
-                        type="button"
-                        title="Delete College"
-                        aria-label="Delete College"
-                        onClick={() =>
-                          handleDelete(college._id)
-                        }
-                        className={`${actionButton} border-red-200 bg-red-50 text-red-600 hover:bg-red-600 hover:text-white`}
-                      >
-                        <svg
-                          width="17"
-                          height="17"
-                          viewBox="0 0 24 24"
-                          fill="none"
-                          stroke="currentColor"
-                          strokeWidth="1.8"
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
+                      {role === "Super Admin" && (
+                        <button
+                          type="button"
+                          title="Delete College"
+                          aria-label="Delete College"
+                          onClick={() => handleDelete(college._id)}
+                          className={`${actionButton} border-red-200 bg-red-50 text-red-600 hover:bg-red-600 hover:text-white`}
                         >
-                          <path d="M3 6h18M8 6V4h8v2m3 0-1 14H6L5 6m4 4v6m6-6v6" />
-                        </svg>
-                      </button>
-
+                          <svg
+                            width="17"
+                            height="17"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke="currentColor"
+                            strokeWidth="1.8"
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                          >
+                            <path d="M3 6h18M8 6V4h8v2m3 0-1 14H6L5 6m4 4v6m6-6v6" />
+                          </svg>
+                        </button>
+                      )}
                     </div>
                   </td>
                 </tr>

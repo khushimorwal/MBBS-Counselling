@@ -1,16 +1,12 @@
 const mongoose = require("mongoose");
 const Role = require("../Models/Role");
 
-const allowedRoles = ["Admin", "Student"];
-
 // Convert permissions into a string array
 const convertPermissions = (permissions) => {
   if (Array.isArray(permissions)) {
     return [
       ...new Set(
-        permissions.filter(
-          (permission) => typeof permission === "string"
-        )
+        permissions.filter((permission) => typeof permission === "string"),
       ),
     ];
   }
@@ -39,15 +35,15 @@ const convertPermissions = (permissions) => {
   return [...new Set(permissionArray)];
 };
 
-// SAVE PERMISSIONS TO AN EXISTING ROLE
+// CREATE ROLE
 const createRole = async (req, res) => {
   try {
-    const { role, permissions } = req.body;
+    const { role, permissions } = req.body || {};
 
-    if (!allowedRoles.includes(role)) {
+    if (!role || typeof role !== "string" || !role.trim()) {
       return res.status(400).json({
         status: false,
-        message: "Only Admin or Student role is allowed",
+        message: "Role name is required",
       });
     }
 
@@ -58,57 +54,86 @@ const createRole = async (req, res) => {
       });
     }
 
-    const existingRole = await Role.findOne({ role });
+    const roleName = role.trim();
 
-    if (!existingRole) {
-      return res.status(404).json({
+    if (roleName.toLowerCase() === "super admin") {
+      return res.status(400).json({
         status: false,
-        message: `${role} role was not found in the database`,
+        message: "Super Admin role already exists",
       });
     }
+
+    const existingRoles = await Role.find({});
+
+    const existingRole = existingRoles.find(
+      (item) => item.role.toLowerCase() === roleName.toLowerCase(),
+    );
 
     const selectedPermissions = convertPermissions(permissions);
 
-    if (selectedPermissions.length === 0) {
-      return res.status(400).json({
-        status: false,
-        message: "Select at least one permission",
+    if (existingRole) {
+      if (existingRole.isAssigned) {
+        return res.status(400).json({
+          status: false,
+          message: "This role already exists",
+        });
+      }
+
+      existingRole.permissions = selectedPermissions;
+
+      if (typeof req.body.isAssigned === "boolean") {
+        existingRole.isAssigned = req.body.isAssigned;
+      } else {
+        existingRole.isAssigned = true;
+      }
+
+      await existingRole.save();
+
+      return res.status(200).json({
+        status: true,
+        message: "Role activated successfully",
+        role: existingRole,
       });
     }
 
-    existingRole.permissions = selectedPermissions;
-    existingRole.isAssigned = true;
+    const newRole = new Role({
+      role: roleName,
+      permissions: selectedPermissions,
+      isAssigned: true,
+    });
 
-    await existingRole.save();
+    await newRole.save();
 
-    return res.status(200).json({
+    return res.status(201).json({
       status: true,
-      message: "Permissions saved successfully",
-      role: existingRole,
+      message: "Role created successfully",
+      role: newRole,
     });
   } catch (error) {
+    console.error("Create Role Error:", error);
+
     return res.status(500).json({
       status: false,
-      message: error.message,
+      message: "Server error while creating role",
     });
   }
 };
 
-// GET ALL THREE EXISTING ROLES
+// GET ALL ROLES
 const getRole = async (req, res) => {
   try {
-    const roles = await Role.find({
-      role: { $in: ["Super Admin", "Admin", "Student"] },
-    }).sort({ role: 1 });
+    const roles = await Role.find({}).sort({ role: 1 });
 
     return res.status(200).json({
       status: true,
       role: roles,
     });
   } catch (error) {
+    console.error("Get Role Error:", error);
+
     return res.status(500).json({
       status: false,
-      message: error.message,
+      message: "Server error while fetching roles",
     });
   }
 };
@@ -139,18 +164,20 @@ const getRoleById = async (req, res) => {
       role,
     });
   } catch (error) {
+    console.error("Get Role By ID Error:", error);
+
     return res.status(500).json({
       status: false,
-      message: error.message,
+      message: "Server error while fetching role",
     });
   }
 };
 
-// UPDATE PERMISSIONS FOR AN EXISTING ROLE
+// UPDATE ROLE PERMISSIONS
 const updateRole = async (req, res) => {
   try {
     const { id } = req.params;
-    const { permissions } = req.body;
+    const { permissions, isAssigned } = req.body || {};
 
     if (!mongoose.isValidObjectId(id)) {
       return res.status(400).json({
@@ -168,53 +195,83 @@ const updateRole = async (req, res) => {
       });
     }
 
-    if (!allowedRoles.includes(existingRole.role)) {
+    if (existingRole.role === "Super Admin") {
       return res.status(403).json({
         status: false,
-        message: "Only Admin and Student permissions can be updated here",
+        message: "Super Admin cannot be modified",
       });
     }
 
-    if (permissions === undefined || permissions === null) {
-      return res.status(400).json({
-        status: false,
-        message: "Permissions are required",
-      });
+    // Update permissions only when provided
+    if (permissions !== undefined) {
+      existingRole.permissions = convertPermissions(permissions);
     }
 
-    const selectedPermissions = convertPermissions(permissions);
-
-    if (selectedPermissions.length === 0) {
-      return res.status(400).json({
-        status: false,
-        message: "Select at least one permission",
-      });
+    // Update status only when provided
+    if (typeof isAssigned === "boolean") {
+      existingRole.isAssigned = isAssigned;
     }
-
-    existingRole.permissions = selectedPermissions;
-    existingRole.isAssigned = true;
 
     await existingRole.save();
 
     return res.status(200).json({
       status: true,
-      message: "Permissions saved successfully",
+      message: "Role updated successfully",
       role: existingRole,
     });
   } catch (error) {
+    console.error("Update Role Error:", error);
+
     return res.status(500).json({
       status: false,
-      message: error.message,
+      message: "Server error while updating role",
     });
   }
 };
 
-// ROLES CANNOT BE DELETED HERE
+// SOFT DELETE ROLE
 const deleteRole = async (req, res) => {
-  return res.status(403).json({
-    status: false,
-    message: "Admin and Student roles cannot be deleted",
-  });
+  try {
+    const { id } = req.params;
+
+    if (!mongoose.isValidObjectId(id)) {
+      return res.status(400).json({
+        status: false,
+        message: "Invalid role ID",
+      });
+    }
+
+    const role = await Role.findById(id);
+
+    if (!role) {
+      return res.status(404).json({
+        status: false,
+        message: "Role not found",
+      });
+    }
+
+    if (role.role === "Super Admin") {
+      return res.status(403).json({
+        status: false,
+        message: "Super Admin cannot be removed",
+      });
+    }
+
+    role.isAssigned = false;
+    await role.save();
+
+    return res.status(200).json({
+      status: true,
+      message: "Role removed successfully",
+    });
+  } catch (error) {
+    console.error("Delete Role Error:", error);
+
+    return res.status(500).json({
+      status: false,
+      message: "Server error while removing role",
+    });
+  }
 };
 
 module.exports = {
@@ -224,4 +281,3 @@ module.exports = {
   updateRole,
   deleteRole,
 };
-

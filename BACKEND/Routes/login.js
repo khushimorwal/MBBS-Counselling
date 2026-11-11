@@ -18,7 +18,7 @@ const transporter = nodemailer.createTransport({
   service: "gmail",
   auth: {
     user: process.env.EMAIL_USER,
-    pass: process.env.EMAIL_APP_PASSWORD,
+    pass: process.env.EMAIL_PASS,
   },
 });
 
@@ -62,10 +62,7 @@ router.post("/login", async (req, res) => {
       });
     }
 
-    const matchPassword = await bcrypt.compare(
-      password,
-      user.password
-    );
+    const matchPassword = await bcrypt.compare(password, user.password);
 
     if (!matchPassword) {
       return res.status(401).json({
@@ -101,7 +98,7 @@ router.post("/login", async (req, res) => {
         role: role.role,
       },
       process.env.JWT_SECRET,
-      { expiresIn: "1d" }
+      { expiresIn: "1d" },
     );
 
     return res.status(200).json({
@@ -117,8 +114,7 @@ router.post("/login", async (req, res) => {
         permissions: role.permissions || {},
       },
     });
-  } 
-  catch (error) {
+  } catch (error) {
     console.error("Login error:", error);
 
     return res.status(500).json({
@@ -240,10 +236,7 @@ router.post("/forgotpassword", async (req, res) => {
       });
     }
 
-    if (
-      !process.env.EMAIL_USER ||
-      !process.env.EMAIL_APP_PASSWORD
-    ) {
+    if (!process.env.EMAIL_USER || !process.env.EMAIL_PASS) {
       console.error("Email credentials are missing in .env");
 
       return res.status(500).json({
@@ -327,8 +320,7 @@ router.post("/verifyforgototp", async (req, res) => {
       });
     }
 
-    const difference =
-      Date.now() - new Date(verification.createdAt).getTime();
+    const difference = Date.now() - new Date(verification.createdAt).getTime();
 
     if (
       !Number.isFinite(difference) ||
@@ -396,8 +388,7 @@ router.post("/resetpassword", async (req, res) => {
       });
     }
 
-    const difference =
-      Date.now() - new Date(verification.createdAt).getTime();
+    const difference = Date.now() - new Date(verification.createdAt).getTime();
 
     if (
       !Number.isFinite(difference) ||
@@ -419,7 +410,7 @@ router.post("/resetpassword", async (req, res) => {
     const user = await User.findOneAndUpdate(
       { email: normalizedEmail },
       { $set: { password: hashedPassword } },
-      { new: true, runValidators: true }
+      { new: true, runValidators: true },
     );
 
     if (!user) {

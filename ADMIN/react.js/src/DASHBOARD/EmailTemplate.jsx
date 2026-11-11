@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import axios from "axios";
+import { API } from "../api/axios";
 import { Eye, Pencil, Trash2 } from "lucide-react";
 import { CKEditor } from "@ckeditor/ckeditor5-react";
 import {
@@ -15,7 +15,7 @@ import {
 } from "ckeditor5";
 import "ckeditor5/ckeditor5.css";
 
-const API_URL = "http://localhost:3000/email-template";
+const API_URL = "/email-template";
 
 export default function EmailTemplate() {
   const [templates, setTemplates] = useState([]);
@@ -36,7 +36,7 @@ export default function EmailTemplate() {
     try {
       setLoading(true);
 
-      const response = await axios.get(API_URL);
+      const response = await API.get(API_URL);
 
       const data = Array.isArray(response.data)
         ? response.data
@@ -85,10 +85,10 @@ export default function EmailTemplate() {
 
     try {
       if (editId) {
-        await axios.put(`${API_URL}/${editId}`, formData);
+        await API.put(`${API_URL}/${editId}`, formData);
         alert("Email template updated successfully!");
       } else {
-        await axios.post(API_URL, formData);
+        await API.post(API_URL, formData);
         alert("Email template added successfully!");
       }
 
@@ -123,7 +123,7 @@ export default function EmailTemplate() {
     if (!confirmDelete) return;
 
     try {
-      await axios.delete(`${API_URL}/${id}`);
+      await API.delete(`${API_URL}/${id}`);
 
       alert("Email template deleted successfully!");
 

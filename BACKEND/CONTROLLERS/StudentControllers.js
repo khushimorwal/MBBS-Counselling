@@ -1,4 +1,8 @@
 const Student = require("../Models/StudentSchma");
+const User = require("../Models/User");
+const Role = require("../Models/Role");
+const StudentProfile = require("../Models/StudentProfile");
+const mongoose = require("mongoose");
 
 const createStudent = async (req, res) => {
   try {
@@ -66,7 +70,10 @@ const getStudents = async (req, res) => {
 // VIEW ONE STUDENT
 const getStudentById = async (req, res) => {
   try {
-    const student = await Student.findById(req.params.id).populate("role");
+    console.log("UPDATED getStudentById RUNNING");
+    
+    const student = await Student.findById(req.params.id);
+    
 
     if (!student) {
       return res.status(404).send({
@@ -172,12 +179,109 @@ const deleteStudent = async (req, res) => {
   }
 };
 
+const getRegisteredStudents = async (req, res) => {
+  try {
+    // Find Student role
+    const studentRole = await Role.findOne({ role: "Student" });
+
+    if (!studentRole) {
+      return res.status(404).json({
+        status: false,
+        message: "Student role not found",
+      });
+    }
+
+    // Fetch all registered student accounts
+    const students = await User.find({
+      roleId: studentRole._id,
+    })
+      .select("-password -otp -otpExpiresAt")
+      .sort({ createdAt: -1 });
+
+    return res.status(200).json({
+      status: true,
+      students,
+    });
+  } catch (error) {
+    console.error("Get Registered Students Error:", error);
+
+    return res.status(500).json({
+      status: false,
+      message: "Failed to fetch registered students",
+    });
+  }
+};
+
+const getRegisteredStudentProfile = async (req, res) => {
+  try {
+    const { userId } = req.params;
+
+    // Check whether User ID is valid
+    if (!mongoose.Types.ObjectId.isValid(userId)) {
+      return res.status(400).json({
+        status: false,
+        message: "Invalid user ID",
+      });
+    }
+
+    // Find registered user
+    const user = await User.findById(userId).select("-password -otp -otpExpiresAt");
+
+    if (!user) {
+      return res.status(404).json({
+        status: false,
+        message: "Student not found",
+      });
+    }
+
+    // Verify that the account belongs to Student role
+    const studentRole = await Role.findOne({ role: "Student" });
+
+    if (!studentRole || user.roleId.toString() !== studentRole._id.toString()) {
+      return res.status(403).json({
+        status: false,
+        message: "This account is not a student",
+      });
+    }
+
+    // Find complete profile linked with this User
+    const profile = await StudentProfile.findOne({ user: userId })
+      .populate("entranceExams.exam")
+      .populate("preferredCourses");
+
+    // Profile may not have been created yet
+    if (!profile) {
+      return res.status(200).json({
+        status: true,
+        profileCompleted: false,
+        profile: null,
+        message: "Student profile not completed yet",
+      });
+    }
+
+    return res.status(200).json({
+      status: true,
+      profileCompleted: true,
+      profile,
+    });
+
+  } catch (error) {
+    console.error("Get Registered Student Profile Error:", error);
+
+    return res.status(500).json({
+      status: false,
+      message: "Failed to fetch student profile",
+    });
+  }
+};
 
 
 module.exports = {
   createStudent,
   getStudents,
-   getStudentById,
+  getStudentById,
   updateStudent,
   deleteStudent,
+  getRegisteredStudents,
+  getRegisteredStudentProfile
 };

@@ -1,10 +1,9 @@
 const bcrypt = require("bcrypt");
+const jwt = require("jsonwebtoken");
+
 const Role = require("../Models/Role");
 const User = require("../Models/User");
 const Students = require("../Models/StudentSchma");
-const jwt = require("jsonwebtoken");
-
-
 
 // ================= CREATE USER API =================
 const createUser = async (req, res) => {
@@ -16,15 +15,13 @@ const createUser = async (req, res) => {
       typeof name !== "string" ||
       typeof email !== "string" ||
       typeof password !== "string" ||
-      typeof role !== "string" ||
       !name.trim() ||
       !email.trim() ||
-      !password ||
-      !role.trim()
+      !password
     ) {
       return res.status(400).json({
         status: false,
-        message: "Name, email, password and role are required",
+        message: "Name, email and password are required",
       });
     }
 
@@ -49,14 +46,53 @@ const createUser = async (req, res) => {
       });
     }
 
-    // Validate role
-    const allowedRoles = ["Student", "Admin", "Super Admin"];
+    // Identify public signup or protected user creation
+    const isAdminRoute = Boolean(req.user);
 
-    if (!allowedRoles.includes(role)) {
-      return res.status(400).json({
-        status: false,
-        message: "Invalid role",
-      });
+    let selectedRoleName;
+
+    if (!isAdminRoute) {
+      // Public signup: Student only
+      selectedRoleName = "Student";
+    } else {
+      const currentRole = req.user.role;
+
+      if (!["Admin", "Super Admin"].includes(currentRole)) {
+        return res.status(403).json({
+          status: false,
+          message: "You are not allowed to create users",
+        });
+      }
+
+      if (typeof role !== "string" || !role.trim()) {
+        return res.status(400).json({
+          status: false,
+          message: "Role is required",
+        });
+      }
+
+      selectedRoleName = role.trim();
+
+      // Admin cannot create another Admin or Super Admin
+      if (currentRole === "Admin") {
+        if (!["Student", "Counsellor"].includes(selectedRoleName)) {
+          return res.status(403).json({
+            status: false,
+            message: "Admin can create only Student or Counsellor",
+          });
+        }
+      }
+
+      // Super Admin can create these roles
+      if (
+        currentRole === "Super Admin" &&
+        !["Student", "Admin", "Counsellor"].includes(selectedRoleName)
+      ) {
+        return res.status(400).json({
+          status: false,
+          message: "Invalid role",
+        });
+      }
     }
 
     // Check existing user
@@ -72,19 +108,21 @@ const createUser = async (req, res) => {
     }
 
     // Find role in Role collection
-    const selectedRole = await Role.findOne({ role });
+    const selectedRole = await Role.findOne({
+      role: selectedRoleName,
+    });
 
     if (!selectedRole) {
       return res.status(404).json({
         status: false,
-        message: `${role} role not found`,
+        message: `${selectedRoleName} role not found. Please create the role first.`,
       });
     }
 
     // Hash password
     const hashedPassword = await bcrypt.hash(password, 10);
 
-    // Create user using the active schema fields
+    // Create user
     const newUser = await User.create({
       name: normalizedName,
       email: normalizedEmail,
@@ -94,12 +132,12 @@ const createUser = async (req, res) => {
 
     return res.status(201).json({
       status: true,
-      message: `${role} user created successfully`,
+      message: `${selectedRoleName} user created successfully`,
       user: {
         id: newUser._id,
         name: newUser.name,
         email: newUser.email,
-        role: role,
+        role: selectedRoleName,
       },
     });
   } catch (error) {
@@ -165,13 +203,11 @@ const verifyEmail = async (req, res) => {
   }
 };
 
-
- // ================= LOGIN USER API =================
+// ================= LOGIN USER API =================
 const loginUser = async (req, res) => {
   try {
     const { email, password } = req.body || {};
 
-    // Validate required fields
     if (
       typeof email !== "string" ||
       typeof password !== "string" ||
@@ -186,21 +222,19 @@ const loginUser = async (req, res) => {
 
     const normalizedEmail = email.trim().toLowerCase();
 
-    // Find user by email
+    // Find user and populate role
     const user = await User.findOne({
       email: normalizedEmail,
     }).populate("roleId");
 
-    if (!user) {
+    if (!user || !user.roleId) {
       return res.status(401).json({
         status: false,
         message: "Invalid email or password",
       });
     }
 
-
-
-    // Compare entered password with hashed password
+    // Compare password
     const isPasswordValid = await bcrypt.compare(
       password,
       user.password
@@ -213,8 +247,16 @@ const loginUser = async (req, res) => {
       });
     }
 
-    
-    // Generate JWT token after successful login
+    if (!process.env.JWT_SECRET) {
+      console.error("JWT_SECRET is missing in environment variables");
+
+      return res.status(500).json({
+        status: false,
+        message: "Authentication configuration error",
+      });
+    }
+
+    // Generate JWT token
     const token = jwt.sign(
       {
         userId: user._id.toString(),
@@ -227,7 +269,6 @@ const loginUser = async (req, res) => {
       }
     );
 
-
     return res.status(200).json({
       status: true,
       message: "Login successful",
@@ -236,12 +277,11 @@ const loginUser = async (req, res) => {
         id: user._id,
         name: user.name,
         email: user.email,
-        role: user.roleId?.role,
+        role: user.roleId.role,
       },
     });
-  } 
-  catch (error) {
-  console.error("Login Error:", error);
+  } catch (error) {
+    console.error("Login Error:", error);
 
     return res.status(500).json({
       status: false,
@@ -251,8 +291,47 @@ const loginUser = async (req, res) => {
 };
 
 
+// ================= GET ALL COUNSELLORS API =================
+const getAllCounsellors = async (req, res) => {
+  try {
+    // Find Counsellor role
+    const counsellorRole = await Role.findOne({
+      role: "Counsellor",
+    });
+
+    if (!counsellorRole) {
+      return res.status(404).json({
+        status: false,
+        message: "Counsellor role not found",
+      });
+    }
+
+    // Find users having Counsellor role
+    const counsellors = await User.find({
+      roleId: counsellorRole._id,
+    })
+      .select("_id name email")
+      .sort({ name: 1 });
+
+    return res.status(200).json({
+      status: true,
+      message: "Counsellors fetched successfully",
+      data: counsellors,
+    });
+
+  } catch (error) {
+    console.error("Get Counsellors Error:", error);
+
+    return res.status(500).json({
+      status: false,
+      message: "Server error while fetching counsellors",
+    });
+  }
+};
+
 module.exports = {
   createUser,
   verifyEmail,
-  loginUser
+  loginUser,
+  getAllCounsellors
 };
