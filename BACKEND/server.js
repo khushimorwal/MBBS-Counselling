@@ -44,7 +44,8 @@ const counsellingRequestRoutes = require("./Routes/CounsellingRequestRoute");
 const counsellingDashboardRoutes = require("./Routes/CounsellingDashboardRoute");
 const studentCounsellingRoutes = require("./Routes/StudentCounsellingRoute");
 const workflowRoutes = require("./Routes/WorkflowRoutes");
-
+const packageRoutes = require("./Routes/PackageRoutes");
+const paymentRoutes = require("./Routes/PaymentRoutes");
 // Initialize Express application.
 const app = express();
 
@@ -56,9 +57,10 @@ if (process.env.NODE_ENV === "production" && !process.env.CORS_ORIGIN) {
 app.use(helmet());
 app.use(
   cors({
-    origin: (process.env.CORS_ORIGIN || "http://localhost:5173")
-      .split(",")
-      .map((o) => o.trim()),
+    origin: [
+      "http://localhost:5000",
+      "http://localhost:5173",
+    ],
   })
 );
 app.use(express.json());
@@ -125,6 +127,14 @@ app.use("/counselling", counsellingRequestRoutes);
 app.use("/counselling-dashboard", counsellingDashboardRoutes);
 app.use("/student-counselling", studentCounsellingRoutes);
 app.use("/workflow", workflowRoutes);
+app.use("/packages", packageRoutes);
+app.get("/debug-package", (req, res) => {
+  res.json({
+    success: true,
+    message: "This is the updated server.js",
+  });
+});
+app.use("/payment", paymentRoutes);
 // --------------------------------------------------
 // TEST ROUTES
 // --------------------------------------------------

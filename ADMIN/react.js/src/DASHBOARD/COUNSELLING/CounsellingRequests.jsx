@@ -618,14 +618,10 @@ function CounsellingRequests() {
                   >
 
                     <td className="px-5 py-4">
-                      <p className="font-semibold text-brand-dark">
-                        {request.student?.name || "Unknown Student"}
-                      </p>
-
-                      <p className="mt-1 text-xs text-muted">
-                        {request.student?.email || "—"}
-                      </p>
-                    </td>
+  <p className="font-semibold text-brand-dark">
+    {request.student?.name || "Unknown Student"}
+  </p>
+</td>
 
                     <td className="px-5 py-4 text-sm font-medium text-brand-dark">
                       {request.requestNumber}

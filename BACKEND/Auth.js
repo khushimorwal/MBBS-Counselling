@@ -38,13 +38,6 @@ const Auth = async (req, res, next) => {
     }
 
     
-    // Check whether user's role is active
-if (!role.isAssigned && role.role !== "Super Admin") {
-  return res.status(403).json({
-    status: false,
-    message: "Your role is inactive",
-  });
-}
 
 
     // Store user information

@@ -44,6 +44,13 @@ router.get(
   getColleges
 );
 
+// Frontend - Logged-in users can view colleges
+router.get(
+  "/public-list",
+  Auth,
+  getColleges
+);
+
 // Get college by ID
 router.get(
   "/get-by-id/:id",

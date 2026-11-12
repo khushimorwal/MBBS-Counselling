@@ -11,21 +11,21 @@ const {
   getAllApplications
 } = require("../CONTROLLERS/ApplicationController");
 
+// Frontend user - create own application
 router.post(
   "/create",
   Auth,
-  Permission("applications.add"),
   createApplication
 );
 
+// Frontend user - view own applications
 router.get(
   "/my-applications",
   Auth,
-  Permission("applications.view"),
   getMyApplications
 );
 
-// Get all applications (Admin / Super Admin)
+// Admin / Super Admin
 router.get(
   "/all",
   Auth,
