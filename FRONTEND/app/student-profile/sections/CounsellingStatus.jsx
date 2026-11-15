@@ -611,14 +611,7 @@ export default function CounsellingStatus() {
             );
           })}
         </div>
-
-        {workflowData.length === 0 && (
-          <p className="mt-4 rounded-xl bg-amber-50 px-4 py-3 text-xs leading-5 text-amber-700">
-            Workflow stages will update automatically once the backend provides
-            their individual statuses. No stage is marked completed without
-            actual workflow data.
-          </p>
-        )}
+        
       </SectionCard>
 
       {/* TABS */}

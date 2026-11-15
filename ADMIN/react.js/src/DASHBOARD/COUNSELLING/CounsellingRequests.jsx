@@ -427,14 +427,6 @@ function CounsellingRequests() {
           </p>
         </div>
 
-        <button
-          type="button"
-          onClick={fetchRequests}
-          disabled={loading}
-          className="rounded-xl bg-accent px-5 py-3 text-sm font-bold text-white hover:bg-[#cf4a24] disabled:opacity-50"
-        >
-          {loading ? "Loading..." : "↻ Refresh"}
-        </button>
       </div>
 
       {/* Messages */}

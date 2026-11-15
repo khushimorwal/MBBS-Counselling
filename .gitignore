@@ -6,3 +6,4 @@ dist/
 *.log
 .superpowers/
 .claude
+FRONTEND/.git-backup/

@@ -299,7 +299,16 @@ const getAllPackages = async (req, res) => {
   try {
     const packages = await Package.find({
       status: "Active",
-    }).sort({ createdAt: -1 });
+    }).sort({ createdAt: 1 });
+    
+    console.log(packages);
+    console.log(
+  packages.map((pkg) => ({
+    name: pkg.name,
+    price: pkg.price,
+    createdAt: pkg.createdAt,
+  }))
+);
 
     return res.status(200).json({
       success: true,
@@ -316,6 +325,122 @@ const getAllPackages = async (req, res) => {
   }
 };
 
+
+// ======================================
+// CREATE PACKAGE
+// ======================================
+const createPackage = async (req, res) => {
+  try {
+    const {
+      name,
+      price,
+      duration,
+      durationType,
+      features,
+      description,
+      status,
+    } = req.body;
+
+    if (!name || price === undefined || !duration || !durationType) {
+      return res.status(400).json({
+        success: false,
+        message: "Please provide all required package details",
+      });
+    }
+
+    const newPackage = await Package.create({
+      name,
+      price: Number(price),
+      duration: Number(duration),
+      durationType,
+      features: Array.isArray(features) ? features : [],
+      description: description || "",
+      status: status || "Active",
+    });
+
+    return res.status(201).json({
+      success: true,
+      message: "Package created successfully",
+      package: newPackage,
+    });
+  } catch (error) {
+    console.error("Create Package Error:", error);
+
+    return res.status(500).json({
+      success: false,
+      message: "Unable to create package",
+    });
+  }
+};
+
+// ======================================
+// UPDATE PACKAGE
+// ======================================
+const updatePackage = async (req, res) => {
+  try {
+    const updatedPackage = await Package.findByIdAndUpdate(
+      req.params.id,
+      {
+        $set: req.body,
+      },
+      {
+        new: true,
+        runValidators: true,
+      }
+    );
+
+    if (!updatedPackage) {
+      return res.status(404).json({
+        success: false,
+        message: "Package not found",
+      });
+    }
+
+    return res.status(200).json({
+      success: true,
+      message: "Package updated successfully",
+      package: updatedPackage,
+    });
+  } catch (error) {
+    console.error("Update Package Error:", error);
+
+    return res.status(500).json({
+      success: false,
+      message: "Unable to update package",
+    });
+  }
+};
+
+// ======================================
+// DELETE PACKAGE
+// ======================================
+const deletePackage = async (req, res) => {
+  try {
+    const deletedPackage = await Package.findByIdAndDelete(
+      req.params.id
+    );
+
+    if (!deletedPackage) {
+      return res.status(404).json({
+        success: false,
+        message: "Package not found",
+      });
+    }
+
+    return res.status(200).json({
+      success: true,
+      message: "Package deleted successfully",
+    });
+  } catch (error) {
+    console.error("Delete Package Error:", error);
+
+    return res.status(500).json({
+      success: false,
+      message: "Unable to delete package",
+    });
+  }
+};
+
 // ======================================
 // EXPORT
 // ======================================
@@ -324,5 +449,9 @@ module.exports = {
   createOrder,
   verifyPayment,
   activateFreePlan,
-  
+
+  // Package CRUD
+  createPackage,
+  updatePackage,
+  deletePackage,
 };

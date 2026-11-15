@@ -148,15 +148,18 @@ function Packages() {
       await fetchPackages();
     } catch (error) {
       console.error("Save package error:", error);
+      
 
       toast.error(
         error.response?.data?.message ||
           "Failed to save package."
       );
+
     } finally {
       setSaving(false);
     }
   };
+
 
   // EDIT PACKAGE
   const handleEdit = (item) => {

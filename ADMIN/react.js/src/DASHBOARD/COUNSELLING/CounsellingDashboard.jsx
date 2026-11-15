@@ -127,14 +127,7 @@ function CounsellingDashboard() {
           </p>
         </div>
 
-        <button
-          type="button"
-          onClick={fetchDashboard}
-          disabled={loading}
-          className="rounded-xl bg-accent px-5 py-3 text-sm font-bold text-white transition hover:bg-[#cf4a24] disabled:cursor-not-allowed disabled:opacity-60"
-        >
-          {loading ? "Refreshing..." : "↻ Refresh"}
-        </button>
+        
       </div>
 
       {/* Error Message */}
@@ -188,14 +181,7 @@ function CounsellingDashboard() {
         ))}
       </div>
 
-      {/* Last Updated Information */}
-      {!loading && !error && (
-        <div className="mt-6 rounded-xl border border-line bg-white px-5 py-4">
-          <p className="text-sm text-muted">
-            Dashboard data fetched successfully.
-          </p>
-        </div>
-      )}
+      
     </div>
   );
 }
