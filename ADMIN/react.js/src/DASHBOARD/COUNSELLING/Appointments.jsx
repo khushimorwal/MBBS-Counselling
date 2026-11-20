@@ -106,7 +106,7 @@ function Appointments() {
       setLoading(true);
       setError("");
 
-      const response = await API.get("/appointment/all", {
+      const response = await API.get("/appointment/my-appointments", {
         params: {
           limit: 100,
           page: 1,
@@ -127,7 +127,7 @@ function Appointments() {
       setAppointments([]);
       setError(
         err.response?.data?.message ||
-          "Failed to load appointments."
+        "Failed to load appointments."
       );
     } finally {
       setLoading(false);
@@ -333,7 +333,7 @@ function Appointments() {
 
       setError(
         err.response?.data?.message ||
-          "Failed to save appointment."
+        "Failed to save appointment."
       );
     } finally {
       setSaving(false);
@@ -363,7 +363,7 @@ function Appointments() {
     } catch (err) {
       setError(
         err.response?.data?.message ||
-          "Failed to confirm appointment."
+        "Failed to confirm appointment."
       );
     }
   };
@@ -399,7 +399,7 @@ function Appointments() {
     } catch (err) {
       setError(
         err.response?.data?.message ||
-          "Failed to cancel appointment."
+        "Failed to cancel appointment."
       );
     }
   };
@@ -427,7 +427,7 @@ function Appointments() {
     } catch (err) {
       setError(
         err.response?.data?.message ||
-          "Failed to complete appointment."
+        "Failed to complete appointment."
       );
     }
   };
@@ -639,10 +639,9 @@ function Appointments() {
 
                     <td className="px-5 py-4">
                       <span
-                        className={`inline-block rounded-lg px-3 py-1 text-xs font-semibold ${
-                          statusStyles[appointment.status] ||
+                        className={`inline-block rounded-lg px-3 py-1 text-xs font-semibold ${statusStyles[appointment.status] ||
                           "bg-gray-100 text-gray-700"
-                        }`}
+                          }`}
                       >
                         {formatStatus(appointment.status)}
                       </span>
@@ -663,34 +662,34 @@ function Appointments() {
                         {["scheduled", "confirmed"].includes(
                           appointment.status
                         ) && (
-                          <>
-                            <button
-                              type="button"
-                              onClick={() =>
-                                openRescheduleModal(appointment)
-                              }
-                              className="rounded-lg bg-amber-50 px-3 py-2 text-xs font-semibold text-amber-700 hover:bg-amber-100"
-                            >
-                              Reschedule
-                            </button>
+                            <>
+                              <button
+                                type="button"
+                                onClick={() =>
+                                  openRescheduleModal(appointment)
+                                }
+                                className="rounded-lg bg-amber-50 px-3 py-2 text-xs font-semibold text-amber-700 hover:bg-amber-100"
+                              >
+                                Reschedule
+                              </button>
 
-                            <button
-                              type="button"
-                              onClick={() => handleComplete(appointment._id)}
-                              className="rounded-lg bg-purple-50 px-3 py-2 text-xs font-semibold text-purple-700 hover:bg-purple-100"
-                            >
-                              Complete
-                            </button>
+                              <button
+                                type="button"
+                                onClick={() => handleComplete(appointment._id)}
+                                className="rounded-lg bg-purple-50 px-3 py-2 text-xs font-semibold text-purple-700 hover:bg-purple-100"
+                              >
+                                Complete
+                              </button>
 
-                            <button
-                              type="button"
-                              onClick={() => handleCancel(appointment._id)}
-                              className="rounded-lg bg-rose-50 px-3 py-2 text-xs font-semibold text-rose-700 hover:bg-rose-100"
-                            >
-                              Cancel
-                            </button>
-                          </>
-                        )}
+                              <button
+                                type="button"
+                                onClick={() => handleCancel(appointment._id)}
+                                className="rounded-lg bg-rose-50 px-3 py-2 text-xs font-semibold text-rose-700 hover:bg-rose-100"
+                              >
+                                Cancel
+                              </button>
+                            </>
+                          )}
                       </div>
                     </td>
                   </tr>
@@ -880,8 +879,8 @@ function Appointments() {
                   {saving
                     ? "Saving..."
                     : editingAppointment
-                    ? "Reschedule Appointment"
-                    : "Schedule Appointment"}
+                      ? "Reschedule Appointment"
+                      : "Schedule Appointment"}
                 </button>
               </div>
             </form>

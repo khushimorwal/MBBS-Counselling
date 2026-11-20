@@ -30,10 +30,17 @@ const getValidCounsellor = async (counsellorId) => {
 
 const populateAssignment = (query) =>
   query
-    .populate("counsellingRequest")
+    .populate({
+      path: "counsellingRequest",
+      populate: {
+        path: "student",
+        select: "name email",
+      },
+    })
     .populate("counsellor", "name email")
     .populate("assignedBy", "name email")
     .populate("reassignedTo", "name email");
+
 
 // 1. Assign Counsellor
 exports.assignCounsellor = async (req, res) => {
@@ -143,6 +150,7 @@ exports.assignCounsellor = async (req, res) => {
   }
 };
 
+
 // 2. Get All Assignments
 exports.getAllAssignments = async (req, res) => {
   try {
@@ -175,7 +183,10 @@ exports.getAllAssignments = async (req, res) => {
     const pageNumber = Math.max(1, Number(page));
     const limitNumber = Math.min(100, Math.max(1, Number(limit)));
 
-    if (!Number.isFinite(pageNumber) || !Number.isFinite(limitNumber)) {
+    if (
+      !Number.isFinite(pageNumber) ||
+      !Number.isFinite(limitNumber)
+    ) {
       return res.status(400).json({
         success: false,
         message: "Invalid pagination values.",
@@ -211,6 +222,7 @@ exports.getAllAssignments = async (req, res) => {
   }
 };
 
+
 // 3. Get Assignment By ID
 exports.getAssignmentById = async (req, res) => {
   try {
@@ -238,7 +250,8 @@ exports.getAssignmentById = async (req, res) => {
       !isAdmin(req) &&
       !(
         isCounsellorUser(req) &&
-        assignment.counsellor._id.toString() === req.user.id.toString() &&
+        assignment.counsellor._id.toString() ===
+          req.user.id.toString() &&
         assignment.status === "active"
       )
     ) {
@@ -260,16 +273,10 @@ exports.getAssignmentById = async (req, res) => {
   }
 };
 
+
 // 4. Get My Assignments
 exports.getMyAssignments = async (req, res) => {
   try {
-    if (!isCounsellorUser(req)) {
-      return res.status(403).json({
-        success: false,
-        message: "Only counsellors can access their assignments.",
-      });
-    }
-
     const { status = "active" } = req.query;
 
     const allowedStatuses = [
@@ -286,16 +293,33 @@ exports.getMyAssignments = async (req, res) => {
       });
     }
 
-    const filter = {
-      counsellor: req.user.id,
-    };
+    let filter = {};
 
-    if (status !== "all") {
-      filter.status = status;
+    // Admin and Super Admin can view all assignments.
+    if (isAdmin(req)) {
+      if (status !== "all") {
+        filter.status = status;
+      }
+    }
+
+    // Counsellors can view only their own assignments.
+    else if (isCounsellorUser(req)) {
+      filter.counsellor = req.user.id;
+
+      if (status !== "all") {
+        filter.status = status;
+      }
+    } else {
+      return res.status(403).json({
+        success: false,
+        message: "Access denied.",
+      });
     }
 
     const assignments = await populateAssignment(
-      CounsellingAssignment.find(filter).sort({ createdAt: -1 })
+      CounsellingAssignment.find(filter).sort({
+        createdAt: -1,
+      })
     );
 
     return res.status(200).json({
@@ -304,12 +328,16 @@ exports.getMyAssignments = async (req, res) => {
       data: assignments,
     });
   } catch (error) {
+    console.error("Get My Assignments Error:", error);
+
     return res.status(500).json({
       success: false,
-      message: error.message,
+      message: "Failed to fetch assignments.",
+      error: error.message,
     });
   }
 };
+
 
 // 5. Reassign Counselling Request
 exports.reassignCounsellingRequest = async (req, res) => {
@@ -458,6 +486,7 @@ exports.reassignCounsellingRequest = async (req, res) => {
   }
 };
 
+
 // 6. Complete Assignment
 exports.completeAssignment = async (req, res) => {
   try {
@@ -486,7 +515,8 @@ exports.completeAssignment = async (req, res) => {
 
         const isAssignedCounsellor =
           isCounsellorUser(req) &&
-          assignment.counsellor.toString() === req.user.id.toString();
+          assignment.counsellor.toString() ===
+            req.user.id.toString();
 
         if (!isAdmin(req) && !isAssignedCounsellor) {
           throw new Error("Access denied.");

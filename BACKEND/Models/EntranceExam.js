@@ -45,3 +45,6 @@ const entranceExamSchema = new mongoose.Schema(
 module.exports =
   mongoose.models.EntranceExam ||
   mongoose.model("EntranceExam", entranceExamSchema);
+
+
+  

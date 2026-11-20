@@ -66,19 +66,37 @@ const counsellingRequestSchema = new mongoose.Schema(
       },
     },
 
+    
     entranceExams: [
-      {
-        exam: {
-          type: mongoose.Schema.Types.ObjectId,
-          ref: "EntranceExam",
-        },
+  {
+    exam: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "EntranceExam",
+    },
 
-        score: Number,
-        percentile: Number,
-        rank: Number,
-        year: Number,
-      },
-    ],
+    examName: {
+      type: String,
+      trim: true,
+    },
+
+    examYear: Number,
+    rollNumber: String,
+
+    score: Number,
+    percentile: Number,
+
+    rank: Number,
+    air: Number,
+    categoryRank: Number,
+
+    status: {
+      type: String,
+      enum: ["Qualified", "Not Qualified", "Result Awaited"],
+    },
+
+    year: Number,
+  },
+],
 
     counsellingMode: {
       type: String,

@@ -7,3 +7,4 @@ dist/
 .superpowers/
 .claude
 FRONTEND/.git-backup/
+BACKEND/uploads/

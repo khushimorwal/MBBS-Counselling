@@ -5,6 +5,9 @@ const router = express.Router();
 // Excel upload middleware
 const upload = require("../Middleware/uploadExcel");
 
+// College logo upload middleware
+const uploadCollegeLogo = require("../Middleware/uploadCollegeLogo");
+
 // Bulk College Controller
 const {
   bulkImportColleges,
@@ -33,6 +36,7 @@ router.post(
   "/create",
   Auth,
   Permission("colleges.add"),
+  uploadCollegeLogo.single("logo"),
   addCollege
 );
 
@@ -64,6 +68,7 @@ router.put(
   "/update/:id",
   Auth,
   Permission("colleges.edit"),
+  uploadCollegeLogo.single("logo"),
   updateCollege
 );
 

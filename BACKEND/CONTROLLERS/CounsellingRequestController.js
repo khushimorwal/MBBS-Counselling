@@ -90,7 +90,7 @@ const validateBudget = (budget) => {
     return false;
   }
 
-  if (
+  if (  
     max !== undefined &&
     (!Number.isFinite(Number(max)) || Number(max) < 0)
   ) {
@@ -112,29 +112,43 @@ const validateBudget = (budget) => {
   return true;
 };
 
+
 const validateEntranceExams = (exams) => {
   if (!Array.isArray(exams)) return false;
 
   return exams.every((item) => {
-    if (!item || typeof item !== "object" || !isValidId(item.exam)) {
+    if (!item || typeof item !== "object") {
       return false;
     }
+
+    // Either a valid exam ID or exam name is required.
+    const hasValidExam =
+      isValidId(item.exam) ||
+      (typeof item.examName === "string" &&
+        item.examName.trim().length > 0);
+
+    if (!hasValidExam) return false;
 
     const numericFields = [
       "score",
       "percentile",
       "rank",
+      "air",
+      "categoryRank",
       "year",
+      "examYear",
     ];
 
     return numericFields.every(
       (field) =>
         item[field] === undefined ||
         item[field] === null ||
+        item[field] === "" ||
         Number.isFinite(Number(item[field]))
     );
   });
 };
+
 
 const validatePreferredTime = (preferredTime) => {
   if (
@@ -276,15 +290,32 @@ exports.createCounsellingRequest = async (req, res) => {
       user: req.user.id,
     });
 
+
+    
     const profileEntranceExams = (profile?.entranceExams || [])
-      .filter((item) => item.exam)
-      .map((item) => ({
-        exam: item.exam,
-        score: item.score,
-        percentile: item.percentile,
-        rank: item.rank || item.air,
-        year: item.year || item.examYear,
-      }));
+  .filter(
+    (item) =>
+      isValidId(item.exam) ||
+      (typeof item.examName === "string" && item.examName.trim())
+  )
+  .map((item) => ({
+    exam: isValidId(item.exam) ? item.exam : undefined,
+
+    examName: item.examName?.trim(),
+    examYear: item.examYear,
+    rollNumber: item.rollNumber,
+
+    score: item.score,
+    percentile: item.percentile,
+
+    rank: item.rank ?? item.air,
+    air: item.air,
+    categoryRank: item.categoryRank,
+
+    status: item.status,
+
+    year: item.year ?? item.examYear,
+  }));
 
     const profileLocations = (
       profile?.preferredLocationDetails || []

@@ -25,7 +25,8 @@ import CounsellorAssignments from "./COUNSELLING/CounsellorAssignments";
 import Appointments from "./COUNSELLING/Appointments";
 import CounsellingSessions from "./COUNSELLING/CounsellingSessions";
 import CounsellingNotes from "./COUNSELLING/CounsellingNotes";
-import FollowUps from "./COUNSELLING/FollowUps";
+import FollowUps from "./COUNSELLING/FollowUps"
+import Recommendation from "./COUNSELLING/Recommendation";
 
 const iconProps = {
   width: 25,
@@ -148,7 +149,7 @@ function Dashboard() {
                 Welcome
               </h1>
 
-              
+
             </div>
 
             {/* System status badge */}
@@ -263,10 +264,10 @@ function Dashboard() {
                     .toLowerCase()
                     .includes(search.toLowerCase())
                 ) && (
-                  <p className="px-1 py-2 text-sm text-slate-700">
-                    No matching dashboard sections.
-                  </p>
-                )}
+                    <p className="px-1 py-2 text-sm text-slate-700">
+                      No matching dashboard sections.
+                    </p>
+                  )}
 
               </div>
             )}
@@ -426,6 +427,10 @@ function Dashboard() {
 
     if (activePage === "Follow-ups") {
       return <FollowUps />;
+    }
+
+    if (activePage === "Recommendations") {
+      return <Recommendation />;
     }
 
     // Main dashboard pages

@@ -1,5 +1,6 @@
 import React, { useEffect, useMemo, useState } from "react";
 import { API } from "../../api/axios";
+
 import {
   FiPlus,
   FiSearch,
@@ -11,17 +12,13 @@ import {
   FiMail,
   FiFileText,
   FiCalendar,
-  FiMoreVertical,
 } from "react-icons/fi";
 
 const FOLLOW_UP_API = "/follow-up";
-
-// Change this if your counselling request GET endpoint is different.
-const REQUESTS_API = "/counselling/all";
+const ASSIGNMENTS_API = "/counselling-assignment/my-assignments";
 
 const initialForm = {
   counsellingRequest: "",
-  assignedTo: "",
   title: "",
   description: "",
   dueAt: "",
@@ -39,7 +36,7 @@ const typeOptions = [
 function FollowUps() {
   const [followUps, setFollowUps] = useState([]);
   const [requests, setRequests] = useState([]);
-  const [counsellors, setCounsellors] = useState([]);
+  const [assignments, setAssignments] = useState([]);
 
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
@@ -60,18 +57,14 @@ function FollowUps() {
     text: "",
   });
 
-  // ==================================================
-  // FETCH FOLLOW-UPS
-  // ==================================================
-
+  // FETCH MY FOLLOW-UPS
   const fetchFollowUps = async () => {
     try {
       setLoading(true);
 
-      // First update pending records whose due date has passed.
-      await API.patch(`${FOLLOW_UP_API}/update-overdue`);
-
-      const response = await API.get(`${FOLLOW_UP_API}/all`);
+      const response = await API.get(
+        `${FOLLOW_UP_API}/my-followups`
+      );
 
       setFollowUps(response.data.followUps || []);
     } catch (error) {
@@ -88,35 +81,46 @@ function FollowUps() {
     }
   };
 
-  // ==================================================
-  // FETCH REQUESTS AND COUNSELLORS
-  // ==================================================
-
+  // FETCH MY ACTIVE ASSIGNMENTS
   const fetchFormData = async () => {
     try {
-      const [requestResponse, counsellorResponse] = await Promise.all([
-        API.get(REQUESTS_API),
-        API.get("/user/counsellors"),
-      ]);
+      const response = await API.get(ASSIGNMENTS_API);
 
-      const requestData =
-        requestResponse.data.requests ||
-        requestResponse.data.counsellingRequests ||
-        requestResponse.data.data ||
-        [];
+      const assignmentData = response.data.data || [];
 
-      const counsellorData =
-        counsellorResponse.data.counsellors ||
-        counsellorResponse.data.users ||
-        counsellorResponse.data.data ||
-        [];
-
-      setRequests(Array.isArray(requestData) ? requestData : []);
-      setCounsellors(
-        Array.isArray(counsellorData) ? counsellorData : []
+      setAssignments(
+        Array.isArray(assignmentData) ? assignmentData : []
       );
+
+      // Get counselling requests from active assignments.
+      const assignedRequests = assignmentData
+        .filter(
+          (assignment) =>
+            assignment.status === "active" &&
+            assignment.counsellingRequest
+        )
+        .map((assignment) => assignment.counsellingRequest);
+
+      // Remove duplicate counselling requests.
+      const uniqueRequests = [
+        ...new Map(
+          assignedRequests.map((request) => [
+            request._id,
+            request,
+          ])
+        ).values(),
+      ];
+
+      setRequests(uniqueRequests);
     } catch (error) {
-      console.error("Follow-up Form Data Error:", error);
+      console.error("Fetch Assignments Error:", error);
+
+      setMessage({
+        type: "error",
+        text:
+          error.response?.data?.message ||
+          "Unable to fetch your assigned counselling requests.",
+      });
     }
   };
 
@@ -125,33 +129,34 @@ function FollowUps() {
     fetchFormData();
   }, []);
 
-  // ==================================================
   // SUMMARY
-  // ==================================================
-
   const summary = useMemo(() => {
     return {
       total: followUps.length,
-      pending: followUps.filter((item) => item.status === "pending").length,
-      completed: followUps.filter((item) => item.status === "completed").length,
-      overdue: followUps.filter((item) => item.status === "overdue").length,
+      pending: followUps.filter(
+        (item) => item.status === "pending"
+      ).length,
+      completed: followUps.filter(
+        (item) => item.status === "completed"
+      ).length,
+      overdue: followUps.filter(
+        (item) => item.status === "overdue"
+      ).length,
     };
   }, [followUps]);
 
-  // ==================================================
   // SEARCH AND FILTER
-  // ==================================================
-
   const filteredFollowUps = useMemo(() => {
     return followUps.filter((item) => {
       const studentName = item.student?.name || "";
-      const counsellorName = item.assignedTo?.name || "";
       const title = item.title || "";
 
       const searchText =
-        `${studentName} ${counsellorName} ${title}`.toLowerCase();
+        `${studentName} ${title}`.toLowerCase();
 
-      const matchesSearch = searchText.includes(search.toLowerCase());
+      const matchesSearch = searchText.includes(
+        search.toLowerCase()
+      );
 
       const matchesStatus =
         !statusFilter || item.status === statusFilter;
@@ -160,10 +165,7 @@ function FollowUps() {
     });
   }, [followUps, search, statusFilter]);
 
-  // ==================================================
   // FORM HANDLERS
-  // ==================================================
-
   const handleChange = (e) => {
     const { name, value } = e.target;
 
@@ -183,8 +185,7 @@ function FollowUps() {
     setEditingId(item._id);
 
     setForm({
-      counsellingRequest: item.counsellingRequest?._id || "",
-      assignedTo: item.assignedTo?._id || "",
+      counsellingRequest: "",
       title: item.title || "",
       description: item.description || "",
       dueAt: item.dueAt
@@ -202,10 +203,7 @@ function FollowUps() {
     setForm(initialForm);
   };
 
-  // ==================================================
-  // CREATE / UPDATE
-  // ==================================================
-
+  // CREATE / UPDATE FOLLOW-UP
   const handleSubmit = async (e) => {
     e.preventDefault();
 
@@ -238,24 +236,47 @@ function FollowUps() {
           text: "Follow-up updated successfully.",
         });
       } else {
-        if (!form.counsellingRequest || !form.assignedTo) {
+        if (!form.counsellingRequest) {
           setMessage({
             type: "error",
-            text: "Please select a counselling request and counsellor.",
+            text: "Please select a counselling request.",
           });
           return;
         }
 
+        // Find the active assignment for this request.
+        const selectedAssignment = assignments.find(
+          (assignment) =>
+            assignment.status === "active" &&
+            assignment.counsellingRequest?._id ===
+              form.counsellingRequest
+        );
+
+        if (!selectedAssignment) {
+          setMessage({
+            type: "error",
+            text: "No active assignment found for this request.",
+          });
+          return;
+        }
+
+        const assignedCounsellor =
+          selectedAssignment.counsellor?._id ||
+          selectedAssignment.counsellor;
+
         const payload = {
           counsellingRequest: form.counsellingRequest,
-          assignedTo: form.assignedTo,
+          assignedTo: assignedCounsellor,
           title: form.title,
           description: form.description,
           dueAt: new Date(form.dueAt).toISOString(),
           type: form.type,
         };
 
-        await API.post(`${FOLLOW_UP_API}/create`, payload);
+        await API.post(
+          `${FOLLOW_UP_API}/create`,
+          payload
+        );
 
         setMessage({
           type: "success",
@@ -264,8 +285,10 @@ function FollowUps() {
       }
 
       closeModal();
-      fetchFollowUps();
+      await fetchFollowUps();
     } catch (error) {
+      console.error("Save Follow-up Error:", error);
+
       setMessage({
         type: "error",
         text:
@@ -277,10 +300,7 @@ function FollowUps() {
     }
   };
 
-  // ==================================================
   // COMPLETE FOLLOW-UP
-  // ==================================================
-
   const openCompleteModal = (item) => {
     setSelectedFollowUp(item);
     setOutcome("");
@@ -306,7 +326,7 @@ function FollowUps() {
         text: "Follow-up completed successfully.",
       });
 
-      fetchFollowUps();
+      await fetchFollowUps();
     } catch (error) {
       setMessage({
         type: "error",
@@ -319,40 +339,7 @@ function FollowUps() {
     }
   };
 
-  // ==================================================
-  // CANCEL FOLLOW-UP
-  // ==================================================
-
-  const handleCancel = async (id) => {
-    const confirmed = window.confirm(
-      "Are you sure you want to cancel this follow-up?"
-    );
-
-    if (!confirmed) return;
-
-    try {
-      await API.patch(`${FOLLOW_UP_API}/cancel/${id}`);
-
-      setMessage({
-        type: "success",
-        text: "Follow-up cancelled successfully.",
-      });
-
-      fetchFollowUps();
-    } catch (error) {
-      setMessage({
-        type: "error",
-        text:
-          error.response?.data?.message ||
-          "Unable to cancel follow-up.",
-      });
-    }
-  };
-
-  // ==================================================
   // HELPERS
-  // ==================================================
-
   const formatDate = (date) => {
     if (!date) return "—";
 
@@ -384,28 +371,27 @@ function FollowUps() {
     return <FiCalendar />;
   };
 
-  // ==================================================
   // UI
-  // ==================================================
-
   return (
     <div className="mx-auto w-full max-w-[1500px]">
       {/* Heading */}
       <div className="mb-6 flex flex-col justify-between gap-4 sm:flex-row sm:items-end">
         <div>
-
           <h1 className="mt-2 font-display text-3xl font-bold text-brand-dark">
             Follow-ups
           </h1>
 
           <p className="mt-2 text-sm text-muted">
-            Track and manage student follow-up activities.
+            Track and manage your assigned student follow-up activities.
           </p>
         </div>
 
         <div className="flex gap-2">
           <button
-            onClick={fetchFollowUps}
+            onClick={() => {
+              fetchFollowUps();
+              fetchFormData();
+            }}
             className="flex items-center gap-2 rounded-xl border border-line bg-white px-4 py-3 text-sm font-semibold text-brand-dark hover:bg-surface"
           >
             <FiRefreshCw />
@@ -433,7 +419,11 @@ function FollowUps() {
         >
           {message.text}
 
-          <button onClick={() => setMessage({ type: "", text: "" })}>
+          <button
+            onClick={() =>
+              setMessage({ type: "", text: "" })
+            }
+          >
             <FiX />
           </button>
         </div>
@@ -451,7 +441,9 @@ function FollowUps() {
             key={title}
             className="rounded-2xl border border-line bg-white p-5"
           >
-            <p className="text-sm font-medium text-muted">{title}</p>
+            <p className="text-sm font-medium text-muted">
+              {title}
+            </p>
 
             <h2 className="mt-3 font-display text-3xl font-bold text-brand-dark">
               {count}
@@ -475,7 +467,7 @@ function FollowUps() {
             type="search"
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            placeholder="Search student or counsellor..."
+            placeholder="Search student or follow-up..."
             className="w-full rounded-xl border border-line py-3 pl-11 pr-4 text-sm outline-none focus:border-brand"
           />
         </div>
@@ -497,11 +489,11 @@ function FollowUps() {
       <div className="overflow-hidden rounded-2xl border border-line bg-white">
         <div className="border-b border-line p-5">
           <h2 className="font-display text-lg font-bold text-brand-dark">
-            Follow-up Records
+            My Follow-up Records
           </h2>
 
           <p className="mt-1 text-xs text-muted">
-            Monitor upcoming and overdue student follow-ups.
+            Monitor your upcoming and overdue student follow-ups.
           </p>
         </div>
 
@@ -510,7 +502,6 @@ function FollowUps() {
             <thead className="bg-[#F9FBFA]">
               <tr className="text-xs font-semibold uppercase tracking-wide text-muted">
                 <th className="px-5 py-4">Student</th>
-                <th className="px-5 py-4">Counsellor</th>
                 <th className="px-5 py-4">Purpose</th>
                 <th className="px-5 py-4">Follow-up Date</th>
                 <th className="px-5 py-4">Status</th>
@@ -522,7 +513,7 @@ function FollowUps() {
               {loading ? (
                 <tr>
                   <td
-                    colSpan="6"
+                    colSpan="5"
                     className="px-5 py-12 text-center text-sm text-muted"
                   >
                     Loading follow-ups...
@@ -531,7 +522,7 @@ function FollowUps() {
               ) : filteredFollowUps.length === 0 ? (
                 <tr>
                   <td
-                    colSpan="6"
+                    colSpan="5"
                     className="px-5 py-12 text-center text-sm text-muted"
                   >
                     No follow-up records found.
@@ -539,7 +530,10 @@ function FollowUps() {
                 </tr>
               ) : (
                 filteredFollowUps.map((item) => (
-                  <tr key={item._id} className="hover:bg-surface/60">
+                  <tr
+                    key={item._id}
+                    className="hover:bg-surface/60"
+                  >
                     <td className="px-5 py-4">
                       <p className="font-semibold text-brand-dark">
                         {item.student?.name || "—"}
@@ -547,16 +541,6 @@ function FollowUps() {
 
                       <p className="mt-1 text-xs text-muted">
                         {item.student?.email || ""}
-                      </p>
-                    </td>
-
-                    <td className="px-5 py-4">
-                      <p className="font-medium text-brand-dark">
-                        {item.assignedTo?.name || "—"}
-                      </p>
-
-                      <p className="mt-1 text-xs text-muted">
-                        {item.assignedTo?.email || ""}
                       </p>
                     </td>
 
@@ -594,7 +578,9 @@ function FollowUps() {
 
                     <td className="px-5 py-4">
                       <div className="flex items-center gap-2">
-                        {["pending", "overdue"].includes(item.status) && (
+                        {["pending", "overdue"].includes(
+                          item.status
+                        ) && (
                           <>
                             <button
                               title="Edit"
@@ -606,7 +592,9 @@ function FollowUps() {
 
                             <button
                               title="Complete"
-                              onClick={() => openCompleteModal(item)}
+                              onClick={() =>
+                                openCompleteModal(item)
+                              }
                               className="rounded-lg border border-line p-2 text-emerald-600 hover:bg-emerald-50"
                             >
                               <FiCheck />
@@ -614,18 +602,12 @@ function FollowUps() {
                           </>
                         )}
 
-                        {!["completed", "cancelled"].includes(item.status) && (
-                          <button
-                            title="Cancel"
-                            onClick={() => handleCancel(item._id)}
-                            className="rounded-lg border border-line p-2 text-rose-600 hover:bg-rose-50"
-                          >
-                            <FiX />
-                          </button>
-                        )}
-
-                        {["completed", "cancelled"].includes(item.status) && (
-                          <span className="text-xs text-muted">No actions</span>
+                        {["completed", "cancelled"].includes(
+                          item.status
+                        ) && (
+                          <span className="text-xs text-muted">
+                            No actions
+                          </span>
                         )}
                       </div>
                     </td>
@@ -644,7 +626,9 @@ function FollowUps() {
             <div className="mb-6 flex items-center justify-between">
               <div>
                 <h2 className="font-display text-xl font-bold text-brand-dark">
-                  {editingId ? "Edit Follow-up" : "Create Follow-up"}
+                  {editingId
+                    ? "Edit Follow-up"
+                    : "Create Follow-up"}
                 </h2>
 
                 <p className="mt-1 text-sm text-muted">
@@ -660,57 +644,47 @@ function FollowUps() {
               </button>
             </div>
 
-            <form onSubmit={handleSubmit} className="space-y-4">
+            <form
+              onSubmit={handleSubmit}
+              className="space-y-4"
+            >
               {!editingId && (
-                <>
-                  <div>
-                    <label className="mb-2 block text-sm font-semibold text-brand-dark">
-                      Counselling Request *
-                    </label>
+                <div>
+                  <label className="mb-2 block text-sm font-semibold text-brand-dark">
+                    Counselling Request *
+                  </label>
 
-                    <select
-                      name="counsellingRequest"
-                      value={form.counsellingRequest}
-                      onChange={handleChange}
-                      required
-                      className="w-full rounded-xl border border-line bg-white px-4 py-3 text-sm outline-none focus:border-brand"
-                    >
-                      <option value="">Select counselling request</option>
+                  <select
+                    name="counsellingRequest"
+                    value={form.counsellingRequest}
+                    onChange={handleChange}
+                    required
+                    className="w-full rounded-xl border border-line bg-white px-4 py-3 text-sm outline-none focus:border-brand"
+                  >
+                    <option value="">
+                      Select your assigned request
+                    </option>
 
-                      {requests.map((request) => (
-                        <option key={request._id} value={request._id}>
-                          {request.requestNumber || request._id} —{" "}
-                          {request.student?.name || "Student"}
-                        </option>
-                      ))}
-                    </select>
-                  </div>
+                    {requests.map((request) => (
+                      <option
+                        key={request._id}
+                        value={request._id}
+                      >
+                        {request.requestNumber || request._id}
+                      </option>
+                    ))}
+                  </select>
 
-                  <div>
-                    <label className="mb-2 block text-sm font-semibold text-brand-dark">
-                      Assigned Counsellor *
-                    </label>
+                  {requests.length === 0 && (
+                    <p className="mt-2 text-xs text-rose-600">
+                      No active counselling assignments found.
+                    </p>
+                  )}
 
-                    <select
-                      name="assignedTo"
-                      value={form.assignedTo}
-                      onChange={handleChange}
-                      required
-                      className="w-full rounded-xl border border-line bg-white px-4 py-3 text-sm outline-none focus:border-brand"
-                    >
-                      <option value="">Select counsellor</option>
-
-                      {counsellors.map((counsellor) => (
-                        <option
-                          key={counsellor._id}
-                          value={counsellor._id}
-                        >
-                          {counsellor.name} ({counsellor.email})
-                        </option>
-                      ))}
-                    </select>
-                  </div>
-                </>
+                  <p className="mt-2 text-xs text-muted">
+                    This follow-up will automatically be assigned to you.
+                  </p>
+                </div>
               )}
 
               <div>
@@ -774,7 +748,8 @@ function FollowUps() {
                   >
                     {typeOptions.map((type) => (
                       <option key={type} value={type}>
-                        {type.charAt(0).toUpperCase() + type.slice(1)}
+                        {type.charAt(0).toUpperCase() +
+                          type.slice(1)}
                       </option>
                     ))}
                   </select>

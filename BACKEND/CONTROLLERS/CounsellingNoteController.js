@@ -32,6 +32,7 @@ const getActiveAssignment = (session) => {
   });
 };
 
+// Check whether the logged-in user can manage notes.
 const canManageNotes = async (session, user) => {
   if (isAdmin(user.role)) return true;
 
@@ -45,7 +46,7 @@ const canManageNotes = async (session, user) => {
   );
 };
 
-// Common population for session, student and counsellor
+// Common population for session, student and counsellor.
 const populateSessionDetails = {
   path: "session",
   select: "sessionNumber status student counsellor mode type",
@@ -57,7 +58,7 @@ const populateSessionDetails = {
 
 // ======================================================
 // 1. CREATE COUNSELLING NOTE
-// ADMIN / ACTIVE ASSIGNED COUNSELLOR
+// ADMIN / SUPER ADMIN / ACTIVE ASSIGNED COUNSELLOR
 // ======================================================
 
 exports.createCounsellingNote = async (req, res) => {
@@ -156,7 +157,7 @@ exports.createCounsellingNote = async (req, res) => {
 
 // ======================================================
 // 2. GET NOTES FOR A SESSION
-// STUDENT: STUDENT_VISIBLE ONLY
+// ADMIN / SUPER ADMIN / ASSIGNED COUNSELLOR / STUDENT OWNER
 // ======================================================
 
 exports.getSessionNotes = async (req, res) => {
@@ -203,14 +204,7 @@ exports.getSessionNotes = async (req, res) => {
     }
 
     const notes = await CounsellingNote.find(filter)
-      .populate({
-        path: "session",
-        select: "sessionNumber status student counsellor mode type",
-        populate: [
-          { path: "student", select: "name email" },
-          { path: "counsellor", select: "name email" },
-        ],
-      })
+      .populate(populateSessionDetails)
       .populate("counsellingRequest", "requestNumber")
       .populate("author", "name email")
       .sort({ createdAt: -1 });
@@ -233,7 +227,7 @@ exports.getSessionNotes = async (req, res) => {
 
 // ======================================================
 // 3. GET ALL COUNSELLING NOTES
-// ADMIN ONLY
+// ADMIN / SUPER ADMIN ONLY
 // ======================================================
 
 exports.getAllCounsellingNotes = async (req, res) => {
@@ -245,50 +239,8 @@ exports.getAllCounsellingNotes = async (req, res) => {
       });
     }
 
-    const filter = {};
-
-    if (req.query.counsellingRequest) {
-      if (!isValidId(req.query.counsellingRequest)) {
-        return res.status(400).json({
-          success: false,
-          message: "Invalid counselling request ID.",
-        });
-      }
-
-      filter.counsellingRequest = req.query.counsellingRequest;
-    }
-
-    if (req.query.visibility) {
-      if (!allowedVisibility.includes(req.query.visibility)) {
-        return res.status(400).json({
-          success: false,
-          message: "Invalid note visibility.",
-        });
-      }
-
-      filter.visibility = req.query.visibility;
-    }
-
-    if (req.query.category) {
-      if (!allowedCategories.includes(req.query.category)) {
-        return res.status(400).json({
-          success: false,
-          message: "Invalid note category.",
-        });
-      }
-
-      filter.category = req.query.category;
-    }
-
-    const notes = await CounsellingNote.find(filter)
-      .populate({
-        path: "session",
-        select: "sessionNumber status student counsellor mode type",
-        populate: [
-          { path: "student", select: "name email" },
-          { path: "counsellor", select: "name email" },
-        ],
-      })
+    const notes = await CounsellingNote.find()
+      .populate(populateSessionDetails)
       .populate("counsellingRequest", "requestNumber")
       .populate("author", "name email")
       .sort({ createdAt: -1 });
@@ -310,7 +262,70 @@ exports.getAllCounsellingNotes = async (req, res) => {
 };
 
 // ======================================================
-// 4. GET NOTES VISIBLE TO LOGGED-IN STUDENT
+// 4. GET NOTES FOR LOGGED-IN USER
+// ADMIN / SUPER ADMIN: ALL NOTES
+// COUNSELLOR: ACTIVE ASSIGNED SESSION NOTES
+// ======================================================
+
+exports.getMyCounsellingNotes = async (req, res) => {
+  try {
+    const adminUser = isAdmin(req.user.role);
+
+    if (!adminUser && req.user.role !== "Counsellor") {
+      return res.status(403).json({
+        success: false,
+        message: "Access denied.",
+      });
+    }
+
+    let notes;
+
+    // Admin and Super Admin can view all counselling notes.
+    if (adminUser) {
+      notes = await CounsellingNote.find()
+        .populate(populateSessionDetails)
+        .populate("counsellingRequest", "requestNumber")
+        .populate("author", "name email")
+        .sort({ createdAt: -1 });
+    } else {
+      // Counsellor can view notes of their active assigned sessions.
+      const requestIds = await CounsellingAssignment.find({
+        counsellor: req.user.id,
+        status: "active",
+      }).distinct("counsellingRequest");
+
+      const sessionIds = await CounsellingSession.find({
+        counsellingRequest: { $in: requestIds },
+        counsellor: req.user.id,
+      }).distinct("_id");
+
+      notes = await CounsellingNote.find({
+        session: { $in: sessionIds },
+      })
+        .populate(populateSessionDetails)
+        .populate("counsellingRequest", "requestNumber")
+        .populate("author", "name email")
+        .sort({ createdAt: -1 });
+    }
+
+    return res.status(200).json({
+      success: true,
+      total: notes.length,
+      notes,
+    });
+  } catch (error) {
+    console.error("Get My Counselling Notes Error:", error);
+
+    return res.status(500).json({
+      success: false,
+      message: "Failed to fetch your counselling notes.",
+      error: error.message,
+    });
+  }
+};
+
+// ======================================================
+// 5. GET NOTES VISIBLE TO LOGGED-IN STUDENT
 // ======================================================
 
 exports.getMyVisibleNotes = async (req, res) => {
@@ -330,15 +345,8 @@ exports.getMyVisibleNotes = async (req, res) => {
       counsellingRequest: { $in: requestIds },
       visibility: "student_visible",
     })
-      .populate({
-        path: "session",
-        select: "sessionNumber status student counsellor mode type",
-        populate: [
-          { path: "student", select: "name email" },
-          { path: "counsellor", select: "name email" },
-        ],
-      })
-      .populate("author", "name")
+      .populate(populateSessionDetails)
+      .populate("author", "name email")
       .sort({ createdAt: -1 });
 
     return res.status(200).json({
@@ -358,8 +366,8 @@ exports.getMyVisibleNotes = async (req, res) => {
 };
 
 // ======================================================
-// 5. UPDATE COUNSELLING NOTE
-// ADMIN / ACTIVE ASSIGNED AUTHOR COUNSELLOR
+// 6. UPDATE COUNSELLING NOTE
+// ADMIN / SUPER ADMIN / ACTIVE ASSIGNED AUTHOR COUNSELLOR
 // ======================================================
 
 exports.updateCounsellingNote = async (req, res) => {
@@ -481,8 +489,8 @@ exports.updateCounsellingNote = async (req, res) => {
 };
 
 // ======================================================
-// 6. DELETE COUNSELLING NOTE
-// ADMIN ONLY
+// 7. DELETE COUNSELLING NOTE
+// ADMIN / SUPER ADMIN ONLY
 // ======================================================
 
 exports.deleteCounsellingNote = async (req, res) => {

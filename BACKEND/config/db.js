@@ -7,7 +7,7 @@ if (process.env.NODE_ENV === "production" && !process.env.MONGO_URI) {
 const connectDB = mongoose
   .connect(
     process.env.MONGO_URI ||
-      "mongodb://127.0.0.1:27017/mbbs?replicaSet=rs0"
+      "mongodb://127.0.0.1:27017/divya?replicaSet=rs0"
   )
   .then(() => {
     console.log("MongoDB Connected Successfully");
@@ -18,3 +18,4 @@ const connectDB = mongoose
   });
 
 module.exports = connectDB;
+

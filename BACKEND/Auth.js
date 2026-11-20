@@ -48,6 +48,8 @@ const Auth = async (req, res, next) => {
       role: role.role,
       permissions: role.permissions || [],
     };
+    console.log("Admin Role:", req.user.role);
+console.log("Admin Permissions:", req.user.permissions);
 
     return next();
 

@@ -15,6 +15,7 @@ import { API } from "../api/axios.js";
 const MODULES = [
   { key: "dashboard", label: "Dashboard" },
   { key: "students", label: "Students" },
+  { key: "users", label: "Users" },
   { key: "colleges", label: "Colleges" },
   { key: "university", label: "University" },
   { key: "streams", label: "Stream" },
@@ -103,13 +104,13 @@ function RolePermissions() {
 
       // Only Super Admin and roles created/assigned by Super Admin
       databaseRoles.sort((a, b) => {
-  if (a.role === "Super Admin") return -1;
-  if (b.role === "Super Admin") return 1;
+        if (a.role === "Super Admin") return -1;
+        if (b.role === "Super Admin") return 1;
 
-  return a.role.localeCompare(b.role);
-});
+        return a.role.localeCompare(b.role);
+      });
 
-setRoles(databaseRoles);
+      setRoles(databaseRoles);
 
       visibleRoles.sort((a, b) => {
         if (a.role === "Super Admin") return -1;
@@ -144,13 +145,13 @@ setRoles(databaseRoles);
   ).length;
 
   // FILTER
-const filteredRoles = useMemo(() => {
-  if (roleType === "all") return roles;
+  const filteredRoles = useMemo(() => {
+    if (roleType === "all") return roles;
 
-  return roles.filter(
-    (role) => role.role.toLowerCase() === roleType.toLowerCase()
-  );
-}, [roles, roleType]);
+    return roles.filter(
+      (role) => role.role.toLowerCase() === roleType.toLowerCase()
+    );
+  }, [roles, roleType]);
 
 
   // OPEN CREATE
@@ -501,7 +502,7 @@ const filteredRoles = useMemo(() => {
             className="rounded-xl border border-line bg-white px-4 py-2.5 text-sm text-brand-dark outline-none focus:border-brand"
           >
             <option value="all">All Roles</option>
-            
+
 
             {ROLE_OPTIONS.filter((item) => item !== "Other").map(
               (item) => (
@@ -597,36 +598,32 @@ const filteredRoles = useMemo(() => {
                             updatingStatus === role._id
                           }
                           onClick={() => handleStatusToggle(role)}
-                          className={`relative h-6 w-11 rounded-full transition ${
-                            getStatus(role)
+                          className={`relative h-6 w-11 rounded-full transition ${getStatus(role)
                               ? "bg-green-500"
                               : "bg-gray-300"
-                          } ${
-                            role.role === "Super Admin"
+                            } ${role.role === "Super Admin"
                               ? "cursor-not-allowed opacity-70"
                               : "cursor-pointer"
-                          }`}
+                            }`}
                           aria-label={`Toggle ${role.role} status`}
                         >
                           <span
-                            className={`absolute top-1 h-4 w-4 rounded-full bg-white transition ${
-                              getStatus(role) ? "left-6" : "left-1"
-                            }`}
+                            className={`absolute top-1 h-4 w-4 rounded-full bg-white transition ${getStatus(role) ? "left-6" : "left-1"
+                              }`}
                           />
                         </button>
 
                         <span
-                          className={`text-xs font-semibold ${
-                            getStatus(role)
+                          className={`text-xs font-semibold ${getStatus(role)
                               ? "text-green-600"
                               : "text-muted"
-                          }`}
+                            }`}
                         >
                           {role.role === "Super Admin"
                             ? "Full Access"
                             : getStatus(role)
-                            ? "Active"
-                            : "Inactive"}
+                              ? "Active"
+                              : "Inactive"}
                         </span>
                       </div>
                     </td>
@@ -855,8 +852,8 @@ const filteredRoles = useMemo(() => {
                   {saving
                     ? "Saving..."
                     : mode === "edit"
-                    ? "Save Changes"
-                    : "Create Role"}
+                      ? "Save Changes"
+                      : "Create Role"}
                 </button>
               </div>
             </form>

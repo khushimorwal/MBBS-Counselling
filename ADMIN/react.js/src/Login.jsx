@@ -90,6 +90,7 @@ const Login = () => {
         toast.success(data.message || "Login successful!");
 
         navigate("/dash");
+        
       } else {
         toast.error(data.message || "Login failed");
       }

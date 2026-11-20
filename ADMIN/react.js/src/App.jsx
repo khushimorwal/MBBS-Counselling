@@ -6,23 +6,23 @@ import Dashboard from "./DASHBOARD/Dashboard";
 import ProtectedRoute from "./ProtectedRoute";
 
 const App = () => {
-return ( <BrowserRouter> <Routes>
-<Route path="/" element={<Login />} />
+  return (
+    <BrowserRouter>
+      <Routes>
+        <Route path="/" element={<Login />} />
 
+        <Route
+          path="/dash"
+          element={
+            <ProtectedRoute>
+              <Dashboard />
+            </ProtectedRoute>
+          }
+        />
 
-    <Route
-      path="/dash"
-      element={
-        <ProtectedRoute>
-          <Dashboard />
-        </ProtectedRoute>
-      }
-    />
-  </Routes>
-</BrowserRouter>
-
-
-);
+      </Routes>
+    </BrowserRouter>
+  );
 };
 
 export default App;

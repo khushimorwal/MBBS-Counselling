@@ -17,7 +17,11 @@ const icon = (path) => (
 );
 
 function Sidebar({ activePage, setActivePage, user }) {
-  const [counsellingOpen, setCounsellingOpen] = useState(false);
+  const isCounsellor = user?.role === "Counsellor";
+
+  const [counsellingOpen, setCounsellingOpen] = useState(
+    isCounsellor
+  );
 
   const menu = [
     {
@@ -96,21 +100,6 @@ function Sidebar({ activePage, setActivePage, user }) {
         </>
       ),
     },
-
-    
-    {
-  name: "Packages",
-  permission: "packages",
-  icon: icon(
-    <>
-      <rect x="3" y="7" width="18" height="14" rx="2" />
-      <path d="M16 7V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v2" />
-      <path d="M3 12h18M10 12v2h4v-2" />
-    </>
-  ),
-},
-
-
     {
       name: "Specialization",
       permission: "specializations",
@@ -181,6 +170,7 @@ function Sidebar({ activePage, setActivePage, user }) {
     "Counselling Sessions",
     "Counselling Notes",
     "Follow-ups",
+    "Recommendations"
   ];
 
   // Check user role
@@ -193,7 +183,6 @@ function Sidebar({ activePage, setActivePage, user }) {
     "Colleges",
     "University",
     "College Applications",
-    "Packages"
   ];
 
   // Get user permissions
@@ -210,33 +199,32 @@ function Sidebar({ activePage, setActivePage, user }) {
     );
   };
 
-  // Filter menu based on user permissions
-  const visibleMenu = menu.filter((item) => {
-    if (isSuperAdmin) return true;
+  // Counsellor should not see the main admin menu
+  const visibleMenu = isCounsellor
+    ? []
+    : menu.filter((item) => {
+        if (isSuperAdmin) return true;
 
-    if (isAdmin) {
-      return adminMenu.includes(item.name);
-    }
+        if (isAdmin) {
+          return adminMenu.includes(item.name);
+        }
 
-    if (item.name === "Dashboard") return true;
+        if (item.name === "Dashboard") return true;
 
-    return hasPermission(item.permission);
-  });
+        return hasPermission(item.permission);
+      });
 
   const showCounsellingMenu =
     isSuperAdmin ||
     isAdmin ||
-    user?.role === "Counsellor";
+    isCounsellor;
 
   return (
-    // Transparent sidebar (thin white border on the right)
     <aside className="flex h-full w-64 shrink-0 flex-col overflow-hidden border-r-2 border-white/90 bg-white/20 text-slate-700 backdrop-blur-md">
 
       {/* Logo */}
       <div className="border-b border-white/70 px-5 py-5">
-
         <div className="flex items-center gap-3">
-
           <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-lg bg-sky-500 text-white">
             <span className="text-xl">✚</span>
           </div>
@@ -250,79 +238,82 @@ function Sidebar({ activePage, setActivePage, user }) {
               COUNSELLING
             </p>
           </div>
-
         </div>
 
-        {/* Administration label (border-only box) */}
+        {/* Administration label */}
         <div className="mt-5 rounded-xl border border-white/90 bg-white/20 px-3 py-2">
           <p className="text-[10px] font-bold uppercase tracking-widest text-sky-700">
             Administration
           </p>
+
           <p className="mt-0.5 text-xs text-slate-600">
             Management Portal
           </p>
         </div>
-
       </div>
 
       {/* Navigation */}
       <nav className="min-h-0 flex-1 space-y-1 overflow-y-auto overflow-x-hidden px-3 pb-4 pt-4">
 
-        <p className="mb-3 px-3 text-[10px] font-bold uppercase tracking-[0.15em] text-slate-500">
-          Main Menu
-        </p>
+        {/* Main Menu - Hidden for Counsellor */}
+        {!isCounsellor && (
+          <>
+            <p className="mb-3 px-3 text-[10px] font-bold uppercase tracking-[0.15em] text-slate-500">
+              Main Menu
+            </p>
 
-        {visibleMenu.map((item) => {
-          const isActive = activePage === item.name;
+            {visibleMenu.map((item) => {
+              const isActive = activePage === item.name;
 
-          return (
-            <button
-              key={item.name}
-              type="button"
-              onClick={() => setActivePage(item.name)}
-              className={`group flex min-h-11 w-full items-center gap-3 rounded-xl border px-3 py-2.5 text-left text-sm font-medium ${
-                isActive
-                  ? "border-sky-500 bg-white/40 text-sky-700"
-                  : "border-transparent text-slate-700 hover:bg-white/40 hover:text-sky-700"
-              }`}
-            >
+              return (
+                <button
+                  key={item.name}
+                  type="button"
+                  onClick={() => setActivePage(item.name)}
+                  className={`group flex min-h-11 w-full items-center gap-3 rounded-xl border px-3 py-2.5 text-left text-sm font-medium ${
+                    isActive
+                      ? "border-sky-500 bg-white/40 text-sky-700"
+                      : "border-transparent text-slate-700 hover:bg-white/40 hover:text-sky-700"
+                  }`}
+                >
+                  <span
+                    className={
+                      isActive
+                        ? "text-sky-600"
+                        : "text-slate-500 group-hover:text-sky-600"
+                    }
+                  >
+                    {item.icon}
+                  </span>
 
-              <span
-                className={
-                  isActive
-                    ? "text-sky-600"
-                    : "text-slate-500 group-hover:text-sky-600"
-                }
-              >
-                {item.icon}
-              </span>
+                  <span className="flex-1">
+                    {item.name}
+                  </span>
 
-              <span className="flex-1">
-                {item.name}
-              </span>
-
-              {isActive && (
-                <span className="h-5 w-1 rounded-full bg-sky-500" />
-              )}
-
-            </button>
-          );
-        })}
+                  {isActive && (
+                    <span className="h-5 w-1 rounded-full bg-sky-500" />
+                  )}
+                </button>
+              );
+            })}
+          </>
+        )}
 
         {/* Counselling Menu */}
         {showCounsellingMenu && (
-          <div className="border-t border-white/70 pt-4">
+          <div className={`${!isCounsellor ? "border-t border-white/70 pt-4" : ""}`}>
 
-            <p className="mb-2 px-3 text-[10px] font-bold uppercase tracking-[0.15em] text-slate-500">
-              Counselling
-            </p>
+            {!isCounsellor && (
+              <p className="mb-2 px-3 text-[10px] font-bold uppercase tracking-[0.15em] text-slate-500">
+                Counselling
+              </p>
+            )}
 
             <button
               type="button"
               onClick={() => setCounsellingOpen(!counsellingOpen)}
               className="flex min-h-11 w-full items-center justify-between rounded-xl px-3 py-2.5 text-left text-sm font-semibold text-slate-700 hover:bg-white/40 hover:text-sky-700"
             >
-
               <span className="flex items-center gap-3">
                 <span className="text-sky-600">◈</span>
                 Counselling Management
@@ -331,12 +322,10 @@ function Sidebar({ activePage, setActivePage, user }) {
               <span className="text-sky-700">
                 {counsellingOpen ? "−" : "+"}
               </span>
-
             </button>
 
             {counsellingOpen && (
               <div className="mt-2 space-y-1 pl-3">
-
                 {counsellingMenu.map((name) => {
                   const isActive = activePage === name;
 
@@ -356,18 +345,14 @@ function Sidebar({ activePage, setActivePage, user }) {
                     </button>
                   );
                 })}
-
               </div>
             )}
-
           </div>
         )}
-
       </nav>
 
       {/* Logout */}
       <div className="border-t border-white/70 p-3">
-
         <button
           type="button"
           onClick={() => {
@@ -378,7 +363,6 @@ function Sidebar({ activePage, setActivePage, user }) {
           }}
           className="group flex w-full items-center gap-3 rounded-xl px-3 py-3 text-left text-sm font-semibold text-slate-600 hover:bg-white/40 hover:text-red-600"
         >
-
           <svg
             width="20"
             height="20"
@@ -396,11 +380,8 @@ function Sidebar({ activePage, setActivePage, user }) {
           </svg>
 
           <span>Logout</span>
-
         </button>
-
       </div>
-
     </aside>
   );
 }

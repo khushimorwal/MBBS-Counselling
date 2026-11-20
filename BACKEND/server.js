@@ -5,6 +5,7 @@ const express = require("express");
 const cors = require("cors");
 const helmet = require("helmet");
 const superAdmin = require("./Middleware/SuperAdmin");
+const path = require("path");
 
 // Import application configurations.
 const cloudinary = require("./config/cloudnary");
@@ -29,7 +30,7 @@ const userRoutes = require("./Routes/User");
 const contactRoutes = require("./Routes/ContactRoute");
 const bulkStudentRoutes = require("./Routes/BulkstudentRoutes");
 const settingsRoutes = require("./Routes/SettingRoutes");
-
+const collegeRecommendationRoutes = require("./Routes/CollegeRecommendationRoute");
 // Student profile and related routes.
 const studentProfileRoutes = require("./Routes/StudentProfileRoute");
 const entranceExamRoutes = require("./Routes/EntranceExamRoute");
@@ -48,6 +49,10 @@ const packageRoutes = require("./Routes/PackageRoutes");
 const paymentRoutes = require("./Routes/PaymentRoutes");
 // Initialize Express application.
 const app = express();
+app.use(
+  "/uploads",
+  express.static(path.join(__dirname, "uploads"))
+);
 
 // Configure application-level middleware.
 if (process.env.NODE_ENV === "production" && !process.env.CORS_ORIGIN) {
@@ -128,6 +133,8 @@ app.use("/counselling-dashboard", counsellingDashboardRoutes);
 app.use("/student-counselling", studentCounsellingRoutes);
 app.use("/workflow", workflowRoutes);
 app.use("/packages", packageRoutes);
+app.use("/college-recommendations", collegeRecommendationRoutes);
+
 app.get("/debug-package", (req, res) => {
   res.json({
     success: true,
@@ -135,6 +142,7 @@ app.get("/debug-package", (req, res) => {
   });
 });
 app.use("/payment", paymentRoutes);
+
 // --------------------------------------------------
 // TEST ROUTES
 // --------------------------------------------------

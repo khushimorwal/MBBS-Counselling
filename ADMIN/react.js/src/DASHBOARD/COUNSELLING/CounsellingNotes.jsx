@@ -49,9 +49,9 @@ function CounsellingNotes() {
       setLoading(true);
       setError("");
 
-      const response = await API.get("/counselling-note/all");
+      const response = await API.get("/counselling-note/my-notes");
+setNotes(response.data.notes || []);
 
-      setNotes(response.data.notes || []);
     } catch (err) {
       console.error("Fetch Notes Error:", err);
 
@@ -69,7 +69,7 @@ function CounsellingNotes() {
 
   const fetchSessions = async () => {
     try {
-      const response = await API.get("/counselling-session/all");
+      const response = await API.get("/counselling-session/my-sessions");
 
       setSessions(response.data.sessions || []);
     } catch (err) {

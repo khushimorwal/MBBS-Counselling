@@ -111,7 +111,7 @@ function CounsellingSessions() {
       setLoading(true);
       setError("");
 
-      const response = await API.get("/counselling-session/all");
+      const response = await API.get("/counselling-session/my-sessions");
 
       if (response.data.success) {
         setSessions(response.data.sessions || []);

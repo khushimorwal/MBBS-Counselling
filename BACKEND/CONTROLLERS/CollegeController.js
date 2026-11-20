@@ -1,15 +1,28 @@
+
 const College = require("../Models/College");
 
 // Add College
 const addCollege = async (req, res) => {
   try {
-    const college = await College.create(req.body);
+    // FormData se college data receive karna
+    const collegeData = JSON.parse(
+      req.body.collegeData || "{}"
+    );
+
+    // Uploaded logo ka path save karna
+    if (req.file) {
+      collegeData.logo = `/uploads/college-logos/${req.file.filename}`;
+    }
+
+    const college = await College.create(collegeData);
 
     res.status(201).json({
       message: "College added successfully",
       college,
     });
   } catch (error) {
+    console.log("Add College Error:", error);
+
     res.status(400).json({
       message: "Failed to add college",
       error: error.message,
@@ -61,9 +74,19 @@ const getCollegeById = async (req, res) => {
 // Update College
 const updateCollege = async (req, res) => {
   try {
+    // FormData se college data receive karna
+    const updateData = JSON.parse(
+      req.body.collegeData || "{}"
+    );
+
+    // Naya logo upload hua hai toh uska path update karo
+    if (req.file) {
+      updateData.logo = `/uploads/college-logos/${req.file.filename}`;
+    }
+
     const college = await College.findByIdAndUpdate(
       req.params.id,
-      req.body,
+      updateData,
       {
         new: true,
         runValidators: true,
@@ -81,6 +104,8 @@ const updateCollege = async (req, res) => {
       college,
     });
   } catch (error) {
+    console.log("Update College Error:", error);
+
     res.status(400).json({
       message: "Failed to update college",
       error: error.message,
@@ -91,7 +116,9 @@ const updateCollege = async (req, res) => {
 // Delete College
 const deleteCollege = async (req, res) => {
   try {
-    const college = await College.findByIdAndDelete(req.params.id);
+    const college = await College.findByIdAndDelete(
+      req.params.id
+    );
 
     if (!college) {
       return res.status(404).json({

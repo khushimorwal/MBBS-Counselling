@@ -11,6 +11,8 @@ const colleges = [
     location: "Ansari Nagar, New Delhi, India",
     established: "1956",
     type: "Government",
+    image:
+      "https://commons.wikimedia.org/wiki/Special:FilePath/AIIMS_DELHI_Building.jpg",
     website: "https://www.aiims.edu/",
     description:
       "AIIMS New Delhi is a medical institution known for medical education, research and healthcare services.",
@@ -30,6 +32,8 @@ const colleges = [
     location: "Puducherry, India",
     established: "1823",
     type: "Government",
+    image:
+      "https://commons.wikimedia.org/wiki/Special:FilePath/JIPMER.jpg",
     website: "https://jipmer.edu.in/",
     description:
       "JIPMER is a medical institution offering medical education, postgraduate training, research and healthcare services.",
@@ -49,6 +53,8 @@ const colleges = [
     location: "Jaipur, Rajasthan, India",
     established: "1947",
     type: "Government",
+    image:
+      "https://images.unsplash.com/photo-1562774053-701939374585?auto=format&fit=crop&w=1000&q=85",
     website: "https://medicaleducation.rajasthan.gov.in/",
     description:
       "Sawai Man Singh Medical College is a government medical college in Jaipur, Rajasthan, providing medical education and clinical training.",
@@ -68,6 +74,8 @@ const colleges = [
     location: "Vellore, Tamil Nadu, India",
     established: "1900",
     type: "Private",
+    image:
+      "https://commons.wikimedia.org/wiki/Special:FilePath/CMC_Main_building.jpg",
     website: "https://www.cmch-vellore.edu/",
     description:
       "Christian Medical College, Vellore, is a medical institution providing medical education, healthcare and research opportunities.",
@@ -87,6 +95,8 @@ const colleges = [
     location: "Manipal, Karnataka, India",
     established: "1953",
     type: "Private",
+    image:
+      "https://commons.wikimedia.org/wiki/Special:FilePath/Manipal_rocks_copy.jpg",
     website: "https://manipal.edu/kmc-manipal.html",
     description:
       "Kasturba Medical College, Manipal, offers medical education, clinical training and research opportunities.",
@@ -106,6 +116,8 @@ const colleges = [
     location: "Kochi, Kerala, India",
     established: "1998",
     type: "Private",
+    image:
+      "https://commons.wikimedia.org/wiki/Special:FilePath/AIMS_Cochin.jpg",
     website: "https://www.amrita.edu/",
     description:
       "Amrita School of Medicine provides medical education and clinical learning opportunities through its academic and healthcare environment.",
@@ -149,20 +161,35 @@ export default function CollegeDetails() {
 
   return (
     <main className="min-h-screen bg-gray-50 text-gray-800">
-      {/* Hero Section */}
-      <section className="bg-gradient-to-r from-slate-950 via-blue-950 to-blue-800 text-white">
-        <div className="mx-auto max-w-7xl px-5 py-12 md:px-8 md:py-16">
+
+      {/* Hero Section with College Background Image */}
+      <section className="relative isolate overflow-hidden text-white">
+
+        {/* College Background Image */}
+        <div
+          className="absolute inset-0 -z-20 bg-cover bg-center"
+          style={{
+            backgroundImage: `url("${college.image}")`,
+          }}
+        />
+
+        {/* Dark Overlay */}
+        <div className="absolute inset-0 -z-10 bg-gradient-to-r from-slate-950/95 via-slate-900/80 to-blue-950/50" />
+
+        <div className="mx-auto max-w-7xl px-5 py-12 md:px-8 md:py-20">
+
           <div className="mb-6 flex flex-wrap gap-3">
-            <span className="rounded-full bg-white/10 px-4 py-2 text-sm">
+            <span className="rounded-full border border-white/20 bg-white/15 px-4 py-2 text-sm backdrop-blur-md">
               {college.type} College
             </span>
 
-            <span className="rounded-full bg-white/10 px-4 py-2 text-sm">
+            <span className="rounded-full border border-white/20 bg-white/15 px-4 py-2 text-sm backdrop-blur-md">
               Established {college.established}
             </span>
           </div>
 
           <div className="max-w-4xl">
+
             <p className="mb-3 text-sm font-semibold uppercase tracking-[3px] text-blue-200">
               College Details
             </p>
@@ -181,6 +208,7 @@ export default function CollegeDetails() {
             </p>
 
             <div className="mt-8 flex flex-wrap gap-4">
+
               <a
                 href={college.website}
                 target="_blank"
@@ -192,10 +220,11 @@ export default function CollegeDetails() {
 
               <a
                 href="#courses"
-                className="rounded-lg border border-white/50 px-6 py-3 font-semibold transition hover:bg-white/10"
+                className="rounded-lg border border-white/50 bg-white/10 px-6 py-3 font-semibold backdrop-blur-sm transition hover:bg-white/20"
               >
                 Explore Courses
               </a>
+
             </div>
           </div>
         </div>
@@ -203,7 +232,9 @@ export default function CollegeDetails() {
 
       {/* Quick Information */}
       <section className="mx-auto -mt-1 max-w-7xl px-5 md:px-8">
+
         <div className="grid grid-cols-1 gap-4 rounded-xl border border-gray-200 bg-white p-5 shadow-sm sm:grid-cols-3">
+
           <div className="border-b border-gray-100 pb-4 sm:border-b-0 sm:border-r sm:pb-0">
             <p className="text-sm text-gray-500">College Type</p>
             <h3 className="mt-2 text-lg font-bold">{college.type}</h3>
@@ -222,12 +253,15 @@ export default function CollegeDetails() {
               {college.courses.length} course categories
             </h3>
           </div>
+
         </div>
       </section>
 
       {/* Section Navigation */}
       <nav className="sticky top-0 z-20 mt-8 border-b border-gray-200 bg-white">
+
         <div className="mx-auto flex max-w-7xl gap-7 overflow-x-auto px-5 md:px-8">
+
           <a
             href="#overview"
             className="whitespace-nowrap border-b-2 border-blue-700 py-4 text-sm font-semibold text-blue-700"
@@ -262,18 +296,22 @@ export default function CollegeDetails() {
           >
             Contact
           </a>
+
         </div>
       </nav>
 
       {/* Main Content */}
       <div className="mx-auto grid max-w-7xl grid-cols-1 gap-8 px-5 py-10 md:px-8 lg:grid-cols-3">
+
         {/* Left Content */}
         <div className="space-y-8 lg:col-span-2">
+
           {/* Overview */}
           <section
             id="overview"
             className="scroll-mt-24 rounded-xl border border-gray-200 bg-white p-6 md:p-8"
           >
+
             <h2 className="text-2xl font-bold">About the College</h2>
 
             <div className="mt-4 h-1 w-14 rounded bg-blue-700" />
@@ -283,6 +321,7 @@ export default function CollegeDetails() {
             </p>
 
             <div className="mt-6 grid gap-4 sm:grid-cols-2">
+
               <div className="rounded-lg bg-gray-50 p-4">
                 <p className="text-sm text-gray-500">College Name</p>
                 <p className="mt-2 font-semibold">{college.name}</p>
@@ -304,6 +343,7 @@ export default function CollegeDetails() {
                   {college.established}
                 </p>
               </div>
+
             </div>
           </section>
 
@@ -312,6 +352,7 @@ export default function CollegeDetails() {
             id="courses"
             className="scroll-mt-24 rounded-xl border border-gray-200 bg-white p-6 md:p-8"
           >
+
             <h2 className="text-2xl font-bold">Courses & Programs</h2>
 
             <p className="mt-2 text-gray-500">
@@ -320,7 +361,9 @@ export default function CollegeDetails() {
             </p>
 
             <div className="mt-6 overflow-x-auto">
+
               <table className="w-full min-w-[400px] text-left">
+
                 <thead>
                   <tr className="border-b border-gray-200 bg-gray-50">
                     <th className="px-4 py-3 text-sm font-semibold">
@@ -339,7 +382,9 @@ export default function CollegeDetails() {
                       key={course}
                       className="border-b border-gray-100 last:border-0"
                     >
-                      <td className="px-4 py-4 font-medium">{course}</td>
+                      <td className="px-4 py-4 font-medium">
+                        {course}
+                      </td>
 
                       <td className="px-4 py-4 text-sm text-gray-500">
                         Check official website
@@ -347,6 +392,7 @@ export default function CollegeDetails() {
                     </tr>
                   ))}
                 </tbody>
+
               </table>
             </div>
 
@@ -354,6 +400,7 @@ export default function CollegeDetails() {
               Fees, seat availability and course duration should be confirmed
               using the latest official admission information.
             </p>
+
           </section>
 
           {/* Facilities */}
@@ -361,30 +408,38 @@ export default function CollegeDetails() {
             id="facilities"
             className="scroll-mt-24 rounded-xl border border-gray-200 bg-white p-6 md:p-8"
           >
-            <h2 className="text-2xl font-bold">Facilities & Infrastructure</h2>
+
+            <h2 className="text-2xl font-bold">
+              Facilities & Infrastructure
+            </h2>
 
             <p className="mt-2 text-gray-500">
               Check the college website for details about available facilities.
             </p>
 
             <div className="mt-6 grid grid-cols-1 gap-4 sm:grid-cols-2">
+
               {college.facilities.map((facility) => (
                 <div
                   key={facility}
                   className="flex items-center gap-4 rounded-lg border border-gray-200 p-4 transition hover:border-blue-300 hover:bg-blue-50/40"
                 >
+
                   <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-lg bg-blue-50 text-xl">
                     🏥
                   </div>
 
                   <div>
                     <h3 className="font-semibold">{facility}</h3>
+
                     <p className="mt-1 text-sm text-gray-500">
                       Check official details
                     </p>
                   </div>
+
                 </div>
               ))}
+
             </div>
           </section>
 
@@ -393,6 +448,7 @@ export default function CollegeDetails() {
             id="admission"
             className="scroll-mt-24 rounded-xl border border-gray-200 bg-white p-6 md:p-8"
           >
+
             <h2 className="text-2xl font-bold">Admission Process</h2>
 
             <p className="mt-3 leading-7 text-gray-600">
@@ -402,6 +458,7 @@ export default function CollegeDetails() {
             </p>
 
             <div className="mt-6 space-y-4">
+
               {[
                 {
                   number: "01",
@@ -425,18 +482,22 @@ export default function CollegeDetails() {
                 },
               ].map((step) => (
                 <div key={step.number} className="flex gap-4">
+
                   <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-blue-50 font-bold text-blue-700">
                     {step.number}
                   </div>
 
                   <div>
                     <h3 className="font-semibold">{step.title}</h3>
+
                     <p className="mt-1 text-sm leading-6 text-gray-500">
                       {step.text}
                     </p>
                   </div>
+
                 </div>
               ))}
+
             </div>
 
             <a
@@ -447,23 +508,30 @@ export default function CollegeDetails() {
             >
               Check Official Admission Information ↗
             </a>
+
           </section>
+
         </div>
 
         {/* Right Sidebar */}
         <aside className="space-y-6">
+
           {/* Contact Card */}
           <section
             id="contact"
             className="scroll-mt-24 rounded-xl border border-gray-200 bg-white p-6"
           >
-            <h2 className="text-xl font-bold">College Information</h2>
+
+            <h2 className="text-xl font-bold">
+              College Information
+            </h2>
 
             <p className="mt-2 text-sm leading-6 text-gray-500">
               Use the official website to verify current contact information.
             </p>
 
             <div className="mt-5 space-y-4">
+
               <div>
                 <p className="text-sm text-gray-500">College</p>
                 <p className="mt-1 font-medium">{college.shortName}</p>
@@ -476,6 +544,7 @@ export default function CollegeDetails() {
 
               <div>
                 <p className="text-sm text-gray-500">Website</p>
+
                 <a
                   href={college.website}
                   target="_blank"
@@ -485,6 +554,7 @@ export default function CollegeDetails() {
                   Visit Official Website ↗
                 </a>
               </div>
+
             </div>
 
             <a
@@ -495,10 +565,12 @@ export default function CollegeDetails() {
             >
               Visit College Website
             </a>
+
           </section>
 
           {/* Important Note */}
           <section className="rounded-xl border border-blue-100 bg-blue-50 p-6">
+
             <h3 className="text-lg font-bold text-blue-950">
               Admission Information
             </h3>
@@ -508,6 +580,7 @@ export default function CollegeDetails() {
               counselling dates and seat availability from the official
               admission authority.
             </p>
+
           </section>
 
           {/* Back Button */}
@@ -517,7 +590,9 @@ export default function CollegeDetails() {
           >
             ← Back to All Colleges
           </Link>
+
         </aside>
+
       </div>
     </main>
   );
