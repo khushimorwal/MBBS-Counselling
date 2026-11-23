@@ -5,7 +5,8 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import axios from "axios";
 
-const API_URL = "http://localhost:3000";
+// Read API base URL from environment with fallback to localhost:3000
+const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3000";
 
 export default function Header() {
   const router = useRouter();
@@ -167,8 +168,9 @@ useEffect(() => {
     }
 
     try {
+      // Changed from /forgetpassword to match backend route /forgotpassword
       const response = await axios.post(
-        `${API_URL}/forgetpassword`,
+        `${API_URL}/forgotpassword`,
         {
           email: forgotEmail.trim(),
         }
@@ -198,8 +200,9 @@ useEffect(() => {
     }
 
     try {
+      // Changed from /verifyforgetotp to match backend route /verifyforgototp
       const response = await axios.post(
-        `${API_URL}/verifyforgetotp`,
+        `${API_URL}/verifyforgototp`,
         {
           email: forgotEmail.trim(),
           otp: otp.trim(),

@@ -4,6 +4,9 @@ import axios from "axios";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
+// Read API base URL from environment variable with fallback to localhost:3000
+const API_URL = (import.meta.env.VITE_API_URL || "http://localhost:3000").replace(/\/$/, "");
+
 const Login = () => {
   const navigate = useNavigate();
 
@@ -69,7 +72,7 @@ const Login = () => {
       setLoading(true);
 
       const response = await axios.post(
-        "http://localhost:3000/login",
+        `${API_URL}/login`,
         { email, password }
       );
 
@@ -128,7 +131,7 @@ const Login = () => {
       setOtpLoading(true);
 
       const response = await axios.post(
-        "http://localhost:3000/forgotpassword",
+        `${API_URL}/forgotpassword`,
         { email }
       );
 
@@ -162,7 +165,7 @@ const Login = () => {
       setOtpLoading(true);
 
       const response = await axios.post(
-        "http://localhost:3000/verifyforgototp",
+        `${API_URL}/verifyforgototp`,
         {
           email: login.email.trim(),
           otp: forgotOTPValue,
@@ -204,7 +207,7 @@ const Login = () => {
       setResetLoading(true);
 
       const response = await axios.post(
-        "http://localhost:3000/resetpassword",
+        `${API_URL}/resetpassword`,
         {
           email: login.email.trim(),
           password: newPassword,

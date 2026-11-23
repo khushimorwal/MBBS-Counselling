@@ -2,6 +2,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { API } from "../api/axios.js";
 import { toast } from "react-toastify";
+import { Eye, Pencil, Trash2, RefreshCw, Package, CheckCircle } from "lucide-react";
 
 function Packages() {
   const role = localStorage.getItem("role");
@@ -27,11 +28,12 @@ function Packages() {
 
   const [formData, setFormData] = useState(initialFormData);
 
+  // THEME CLASSES
   const inputClass =
-    "w-full rounded-lg border border-line bg-white px-3 py-2.5 text-sm outline-none focus:border-brand";
+    "w-full rounded-lg border border-[#9DBDBA] bg-white px-3 py-2.5 text-sm text-[#0B2B2A] outline-none placeholder:text-[#4B6463] focus:border-teal-700 focus:ring-2 focus:ring-teal-200";
 
   const labelClass =
-    "mb-1.5 block text-sm font-medium text-brand-dark";
+    "mb-1.5 block text-sm font-medium text-[#0B2B2A]";
 
   const actionButton =
     "inline-flex h-9 w-9 items-center justify-center rounded-lg border transition";
@@ -54,7 +56,7 @@ function Packages() {
 
       toast.error(
         error.response?.data?.message ||
-          "Failed to fetch packages."
+        "Failed to fetch packages."
       );
     } finally {
       setLoading(false);
@@ -82,7 +84,7 @@ function Packages() {
     setShowForm(false);
   };
 
-  // OPEN ADD FORM
+  // ADD PACKAGE
   const handleAdd = () => {
     setEditId(null);
     setFormData({ ...initialFormData });
@@ -148,18 +150,15 @@ function Packages() {
       await fetchPackages();
     } catch (error) {
       console.error("Save package error:", error);
-      
 
       toast.error(
         error.response?.data?.message ||
-          "Failed to save package."
+        "Failed to save package."
       );
-
     } finally {
       setSaving(false);
     }
   };
-
 
   // EDIT PACKAGE
   const handleEdit = (item) => {
@@ -206,7 +205,7 @@ function Packages() {
 
       toast.error(
         error.response?.data?.message ||
-          "Failed to delete package."
+        "Failed to delete package."
       );
     } finally {
       setProcessingId(null);
@@ -243,7 +242,7 @@ function Packages() {
 
       toast.error(
         error.response?.data?.message ||
-          "Failed to update package status."
+        "Failed to update package status."
       );
     } finally {
       setProcessingId(null);
@@ -285,11 +284,11 @@ function Packages() {
       {/* PAGE HEADER */}
       <div className="flex flex-wrap items-center justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-bold text-brand-dark">
+          <h1 className="text-2xl font-bold text-[#0B2B2A]">
             Packages
           </h1>
 
-          <p className="mt-1 text-sm text-muted">
+          <p className="mt-1 text-sm text-[#3F5A58]">
             Manage counselling packages, pricing and features.
           </p>
         </div>
@@ -297,53 +296,80 @@ function Packages() {
         <button
           type="button"
           onClick={handleAdd}
-          className="rounded-xl bg-accent px-5 py-2.5 text-sm font-bold text-white transition hover:bg-[#cf4a24]"
+          className="rounded-xl bg-teal-700 px-5 py-2.5 text-sm font-bold text-white transition hover:bg-teal-800"
         >
           + Add Package
         </button>
       </div>
 
-      {/* SUMMARY */}
+      {/* SUMMARY CARDS */}
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-        <div className="rounded-xl border border-line bg-white p-5">
-          <p className="text-sm text-muted">Total Packages</p>
-          <h2 className="mt-2 text-2xl font-bold text-brand-dark">
-            {packages.length}
-          </h2>
+
+        <div className="rounded-2xl border border-white bg-white/70 p-5 shadow-[0_4px_24px_rgba(15,118,110,0.08)] backdrop-blur-xl">
+          <div className="flex items-center justify-between">
+            <div>
+              <p className="text-sm font-medium text-[#3F5A58]">
+                Total Packages
+              </p>
+
+              <h2 className="mt-2 text-3xl font-bold text-[#0B2B2A]">
+                {packages.length}
+              </h2>
+            </div>
+
+            <div className="rounded-xl bg-[#E2F2EF] p-3 text-teal-700">
+              <Package size={25} />
+            </div>
+          </div>
         </div>
 
-        <div className="rounded-xl border border-line bg-white p-5">
-          <p className="text-sm text-muted">Active Packages</p>
-          <h2 className="mt-2 text-2xl font-bold text-green-600">
-            {activeCount}
-          </h2>
+        <div className="rounded-2xl border border-white bg-white/70 p-5 shadow-[0_4px_24px_rgba(15,118,110,0.08)] backdrop-blur-xl">
+          <div className="flex items-center justify-between">
+            <div>
+              <p className="text-sm font-medium text-[#3F5A58]">
+                Active Packages
+              </p>
+
+              <h2 className="mt-2 text-3xl font-bold text-teal-700">
+                {activeCount}
+              </h2>
+            </div>
+
+            <div className="rounded-xl bg-[#E2F2EF] p-3 text-teal-700">
+              <CheckCircle size={25} />
+            </div>
+          </div>
         </div>
+
       </div>
 
-      {/* SEARCH */}
+      {/* SEARCH AND REFRESH */}
       <div className="flex flex-wrap items-center justify-between gap-3">
         <input
           type="text"
           placeholder="Search package by name, price or feature..."
           value={search}
           onChange={(e) => setSearch(e.target.value)}
-          className="w-full max-w-md rounded-xl border border-line bg-white px-4 py-2.5 text-sm outline-none focus:border-brand focus:ring-2 focus:ring-brand/15"
+          className="w-full max-w-md rounded-xl border border-[#9DBDBA] bg-white/80 px-4 py-2.5 text-sm text-[#0B2B2A] outline-none placeholder:text-[#4B6463] focus:border-teal-700 focus:ring-2 focus:ring-teal-200"
         />
 
         <button
           type="button"
           onClick={fetchPackages}
           disabled={loading}
-          className="rounded-lg border border-line bg-white px-4 py-2.5 text-sm font-medium hover:bg-surface disabled:opacity-50"
+          className="flex items-center gap-2 rounded-xl border border-[#CFE5E2] bg-white px-4 py-2.5 text-sm font-medium text-[#0B2B2A] transition hover:bg-[#F1F8F7] disabled:opacity-50"
         >
-          {loading ? "Refreshing..." : "↻ Refresh"}
+          <RefreshCw size={16} />
+          {loading ? "Refreshing..." : "Refresh"}
         </button>
       </div>
 
       {/* PACKAGES TABLE */}
-      <div className="overflow-x-auto rounded-2xl border border-line bg-white">
+      <div className="overflow-x-auto rounded-2xl border border-white bg-white/65 text-[#0B2B2A] shadow-[0_4px_24px_rgba(15,118,110,0.08)] backdrop-blur-xl">
+
         <table className="w-full min-w-[850px] text-left text-sm">
-          <thead className="bg-[#F9FBFA] text-[11px] font-bold uppercase tracking-wider text-muted">
+
+          <thead className="bg-[#F1F8F7] text-[11px] font-bold uppercase tracking-wider text-[#3F5A58]">
             <tr>
               <th className="px-4 py-4">Package Name</th>
               <th className="px-4 py-4">Price</th>
@@ -357,7 +383,10 @@ function Packages() {
           <tbody>
             {loading ? (
               <tr>
-                <td colSpan="6" className="px-4 py-10 text-center text-muted">
+                <td
+                  colSpan="6"
+                  className="px-4 py-10 text-center text-[#3F5A58]"
+                >
                   Loading packages...
                 </td>
               </tr>
@@ -365,9 +394,9 @@ function Packages() {
               filteredPackages.map((item) => (
                 <tr
                   key={item._id}
-                  className="border-t border-line hover:bg-surface/70"
+                  className="border-t border-[#CFE5E2] transition hover:bg-teal-50/70"
                 >
-                  <td className="px-4 py-4 font-semibold text-brand-dark">
+                  <td className="px-4 py-4 font-semibold text-[#0B2B2A]">
                     {item.name}
                   </td>
 
@@ -380,55 +409,66 @@ function Packages() {
                   </td>
 
                   <td className="px-4 py-4">
-                    {item.features?.length || 0} Features
+                    <span className="rounded-lg bg-[#E2F2EF] px-3 py-1.5 text-xs font-semibold text-teal-800">
+                      {item.features?.length || 0} Features
+                    </span>
                   </td>
 
                   <td className="px-4 py-4">
                     <div className="flex items-center gap-2">
+
                       <button
                         type="button"
                         disabled={processingId === item._id}
                         onClick={() => handleStatusToggle(item)}
                         aria-label={`Change ${item.name} status`}
-                        className={`relative h-7 w-12 rounded-full transition disabled:opacity-50 ${
+                        className={`relative h-6 w-11 rounded-full transition disabled:opacity-50 ${
                           item.status === "Active"
-                            ? "bg-brand"
+                            ? "bg-teal-700"
                             : "bg-gray-300"
                         }`}
                       >
                         <span
-                          className={`absolute top-1 h-5 w-5 rounded-full bg-white transition ${
+                          className={`absolute top-0.5 h-5 w-5 rounded-full bg-white shadow transition-all ${
                             item.status === "Active"
-                              ? "left-6"
-                              : "left-1"
+                              ? "left-[22px]"
+                              : "left-0.5"
                           }`}
                         />
                       </button>
 
-                      <span className="text-xs text-muted">
+                      <span
+                        className={`text-xs font-medium ${
+                          item.status === "Active"
+                            ? "text-teal-700"
+                            : "text-gray-500"
+                        }`}
+                      >
                         {item.status}
                       </span>
+
                     </div>
                   </td>
 
                   <td className="px-4 py-4">
                     <div className="flex items-center gap-2">
+
                       <button
                         type="button"
                         title="View Package"
                         onClick={() => setViewPackage(item)}
-                        className={`${actionButton} border-brand/20 bg-brand-soft text-brand hover:bg-brand hover:text-white`}
+                        className={`${actionButton} border-teal-200 bg-teal-50 text-teal-700 hover:bg-teal-700 hover:text-white`}
                       >
-                        👁
+                        <Eye size={17} />
                       </button>
 
                       <button
                         type="button"
                         title="Edit Package"
                         onClick={() => handleEdit(item)}
-                        className={`${actionButton} border-orange-200 bg-orange-50 text-accent hover:bg-accent hover:text-white`}
+                        className={`${actionButton} border-[#CFE5E2] bg-white text-[#3F5A58] hover:bg-[#0B2B2A] hover:text-white`}
                       >
-                        ✎
+                        <Pencil size={17} />
                       </button>
 
                       {role === "Super Admin" && (
@@ -439,43 +479,50 @@ function Packages() {
                           onClick={() => handleDelete(item._id)}
                           className={`${actionButton} border-red-200 bg-red-50 text-red-600 hover:bg-red-600 hover:text-white disabled:opacity-50`}
                         >
-                          ✕
+                          <Trash2 size={17} />
                         </button>
                       )}
+
                     </div>
                   </td>
                 </tr>
               ))
             ) : (
               <tr>
-                <td colSpan="6" className="px-4 py-10 text-center text-muted">
-                  No packages found.
+                <td
+                  colSpan="6"
+                  className="px-4 py-10 text-center text-[#3F5A58]"
+                >
+                  {search
+                    ? "No matching packages found."
+                    : "No packages found. Click Add Package to create one."}
                 </td>
               </tr>
             )}
           </tbody>
+
         </table>
       </div>
 
       {/* ADD / EDIT MODAL */}
       {showForm && (
         <div
-          className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4"
+          className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4 backdrop-blur-sm"
           onClick={(e) => {
             if (e.target === e.currentTarget && !saving) {
               resetForm();
             }
           }}
         >
-          <div className="max-h-[90vh] w-full max-w-2xl overflow-y-auto rounded-2xl bg-white p-6 shadow-xl">
+          <div className="max-h-[90vh] w-full max-w-2xl overflow-y-auto rounded-2xl border border-[#CFE5E2] bg-white p-6 shadow-2xl">
 
             <div className="mb-6 flex items-center justify-between">
               <div>
-                <h2 className="text-2xl font-bold text-brand">
+                <h2 className="text-2xl font-bold text-[#0B2B2A]">
                   {editId ? "Edit Package" : "Add Package"}
                 </h2>
 
-                <p className="mt-1 text-sm text-muted">
+                <p className="mt-1 text-sm text-[#3F5A58]">
                   Enter package details below.
                 </p>
               </div>
@@ -484,15 +531,17 @@ function Packages() {
                 type="button"
                 disabled={saving}
                 onClick={resetForm}
-                className="text-2xl text-gray-500 hover:text-red-500 disabled:opacity-50"
+                className="text-2xl text-[#3F5A58] transition hover:text-red-600 disabled:opacity-50"
               >
                 &times;
               </button>
             </div>
 
             <form onSubmit={handleSubmit}>
+
               <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
 
+                {/* PACKAGE NAME */}
                 <div>
                   <label className={labelClass}>
                     Package Name *
@@ -510,6 +559,7 @@ function Packages() {
                   />
                 </div>
 
+                {/* PRICE */}
                 <div>
                   <label className={labelClass}>
                     Price (₹) *
@@ -528,6 +578,7 @@ function Packages() {
                   />
                 </div>
 
+                {/* DURATION */}
                 <div>
                   <label className={labelClass}>
                     Duration *
@@ -546,6 +597,7 @@ function Packages() {
                   />
                 </div>
 
+                {/* DURATION TYPE */}
                 <div>
                   <label className={labelClass}>
                     Duration Type *
@@ -563,6 +615,7 @@ function Packages() {
                   </select>
                 </div>
 
+                {/* STATUS */}
                 <div>
                   <label className={labelClass}>
                     Status
@@ -579,6 +632,7 @@ function Packages() {
                   </select>
                 </div>
 
+                {/* DESCRIPTION */}
                 <div className="md:col-span-2">
                   <label className={labelClass}>
                     Description
@@ -590,11 +644,12 @@ function Packages() {
                     maxLength={1000}
                     value={formData.description}
                     onChange={handleChange}
-                    className={inputClass}
+                    className={`${inputClass} resize-y`}
                     placeholder="Enter package description"
                   />
                 </div>
 
+                {/* FEATURES */}
                 <div className="md:col-span-2">
                   <label className={labelClass}>
                     Package Features *
@@ -606,22 +661,25 @@ function Packages() {
                     required
                     value={formData.features}
                     onChange={handleChange}
-                    className={inputClass}
+                    className={`${inputClass} resize-y`}
                     placeholder={"Enter one feature per line\nCollege Information\nCounselling Guidance\nBasic Support"}
                   />
 
-                  <p className="mt-1 text-xs text-muted">
+                  <p className="mt-1 text-xs text-[#3F5A58]">
                     Enter each feature on a separate line.
                   </p>
                 </div>
+
               </div>
 
-              <div className="mt-6 flex justify-end gap-3">
+              {/* FORM BUTTONS */}
+              <div className="mt-6 flex justify-end gap-3 border-t border-[#CFE5E2] pt-5">
+
                 <button
                   type="button"
                   disabled={saving}
                   onClick={resetForm}
-                  className="rounded-lg border border-line px-5 py-2 disabled:opacity-50"
+                  className="rounded-lg border border-[#CFE5E2] px-5 py-2.5 text-sm font-medium text-[#3F5A58] transition hover:bg-[#F1F8F7] disabled:opacity-50"
                 >
                   Cancel
                 </button>
@@ -629,7 +687,7 @@ function Packages() {
                 <button
                   type="submit"
                   disabled={saving}
-                  className="rounded-lg bg-brand px-5 py-2 font-medium text-white hover:bg-brand-dark disabled:cursor-not-allowed disabled:opacity-60"
+                  className="rounded-lg bg-teal-700 px-5 py-2.5 text-sm font-semibold text-white transition hover:bg-teal-800 disabled:cursor-not-allowed disabled:opacity-60"
                 >
                   {saving
                     ? "Saving..."
@@ -637,7 +695,9 @@ function Packages() {
                     ? "Update Package"
                     : "Save Package"}
                 </button>
+
               </div>
+
             </form>
           </div>
         </div>
@@ -645,57 +705,100 @@ function Packages() {
 
       {/* VIEW PACKAGE MODAL */}
       {viewPackage && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4">
-          <div className="max-h-[85vh] w-full max-w-xl overflow-y-auto rounded-2xl bg-white p-6">
+        <div
+          className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4 backdrop-blur-sm"
+          onClick={(e) => {
+            if (e.target === e.currentTarget) {
+              setViewPackage(null);
+            }
+          }}
+        >
+          <div className="max-h-[85vh] w-full max-w-xl overflow-y-auto rounded-2xl border border-[#CFE5E2] bg-white p-6 shadow-2xl">
 
             <div className="mb-5 flex items-center justify-between">
-              <h2 className="text-xl font-bold text-brand-dark">
-                Package Details
-              </h2>
+              <div>
+                <h2 className="text-xl font-bold text-[#0B2B2A]">
+                  Package Details
+                </h2>
+
+                <p className="mt-1 text-sm text-[#3F5A58]">
+                  View complete package information.
+                </p>
+              </div>
 
               <button
                 type="button"
                 onClick={() => setViewPackage(null)}
-                className="text-2xl text-muted"
+                className="text-2xl text-[#3F5A58] transition hover:text-red-600"
               >
                 &times;
               </button>
             </div>
 
             <div className="space-y-4">
-              <div>
-                <p className="text-xs text-muted">Package Name</p>
-                <p className="font-semibold text-brand-dark">
+
+              <div className="rounded-xl bg-[#F1F8F7] p-4">
+                <p className="text-xs font-medium text-[#3F5A58]">
+                  Package Name
+                </p>
+
+                <p className="mt-1 text-lg font-bold text-[#0B2B2A]">
                   {viewPackage.name}
                 </p>
               </div>
 
+              <div className="grid grid-cols-2 gap-4">
+
+                <div className="rounded-xl border border-[#CFE5E2] p-4">
+                  <p className="text-xs text-[#3F5A58]">
+                    Price
+                  </p>
+
+                  <p className="mt-1 text-lg font-bold text-teal-700">
+                    ₹{formatPrice(viewPackage.price)}
+                  </p>
+                </div>
+
+                <div className="rounded-xl border border-[#CFE5E2] p-4">
+                  <p className="text-xs text-[#3F5A58]">
+                    Duration
+                  </p>
+
+                  <p className="mt-1 font-semibold text-[#0B2B2A]">
+                    {viewPackage.duration} {viewPackage.durationType}
+                  </p>
+                </div>
+
+              </div>
+
               <div>
-                <p className="text-xs text-muted">Price</p>
-                <p className="font-semibold">
-                  ₹{formatPrice(viewPackage.price)}
+                <p className="mb-1 text-xs font-medium text-[#3F5A58]">
+                  Status
+                </p>
+
+                <span
+                  className={`inline-block rounded-full px-3 py-1 text-xs font-semibold ${
+                    viewPackage.status === "Active"
+                      ? "bg-teal-100 text-teal-800"
+                      : "bg-gray-100 text-gray-600"
+                  }`}
+                >
+                  {viewPackage.status}
+                </span>
+              </div>
+
+              <div>
+                <p className="mb-1 text-xs font-medium text-[#3F5A58]">
+                  Description
+                </p>
+
+                <p className="text-sm text-[#0B2B2A]">
+                  {viewPackage.description || "-"}
                 </p>
               </div>
 
               <div>
-                <p className="text-xs text-muted">Duration</p>
-                <p>
-                  {viewPackage.duration} {viewPackage.durationType}
-                </p>
-              </div>
-
-              <div>
-                <p className="text-xs text-muted">Status</p>
-                <p>{viewPackage.status}</p>
-              </div>
-
-              <div>
-                <p className="text-xs text-muted">Description</p>
-                <p>{viewPackage.description || "-"}</p>
-              </div>
-
-              <div>
-                <p className="mb-2 text-xs text-muted">
+                <p className="mb-3 text-xs font-medium text-[#3F5A58]">
                   Package Features
                 </p>
 
@@ -704,31 +807,40 @@ function Packages() {
                     viewPackage.features.map((feature, index) => (
                       <li
                         key={index}
-                        className="flex items-start gap-2 text-sm"
+                        className="flex items-start gap-2 rounded-lg bg-[#F1F8F7] p-3 text-sm text-[#0B2B2A]"
                       >
-                        <span className="text-brand">✓</span>
+                        <CheckCircle
+                          size={17}
+                          className="mt-0.5 shrink-0 text-teal-700"
+                        />
+
                         {feature}
                       </li>
                     ))
                   ) : (
-                    <li className="text-sm text-muted">
+                    <li className="text-sm text-[#3F5A58]">
                       No features added.
                     </li>
                   )}
                 </ul>
               </div>
+
             </div>
 
-            <button
-              type="button"
-              onClick={() => setViewPackage(null)}
-              className="mt-6 rounded-lg bg-brand px-5 py-2.5 text-sm font-semibold text-white"
-            >
-              Close
-            </button>
+            <div className="mt-6 flex justify-end border-t border-[#CFE5E2] pt-5">
+              <button
+                type="button"
+                onClick={() => setViewPackage(null)}
+                className="rounded-lg bg-teal-700 px-5 py-2.5 text-sm font-semibold text-white transition hover:bg-teal-800"
+              >
+                Close
+              </button>
+            </div>
+
           </div>
         </div>
       )}
+
     </div>
   );
 }

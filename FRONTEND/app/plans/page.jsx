@@ -3,7 +3,8 @@
 
 import { useEffect, useState } from "react";
 
-const API_URL = "http://localhost:3000";
+// Read API base URL from environment variable with fallback
+const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3000";
 
 // Load Razorpay Checkout Script
 const loadRazorpayScript = () => {

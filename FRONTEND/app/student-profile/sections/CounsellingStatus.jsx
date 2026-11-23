@@ -30,7 +30,7 @@ import {
   FiMail,
 } from "react-icons/fi";
 
-const API_URL = "http://localhost:3000";
+const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3000";
 
 const tabs = [
   { id: "overview", label: "Overview", icon: FiGrid },
@@ -443,16 +443,16 @@ export default function CounsellingStatus() {
           </button>
 
           <button
-            onClick={() => {
-              setError("");
-              setSuccess("");
-              setShowForm(true);
-            }}
-            className="flex items-center gap-2 rounded-xl bg-violet-600 px-5 py-2.5 text-sm font-semibold text-white shadow-md shadow-violet-200 transition hover:bg-violet-700"
-          >
-            <FiPlus />
-            New Request
-          </button>
+  onClick={() => {
+    setError("");
+    setSuccess("");
+    setShowForm(true);
+  }}
+  className="flex items-center gap-2 rounded-xl bg-teal-700 px-5 py-2.5 text-sm font-semibold text-white shadow-md shadow-teal-200 transition hover:bg-teal-800"
+>
+  <FiPlus />
+  New Request
+</button>
         </div>
       </div>
 

@@ -5,6 +5,18 @@ const API_BASE_URL = (
   API.defaults.baseURL || "http://localhost:3000"
 ).replace(/\/api\/?$/, "").replace(/\/$/, "");
 
+// Static default logo (used when a college has no uploaded logo)
+const DEFAULT_LOGO =
+  "data:image/svg+xml;utf8," +
+  encodeURIComponent(
+    '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" fill="none">' +
+    '<rect width="48" height="48" rx="10" fill="#F0FDFA"/>' +
+    '<g stroke="#0F766E" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">' +
+    '<path d="M9 20 24 11l15 9z"/>' +
+    '<path d="M14 23v11M24 23v11M34 23v11M10 37h28"/>' +
+    '</g></svg>'
+  );
+
 function College() {
   const role = localStorage.getItem("role");
 
@@ -80,20 +92,31 @@ function College() {
   };
 
 
-  // Fetch Colleges
-  const fetchColleges = async () => {
-    try {
-      const response = await API.get("/college/get-college");
+  // Logo to display: uploaded logo, otherwise the static default
+  const getLogoSrc = (logo) => getLogoUrl(logo) || DEFAULT_LOGO;
 
-      setColleges(
-        Array.isArray(response.data)
-          ? response.data
-          : response.data.colleges || []
-      );
-    } catch (error) {
-      console.log("Error fetching colleges:", error);
-    }
+  // If an uploaded logo fails to load, fall back to the static default
+  const handleLogoError = (e) => {
+    e.currentTarget.onerror = null;
+    e.currentTarget.src = DEFAULT_LOGO;
   };
+
+  // Fetch Colleges = async () => {
+    // Fetch Colleges
+const fetchColleges = async () => {
+  try {
+    const response = await API.get("/college/get-college");
+
+    setColleges(
+      Array.isArray(response.data)
+        ? response.data
+        : response.data.colleges || []
+    );
+  } catch (error) {
+    console.log("Error fetching colleges:", error);
+  }
+};
+
 
   useEffect(() => {
     fetchColleges();
@@ -511,10 +534,10 @@ function College() {
 
   // Input Classes
   const inputClass =
-    "w-full rounded-lg border border-line bg-white px-3 py-2.5 text-sm outline-none focus:border-brand";
+    "w-full rounded-lg border border-[#9DBDBA] bg-white px-3 py-2.5 text-sm text-[#0B2B2A] outline-none placeholder:text-[#4B6463] focus:border-teal-700 focus:ring-2 focus:ring-teal-200";
 
   const labelClass =
-    "mb-1.5 block text-sm font-medium text-brand-dark";
+    "mb-1.5 block text-sm font-medium text-[#0B2B2A]";
 
   const actionButton =
     "inline-flex h-9 w-9 items-center justify-center rounded-lg border transition";
@@ -540,11 +563,11 @@ function College() {
       {/* PAGE HEADER */}
       <div className="flex flex-wrap items-center justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-bold text-brand-dark">
+          <h1 className="text-2xl font-bold text-[#0B2B2A]">
             Colleges
           </h1>
 
-          <p className="mt-1 text-sm text-muted">
+          <p className="mt-1 text-sm text-[#3F5A58]">
             Manage college information
           </p>
         </div>
@@ -562,14 +585,14 @@ function College() {
             type="button"
             onClick={() => fileInputRef.current?.click()}
             disabled={isImporting}
-            className="rounded-xl border border-line bg-white px-5 py-2.5 text-sm font-semibold text-brand-dark hover:bg-surface disabled:opacity-60"
+            className="rounded-xl border border-[#CFE5E2] bg-white px-5 py-2.5 text-sm font-semibold text-[#0B2B2A] hover:bg-teal-50 disabled:opacity-60"
           >
             {isImporting ? "Importing..." : "Add Bulk Data"}
           </button>
 
           <button
             onClick={handleAdd}
-            className="rounded-xl bg-accent px-5 py-2.5 text-sm font-bold text-white hover:bg-[#cf4a24]"
+            className="rounded-xl bg-teal-700 px-5 py-2.5 text-sm font-bold text-white hover:bg-teal-800"
           >
             + Add College
           </button>
@@ -582,13 +605,13 @@ function College() {
         placeholder="Search college..."
         value={search}
         onChange={(e) => setSearch(e.target.value)}
-        className="w-full max-w-sm rounded-xl border border-line bg-white px-4 py-2.5 text-sm outline-none focus:border-brand"
+        className="w-full max-w-sm rounded-xl border border-[#9DBDBA] bg-white/80 px-4 py-2.5 text-sm text-[#0B2B2A] outline-none placeholder:text-[#4B6463] focus:border-teal-700 focus:ring-2 focus:ring-teal-200"
       />
 
       {/* COLLEGES TABLE */}
-      <div className="overflow-x-auto rounded-2xl border border-line bg-white">
+      <div className="overflow-x-auto rounded-2xl border border-white bg-white/65 shadow-[0_4px_24px_rgba(15,118,110,0.08)] backdrop-blur-xl text-[#0B2B2A]">
         <table className="w-full min-w-[950px] text-left text-sm">
-          <thead className="bg-[#F9FBFA] text-[11px] font-bold uppercase tracking-wider text-muted">
+          <thead className="bg-[#F1F8F7] text-[11px] font-bold uppercase tracking-wider text-[#3F5A58]">
             <tr>
               <th className="px-4 py-4">Logo</th>
               <th className="px-4 py-4">College Name</th>
@@ -607,26 +630,18 @@ function College() {
               filteredColleges.map((college) => (
                 <tr
                   key={college._id}
-                  className="border-t border-line hover:bg-surface/70"
+                  className="border-t border-[#CFE5E2] hover:bg-teal-50/70"
                 >
                   <td className="px-4 py-4">
-                    {isValidLogo(college.logo) ? (
-                      <img
-                        src={getLogoUrl(college.logo)}
-                        alt={college.name}
-                        onError={(e) => {
-                          e.currentTarget.style.display = "none";
-                        }}
-                        className="h-11 w-11 rounded-lg border border-line object-contain"
-                      />
-                    ) : (
-                      <div className="flex h-11 w-11 items-center justify-center rounded-lg bg-brand-soft text-sm font-bold text-brand">
-                        {college.name?.charAt(0)?.toUpperCase() || "C"}
-                      </div>
-                    )}
+                    <img
+                      src={getLogoSrc(college.logo)}
+                      alt={college.name}
+                      onError={handleLogoError}
+                      className="h-11 w-11 rounded-lg border border-[#CFE5E2] bg-white object-contain"
+                    />
                   </td>
 
-                  <td className="px-4 py-4 font-medium text-brand-dark">
+                  <td className="px-4 py-4 font-medium text-[#0B2B2A]">
                     {college.name}
                   </td>
 
@@ -656,7 +671,7 @@ function College() {
                         }
                         target="_blank"
                         rel="noreferrer"
-                        className="text-accent underline"
+                        className="text-teal-700 underline"
                       >
                         Visit Website
                       </a>
@@ -671,8 +686,8 @@ function College() {
                         type="button"
                         onClick={() => handleStatusToggle(college)}
                         className={`relative h-7 w-12 rounded-full transition ${college.status === "active"
-                            ? "bg-brand"
-                            : "bg-gray-300"
+                            ? "bg-teal-700"
+                            : "bg-slate-400"
                           }`}
                       >
                         <span
@@ -683,7 +698,7 @@ function College() {
                         />
                       </button>
 
-                      <span className="text-xs capitalize text-muted">
+                      <span className="text-xs capitalize text-[#3F5A58]">
                         {college.status || "inactive"}
                       </span>
                     </div>
@@ -694,29 +709,69 @@ function College() {
                       <button
                         type="button"
                         title="View College"
+                        aria-label="View College"
                         onClick={() => setViewCollege(college)}
-                        className={`${actionButton} border-brand/20 bg-brand-soft text-brand hover:bg-brand hover:text-white`}
+                        className={`${actionButton} border-teal-200 bg-teal-50 text-teal-700 hover:bg-teal-700 hover:text-white`}
                       >
-                        View
+                        <svg
+                          width="17"
+                          height="17"
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          stroke="currentColor"
+                          strokeWidth="1.8"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          aria-hidden="true"
+                        >
+                          <path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7-10-7-10-7Z" />
+                          <circle cx="12" cy="12" r="3" />
+                        </svg>
                       </button>
 
                       <button
                         type="button"
                         title="Edit College"
+                        aria-label="Edit College"
                         onClick={() => handleEdit(college)}
-                        className={`${actionButton} border-orange-200 bg-orange-50 text-accent hover:bg-accent hover:text-white`}
+                        className={`${actionButton} border-[#CFE5E2] bg-white text-[#3F5A58] hover:bg-[#0B2B2A] hover:text-white`}
                       >
-                        Edit
+                        <svg
+                          width="17"
+                          height="17"
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          stroke="currentColor"
+                          strokeWidth="1.8"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          aria-hidden="true"
+                        >
+                          <path d="m16 4 4 4M4 20l4-.8L19 8a2.1 2.1 0 0 0-3-3L5 16l-1 4Z" />
+                        </svg>
                       </button>
 
                       {role === "Super Admin" && (
                         <button
                           type="button"
                           title="Delete College"
+                        aria-label="Delete College"
                           onClick={() => handleDelete(college._id)}
                           className={`${actionButton} border-red-200 bg-red-50 text-red-600 hover:bg-red-600 hover:text-white`}
                         >
-                          Del
+                        <svg
+                          width="17"
+                          height="17"
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          stroke="currentColor"
+                          strokeWidth="1.8"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          aria-hidden="true"
+                        >
+                          <path d="M3 6h18M8 6V4h8v2m3 0-1 14H6L5 6m4 4v6m6-6v6" />
+                        </svg>
                         </button>
                       )}
                     </div>
@@ -727,7 +782,7 @@ function College() {
               <tr>
                 <td
                   colSpan="9"
-                  className="px-4 py-10 text-center text-muted"
+                  className="px-4 py-10 text-center text-[#3F5A58]"
                 >
                   No colleges found.
                 </td>
@@ -743,14 +798,14 @@ function College() {
           <div className="max-h-[90vh] w-full max-w-3xl overflow-y-auto rounded-2xl bg-white p-6 shadow-xl">
 
             <div className="mb-6 flex items-center justify-between">
-              <h2 className="text-2xl font-bold text-brand">
+              <h2 className="text-2xl font-bold text-teal-700">
                 {editId ? "Edit College" : "Add College"}
               </h2>
 
               <button
                 type="button"
                 onClick={closeForm}
-                className="text-2xl text-gray-500 hover:text-red-500"
+                className="text-2xl text-[#3F5A58] hover:text-red-600"
               >
                 &times;
               </button>
@@ -765,8 +820,8 @@ function College() {
                     College Logo
                   </label>
 
-                  <div className="flex flex-wrap items-center gap-4 rounded-xl border border-line p-4">
-                    <div className="flex h-24 w-24 items-center justify-center overflow-hidden rounded-xl border border-line bg-surface">
+                  <div className="flex flex-wrap items-center gap-4 rounded-xl border border-[#CFE5E2] p-4">
+                    <div className="flex h-24 w-24 items-center justify-center overflow-hidden rounded-xl border border-[#CFE5E2] bg-[#F1F8F7]">
                       {logoPreview ? (
                         <img
                           src={logoPreview}
@@ -774,7 +829,7 @@ function College() {
                           className="h-full w-full object-contain"
                         />
                       ) : (
-                        <span className="text-xs text-muted">
+                        <span className="text-xs text-[#3F5A58]">
                           Logo Preview
                         </span>
                       )}
@@ -794,17 +849,17 @@ function College() {
                         onClick={() =>
                           logoInputRef.current?.click()
                         }
-                        className="rounded-lg border border-line bg-white px-4 py-2.5 text-sm font-semibold text-brand-dark hover:bg-surface"
+                        className="rounded-lg border border-[#CFE5E2] bg-white px-4 py-2.5 text-sm font-semibold text-[#0B2B2A] hover:bg-teal-50"
                       >
                         Choose College Logo
                       </button>
 
-                      <p className="mt-2 text-xs text-muted">
+                      <p className="mt-2 text-xs text-[#3F5A58]">
                         Select JPG, PNG or WEBP image. Maximum size 2 MB.
                       </p>
 
                       {selectedLogo && (
-                        <p className="mt-1 text-xs text-green-600">
+                        <p className="mt-1 text-xs text-teal-700">
                           {selectedLogo.name}
                         </p>
                       )}
@@ -813,7 +868,7 @@ function College() {
                         <button
                           type="button"
                           onClick={clearLogo}
-                          className="mt-2 text-xs font-medium text-red-500"
+                          className="mt-2 text-xs font-medium text-red-600"
                         >
                           Remove Selected Logo
                         </button>
@@ -1130,7 +1185,7 @@ function College() {
                     className="h-4 w-4"
                   />
 
-                  <label className="text-sm font-medium text-brand-dark">
+                  <label className="text-sm font-medium text-[#0B2B2A]">
                     Verified College
                   </label>
                 </div>
@@ -1141,7 +1196,7 @@ function College() {
                 <button
                   type="button"
                   onClick={closeForm}
-                  className="rounded-lg border border-line px-5 py-2"
+                  className="rounded-lg border border-[#CFE5E2] px-5 py-2"
                 >
                   Cancel
                 </button>
@@ -1149,7 +1204,7 @@ function College() {
                 <button
                   type="submit"
                   disabled={isSaving}
-                  className="rounded-lg bg-brand px-5 py-2 font-medium text-white hover:bg-brand-dark disabled:opacity-60"
+                  className="rounded-lg bg-teal-700 px-5 py-2 font-medium text-white hover:bg-teal-800 disabled:opacity-60"
                 >
                   {isSaving
                     ? "Saving..."
@@ -1169,27 +1224,26 @@ function College() {
           <div className="max-h-[85vh] w-full max-w-2xl overflow-y-auto rounded-2xl bg-white p-6">
 
             <div className="mb-5 flex items-center justify-between">
-              <h2 className="text-xl font-bold text-brand-dark">
+              <h2 className="text-xl font-bold text-[#0B2B2A]">
                 College Details
               </h2>
 
               <button
                 onClick={() => setViewCollege(null)}
-                className="text-2xl text-muted"
+                className="text-2xl text-[#3F5A58]"
               >
                 &times;
               </button>
             </div>
 
-            {isValidLogo(viewCollege.logo) && (
-              <div className="mb-5">
-                <img
-                  src={getLogoUrl(viewCollege.logo)}
-                  alt={viewCollege.name}
-                  className="h-24 w-24 rounded-xl border border-line object-contain"
-                />
-              </div>
-            )}
+            <div className="mb-5">
+              <img
+                src={getLogoSrc(viewCollege.logo)}
+                alt={viewCollege.name}
+                onError={handleLogoError}
+                className="h-24 w-24 rounded-xl border border-[#CFE5E2] bg-white object-contain"
+              />
+            </div>
 
             <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
               <p>
@@ -1260,7 +1314,7 @@ function College() {
 
             <button
               onClick={() => setViewCollege(null)}
-              className="mt-6 rounded-lg bg-brand px-5 py-2.5 text-sm font-semibold text-white"
+              className="mt-6 rounded-lg bg-teal-700 px-5 py-2.5 text-sm font-semibold text-white"
             >
               Close
             </button>

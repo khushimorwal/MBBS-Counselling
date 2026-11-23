@@ -281,7 +281,7 @@ function Student() {
   const profile = registeredProfile?.profile;
 
   const inputStyle =
-    "w-full rounded-xl border border-line bg-white px-4 py-3 text-sm text-brand-dark outline-none transition placeholder:text-gray-400 focus:border-brand focus:ring-2 focus:ring-brand/10";
+    "w-full rounded-xl border border-[#9DBDBA] bg-white/80 px-4 py-3 text-sm text-[#0B2B2A] outline-none transition placeholder:text-[#4B6463] focus:border-teal-700 focus:ring-2 focus:ring-teal-200";
 
   const actionButton =
     "inline-flex h-9 w-9 items-center justify-center rounded-lg border transition";
@@ -292,11 +292,11 @@ function Student() {
       {/* Page Heading */}
       <div className="mb-8 flex flex-wrap items-end justify-between gap-4">
         <div>
-          <h1 className="font-display text-3xl font-bold text-brand-dark sm:text-4xl">
+          <h1 className="text-3xl font-bold text-[#0B2B2A] sm:text-4xl">
             Students
           </h1>
 
-          <p className="mt-2 text-sm text-muted">
+          <p className="mt-2 text-sm text-[#3F5A58]">
             Manage and organize student information.
           </p>
         </div>
@@ -317,7 +317,7 @@ function Student() {
               type="button"
               onClick={handleBulkButtonClick}
               disabled={isBulkUploading}
-              className="rounded-xl border border-line bg-white px-5 py-3 text-sm font-semibold text-brand-dark transition hover:bg-surface disabled:cursor-not-allowed disabled:opacity-60"
+              className="rounded-xl border border-[#CFE5E2] bg-white px-5 py-3 text-sm font-semibold text-[#0B2B2A] transition hover:bg-teal-50 disabled:cursor-not-allowed disabled:opacity-60"
             >
               {isBulkUploading
                 ? "Uploading..."
@@ -327,7 +327,7 @@ function Student() {
             <button
               type="button"
               onClick={handleAdd}
-              className="rounded-xl bg-accent px-5 py-3 text-sm font-bold text-white transition hover:bg-[#cf4a24]"
+              className="rounded-xl bg-teal-700 px-5 py-3 text-sm font-bold text-white transition hover:bg-teal-800"
             >
               + Add New Student
             </button>
@@ -337,14 +337,14 @@ function Student() {
       </div>
 
       {/* Student Tabs */}
-      <div className="mb-6 flex gap-3 border-b border-line">
+      <div className="mb-6 flex gap-3 border-b border-[#CFE5E2]">
 
         <button
           type="button"
           onClick={() => setActiveTab("managed")}
           className={`px-5 py-3 text-sm font-semibold transition ${activeTab === "managed"
-              ? "border-b-2 border-brand text-brand"
-              : "text-muted hover:text-brand"
+              ? "border-b-2 border-teal-700 text-teal-700"
+              : "text-[#3F5A58] hover:text-teal-700"
             }`}
         >
           Managed Students
@@ -354,13 +354,13 @@ function Student() {
           type="button"
           onClick={() => setActiveTab("registered")}
           className={`px-5 py-3 text-sm font-semibold transition ${activeTab === "registered"
-              ? "border-b-2 border-brand text-brand"
-              : "text-muted hover:text-brand"
+              ? "border-b-2 border-teal-700 text-teal-700"
+              : "text-[#3F5A58] hover:text-teal-700"
             }`}
         >
           Registered Students
 
-          <span className="ml-2 rounded-full bg-brand-soft px-2 py-1 text-xs text-brand">
+          <span className="ml-2 rounded-full bg-teal-50 px-2 py-1 text-xs text-teal-700">
             {registeredStudents.length}
           </span>
         </button>
@@ -387,20 +387,20 @@ function Student() {
           </div>
 
           {/* Students Table */}
-          <div className="overflow-hidden rounded-2xl border border-line bg-white">
+          <div className="overflow-hidden rounded-2xl border border-white bg-white/65 shadow-[0_4px_24px_rgba(15,118,110,0.08)] backdrop-blur-xl">
 
-            <div className="flex items-center justify-between border-b border-line px-5 py-4">
+            <div className="flex items-center justify-between border-b border-[#CFE5E2] px-5 py-4">
               <div>
-                <h2 className="font-display text-lg font-bold text-brand-dark">
+                <h2 className="text-lg font-bold text-[#0B2B2A]">
                   All Students
                 </h2>
 
-                <p className="mt-1 text-xs text-muted">
+                <p className="mt-1 text-xs text-[#3F5A58]">
                   Student records and account actions
                 </p>
               </div>
 
-              <span className="rounded-full bg-brand-soft px-3 py-1.5 text-xs font-semibold text-brand">
+              <span className="rounded-full bg-teal-50 px-3 py-1.5 text-xs font-semibold text-teal-700">
                 {filteredStudents.length} Students
               </span>
             </div>
@@ -408,7 +408,7 @@ function Student() {
             <div className="overflow-x-auto">
               <table className="w-full min-w-[750px] text-left">
 
-                <thead className="bg-[#F9FBFA] text-[11px] font-bold uppercase tracking-wider text-muted">
+                <thead className="bg-[#F1F8F7] text-[11px] font-bold uppercase tracking-wider text-[#3F5A58]">
                   <tr>
                     <th className="px-5 py-4">#</th>
                     <th className="px-5 py-4">Name</th>
@@ -423,16 +423,16 @@ function Student() {
                   {filteredStudents.map((student, index) => (
                     <tr
                       key={student._id}
-                      className="border-b border-line last:border-b-0 hover:bg-surface/70"
+                      className="border-b border-[#CFE5E2] last:border-b-0 hover:bg-teal-50/70"
                     >
 
-                      <td className="px-5 py-4 text-sm text-muted">
+                      <td className="px-5 py-4 text-sm text-[#3F5A58]">
                         {index + 1}
                       </td>
 
-                      <td className="px-5 py-4 text-sm font-semibold text-brand-dark">
+                      <td className="px-5 py-4 text-sm font-semibold text-[#0B2B2A]">
                         <div className="flex items-center gap-3">
-                          <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-brand-soft text-xs font-bold text-brand">
+                          <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-teal-50 text-xs font-bold text-teal-700">
                             {(student.name || "?")
                               .split(" ")
                               .map((part) => part[0])
@@ -444,11 +444,11 @@ function Student() {
                         </div>
                       </td>
 
-                      <td className="px-5 py-4 text-sm text-muted">
+                      <td className="px-5 py-4 text-sm text-[#3F5A58]">
                         {student.email}
                       </td>
 
-                      <td className="px-5 py-4 text-sm text-muted">
+                      <td className="px-5 py-4 text-sm text-[#3F5A58]">
                         {student.phone}
                       </td>
 
@@ -467,19 +467,19 @@ function Student() {
                               }))
                             }
                             className={`relative h-6 w-11 shrink-0 rounded-full transition-colors ${(studentStatus[student._id] ?? true)
-                                ? "bg-brand"
-                                : "bg-gray-300"
+                                ? "bg-teal-700"
+                                : "bg-slate-400"
                               }`}
                           >
                             <span
-                              className={`absolute top-1 h-4 w-4 rounded-full bg-white transition-transform ${(studentStatus[student._id] ?? true)
+                              className={`absolute left-0 top-1 h-4 w-4 rounded-full bg-white transition-transform ${(studentStatus[student._id] ?? true)
                                   ? "translate-x-6"
                                   : "translate-x-1"
                                 }`}
                             />
                           </button>
 
-                          <span className="text-xs text-brand-dark">
+                          <span className="text-xs text-[#0B2B2A]">
                             {(studentStatus[student._id] ?? true)
                               ? "Active"
                               : "Inactive"}
@@ -495,8 +495,9 @@ function Student() {
                           <button
                             type="button"
                             title="View Student"
+                            aria-label="View Student"
                             onClick={() => setViewStudent(student)}
-                            className={`${actionButton} border-brand/20 bg-brand-soft text-brand hover:bg-brand hover:text-white`}
+                            className={`${actionButton} border-teal-200 bg-teal-50 text-teal-700 hover:bg-teal-700 hover:text-white`}
                           >
                             <svg
                               width="17"
@@ -517,8 +518,9 @@ function Student() {
                           <button
                             type="button"
                             title="Edit Student"
+                            aria-label="Edit Student"
                             onClick={() => handleEdit(student)}
-                            className={`${actionButton} border-orange-200 bg-orange-50 text-accent hover:bg-accent hover:text-white`}
+                            className={`${actionButton} border-[#CFE5E2] bg-white text-[#3F5A58] hover:bg-[#0B2B2A] hover:text-white`}
                           >
                             <svg
                               width="17"
@@ -539,6 +541,7 @@ function Student() {
                             <button
                               type="button"
                               title="Delete Student"
+                            aria-label="Delete Student"
                               onClick={() => handleDelete(student._id)}
                               className={`${actionButton} border-red-200 bg-red-50 text-red-600 hover:bg-red-600 hover:text-white`}
                             >
@@ -566,11 +569,11 @@ function Student() {
                   {filteredStudents.length === 0 && (
                     <tr>
                       <td colSpan="6" className="px-5 py-12 text-center">
-                        <p className="text-sm font-semibold text-brand-dark">
+                        <p className="text-sm font-semibold text-[#0B2B2A]">
                           No students found
                         </p>
 
-                        <p className="mt-1 text-xs text-muted">
+                        <p className="mt-1 text-xs text-[#3F5A58]">
                           Try another search or add a new student.
                         </p>
                       </td>
@@ -593,8 +596,8 @@ function Student() {
         <>
 
           {/* Registered Student Search */}
-          <div className="mb-6 rounded-2xl border border-line bg-white p-4 sm:p-5">
-            <label className="mb-3 block text-sm font-semibold text-brand-dark">
+          <div className="mb-6 rounded-2xl border border-white bg-white/65 shadow-[0_4px_24px_rgba(15,118,110,0.08)] backdrop-blur-xl p-4 sm:p-5">
+            <label className="mb-3 block text-sm font-semibold text-[#0B2B2A]">
               Search Registered Students
             </label>
 
@@ -608,20 +611,20 @@ function Student() {
           </div>
 
           {/* Registered Students Table */}
-          <div className="overflow-hidden rounded-2xl border border-line bg-white">
+          <div className="overflow-hidden rounded-2xl border border-white bg-white/65 shadow-[0_4px_24px_rgba(15,118,110,0.08)] backdrop-blur-xl">
 
-            <div className="flex items-center justify-between border-b border-line px-5 py-4">
+            <div className="flex items-center justify-between border-b border-[#CFE5E2] px-5 py-4">
               <div>
-                <h2 className="font-display text-lg font-bold text-brand-dark">
+                <h2 className="text-lg font-bold text-[#0B2B2A]">
                   Registered Students
                 </h2>
 
-                <p className="mt-1 text-xs text-muted">
+                <p className="mt-1 text-xs text-[#3F5A58]">
                   Accounts created through the student portal
                 </p>
               </div>
 
-              <span className="rounded-full bg-brand-soft px-3 py-1.5 text-xs font-semibold text-brand">
+              <span className="rounded-full bg-teal-50 px-3 py-1.5 text-xs font-semibold text-teal-700">
                 {filteredRegisteredStudents.length} Students
               </span>
             </div>
@@ -629,7 +632,7 @@ function Student() {
             <div className="overflow-x-auto">
               <table className="w-full min-w-[650px] text-left">
 
-                <thead className="bg-[#F9FBFA] text-[11px] font-bold uppercase tracking-wider text-muted">
+                <thead className="bg-[#F1F8F7] text-[11px] font-bold uppercase tracking-wider text-[#3F5A58]">
                   <tr>
                     <th className="px-5 py-4">#</th>
                     <th className="px-5 py-4">Name</th>
@@ -644,29 +647,29 @@ function Student() {
                   {filteredRegisteredStudents.map((student, index) => (
                     <tr
                       key={student._id}
-                      className="border-b border-line last:border-b-0 hover:bg-surface/70"
+                      className="border-b border-[#CFE5E2] last:border-b-0 hover:bg-teal-50/70"
                     >
 
-                      <td className="px-5 py-4 text-sm text-muted">
+                      <td className="px-5 py-4 text-sm text-[#3F5A58]">
                         {index + 1}
                       </td>
 
-                      <td className="px-5 py-4 text-sm font-semibold text-brand-dark">
+                      <td className="px-5 py-4 text-sm font-semibold text-[#0B2B2A]">
                         {student.name || "—"}
                       </td>
 
-                      <td className="px-5 py-4 text-sm text-muted">
+                      <td className="px-5 py-4 text-sm text-[#3F5A58]">
                         {student.email || "—"}
                       </td>
 
-                      <td className="px-5 py-4 text-sm text-muted">
+                      <td className="px-5 py-4 text-sm text-[#3F5A58]">
                         {student.createdAt
                           ? new Date(student.createdAt).toLocaleDateString()
                           : "—"}
                       </td>
 
                       <td className="px-5 py-4">
-                        <span className="rounded-full bg-blue-50 px-3 py-1.5 text-xs font-semibold text-blue-700">
+                        <span className="rounded-full bg-teal-50 px-3 py-1.5 text-xs font-semibold text-teal-800">
                           Registered
                         </span>
                       </td>
@@ -677,7 +680,7 @@ function Student() {
                           onClick={() =>
                             handleViewRegisteredProfile(student._id)
                           }
-                          className="rounded-lg bg-brand px-4 py-2 text-xs font-semibold text-white transition hover:opacity-90"
+                          className="rounded-lg bg-teal-700 px-4 py-2 text-xs font-semibold text-white transition hover:opacity-90"
                         >
                           View Profile
                         </button>
@@ -690,7 +693,7 @@ function Student() {
                     <tr>
                       <td
                         colSpan="6"
-                        className="px-5 py-12 text-center text-sm text-muted"
+                        className="px-5 py-12 text-center text-sm text-[#3F5A58]"
                       >
                         No registered students found.
                       </td>
@@ -710,19 +713,19 @@ function Student() {
       {/* ===================================== */}
 
       {(isProfileLoading || registeredProfile) && (
-        <div className="fixed inset-0 z-[60] flex items-center justify-center overflow-y-auto bg-brand-dark/60 p-4 backdrop-blur-sm">
+        <div className="fixed inset-0 z-[60] flex items-center justify-center overflow-y-auto bg-[#0B2B2A]/60 p-4 backdrop-blur-sm">
 
-          <div className="my-auto max-h-[92vh] w-full max-w-4xl overflow-y-auto rounded-2xl border border-line bg-white shadow-2xl">
+          <div className="my-auto max-h-[92vh] w-full max-w-4xl overflow-y-auto rounded-2xl border border-[#CFE5E2] bg-white shadow-2xl">
 
             {/* Modal Header */}
-            <div className="sticky top-0 z-10 flex items-center justify-between bg-brand px-6 py-5 text-white">
+            <div className="sticky top-0 z-10 flex items-center justify-between bg-teal-700 px-6 py-5 text-white">
 
               <div>
-                <p className="text-xs font-semibold uppercase tracking-widest text-white/60">
+                <p className="text-xs font-semibold uppercase tracking-widest text-teal-100">
                   Registered Student
                 </p>
 
-                <h2 className="mt-1 font-display text-xl font-bold">
+                <h2 className="mt-1 text-xl font-bold">
                   Complete Profile
                 </h2>
               </div>
@@ -743,18 +746,18 @@ function Student() {
 
             {/* Loading */}
             {isProfileLoading ? (
-              <div className="p-10 text-center text-sm text-muted">
+              <div className="p-10 text-center text-sm text-[#3F5A58]">
                 Loading student profile...
               </div>
             ) : !registeredProfile?.profileCompleted || !profile ? (
 
               /* Incomplete Profile */
               <div className="p-10 text-center">
-                <p className="font-semibold text-brand-dark">
+                <p className="font-semibold text-[#0B2B2A]">
                   Profile not completed yet
                 </p>
 
-                <p className="mt-2 text-sm text-muted">
+                <p className="mt-2 text-sm text-[#3F5A58]">
                   This student has registered but has not submitted profile details.
                 </p>
               </div>
@@ -765,7 +768,7 @@ function Student() {
               <div className="space-y-6 p-6">
 
                 {/* Personal Header */}
-                <section className="flex flex-wrap items-center gap-4 rounded-xl bg-surface p-5">
+                <section className="flex flex-wrap items-center gap-4 rounded-xl bg-[#F1F8F7] p-5">
 
                   {profile.profileImage?.url ? (
                     <img
@@ -774,21 +777,21 @@ function Student() {
                       className="h-20 w-20 rounded-full object-cover"
                     />
                   ) : (
-                    <div className="flex h-20 w-20 items-center justify-center rounded-full bg-brand-soft text-2xl text-brand">
+                    <div className="flex h-20 w-20 items-center justify-center rounded-full bg-teal-50 text-2xl text-teal-700">
                       {profile.name?.[0] || "S"}
                     </div>
                   )}
 
                   <div>
-                    <h3 className="text-lg font-bold text-brand-dark">
+                    <h3 className="text-lg font-bold text-[#0B2B2A]">
                       {profile.name || "—"}
                     </h3>
 
-                    <p className="text-sm text-muted">
+                    <p className="text-sm text-[#3F5A58]">
                       {profile.email || "—"}
                     </p>
 
-                    <p className="mt-1 text-xs text-muted">
+                    <p className="mt-1 text-xs text-[#3F5A58]">
                       {profile.gender || "Gender not added"}
 
                       {profile.dob
@@ -801,7 +804,7 @@ function Student() {
 
                 {/* Personal Details */}
                 <section>
-                  <h3 className="mb-3 font-bold text-brand-dark">
+                  <h3 className="mb-3 font-bold text-[#0B2B2A]">
                     Personal Details
                   </h3>
 
@@ -814,13 +817,13 @@ function Student() {
                     ].map(([label, value]) => (
                       <div
                         key={label}
-                        className="rounded-xl bg-surface p-4"
+                        className="rounded-xl bg-[#F1F8F7] p-4"
                       >
-                        <p className="text-xs text-muted">
+                        <p className="text-xs text-[#3F5A58]">
                           {label}
                         </p>
 
-                        <p className="mt-1 text-sm font-semibold text-brand-dark">
+                        <p className="mt-1 text-sm font-semibold text-[#0B2B2A]">
                           {value || "—"}
                         </p>
                       </div>
@@ -831,7 +834,7 @@ function Student() {
 
                 {/* Academic Details */}
                 <section>
-                  <h3 className="mb-3 font-bold text-brand-dark">
+                  <h3 className="mb-3 font-bold text-[#0B2B2A]">
                     Academic Details
                   </h3>
 
@@ -844,27 +847,27 @@ function Student() {
                     ].map(([title, item]) => (
                       <div
                         key={title}
-                        className="rounded-xl border border-line p-4"
+                        className="rounded-xl border border-[#CFE5E2] p-4"
                       >
-                        <h4 className="mb-2 text-sm font-bold text-brand">
+                        <h4 className="mb-2 text-sm font-bold text-teal-700">
                           {title}
                         </h4>
 
-                        <p className="text-sm text-brand-dark">
+                        <p className="text-sm text-[#0B2B2A]">
                           Board/College:{" "}
                           {item?.board || item?.college || "—"}
                         </p>
 
-                        <p className="text-sm text-brand-dark">
+                        <p className="text-sm text-[#0B2B2A]">
                           Course/Stream:{" "}
                           {item?.course || item?.stream || "—"}
                         </p>
 
-                        <p className="text-sm text-brand-dark">
+                        <p className="text-sm text-[#0B2B2A]">
                           Passing Year: {item?.passingYear || "—"}
                         </p>
 
-                        <p className="text-sm text-brand-dark">
+                        <p className="text-sm text-[#0B2B2A]">
                           Percentage: {item?.percentage ?? "—"}
                           {item?.percentage != null ? "%" : ""}
                         </p>
@@ -876,7 +879,7 @@ function Student() {
 
                 {/* Entrance Exams */}
                 <section>
-                  <h3 className="mb-3 font-bold text-brand-dark">
+                  <h3 className="mb-3 font-bold text-[#0B2B2A]">
                     Entrance Exams
                   </h3>
 
@@ -886,35 +889,35 @@ function Student() {
                       profile.entranceExams.map((exam) => (
                         <div
                           key={exam._id}
-                          className="grid gap-2 rounded-xl bg-surface p-4 sm:grid-cols-4"
+                          className="grid gap-2 rounded-xl bg-[#F1F8F7] p-4 sm:grid-cols-4"
                         >
-                          <p className="text-sm font-semibold text-brand-dark">
+                          <p className="text-sm font-semibold text-[#0B2B2A]">
                             {exam.exam?.name || exam.examName || "—"}
                           </p>
 
-                          <p className="text-sm text-muted">
+                          <p className="text-sm text-[#3F5A58]">
                             Year: {exam.examYear || exam.year || "—"}
                           </p>
 
-                          <p className="text-sm text-muted">
+                          <p className="text-sm text-[#3F5A58]">
                             Score: {exam.score ?? "—"}
                           </p>
 
-                          <p className="text-sm text-muted">
+                          <p className="text-sm text-[#3F5A58]">
                             Rank: {exam.air ?? exam.rank ?? "—"}
                           </p>
 
-                          <p className="text-sm text-muted">
+                          <p className="text-sm text-[#3F5A58]">
                             Roll No: {exam.rollNumber || "—"}
                           </p>
 
-                          <p className="text-sm text-muted">
+                          <p className="text-sm text-[#3F5A58]">
                             Status: {exam.status || "—"}
                           </p>
                         </div>
                       ))
                     ) : (
-                      <p className="text-sm text-muted">
+                      <p className="text-sm text-[#3F5A58]">
                         No entrance exam details added.
                       </p>
                     )}
@@ -924,7 +927,7 @@ function Student() {
 
                 {/* Preferred Courses */}
                 <section>
-                  <h3 className="mb-3 font-bold text-brand-dark">
+                  <h3 className="mb-3 font-bold text-[#0B2B2A]">
                     Preferred Courses
                   </h3>
 
@@ -934,27 +937,27 @@ function Student() {
                       profile.preferredCourseDetails.map((course) => (
                         <div
                           key={course._id}
-                          className="grid gap-2 rounded-xl bg-surface p-4 sm:grid-cols-4"
+                          className="grid gap-2 rounded-xl bg-[#F1F8F7] p-4 sm:grid-cols-4"
                         >
-                          <p className="text-sm font-semibold text-brand-dark">
+                          <p className="text-sm font-semibold text-[#0B2B2A]">
                             {course.courseName || "—"}
                           </p>
 
-                          <p className="text-sm text-muted">
+                          <p className="text-sm text-[#3F5A58]">
                             Type: {course.courseType || "—"}
                           </p>
 
-                          <p className="text-sm text-muted">
+                          <p className="text-sm text-[#3F5A58]">
                             Specialization: {course.specialization || "—"}
                           </p>
 
-                          <p className="text-sm text-muted">
+                          <p className="text-sm text-[#3F5A58]">
                             Priority: {course.priority || "—"}
                           </p>
                         </div>
                       ))
                     ) : (
-                      <p className="text-sm text-muted">
+                      <p className="text-sm text-[#3F5A58]">
                         No course preferences added.
                       </p>
                     )}
@@ -964,7 +967,7 @@ function Student() {
 
                 {/* Preferred Locations */}
                 <section>
-                  <h3 className="mb-3 font-bold text-brand-dark">
+                  <h3 className="mb-3 font-bold text-[#0B2B2A]">
                     Preferred Locations
                   </h3>
 
@@ -974,28 +977,28 @@ function Student() {
                       profile.preferredLocationDetails.map((location) => (
                         <div
                           key={location._id}
-                          className="grid gap-2 rounded-xl bg-surface p-4 sm:grid-cols-4"
+                          className="grid gap-2 rounded-xl bg-[#F1F8F7] p-4 sm:grid-cols-4"
                         >
-                          <p className="text-sm font-semibold text-brand-dark">
+                          <p className="text-sm font-semibold text-[#0B2B2A]">
                             {location.city || "—"}
                           </p>
 
-                          <p className="text-sm text-muted">
+                          <p className="text-sm text-[#3F5A58]">
                             {location.state || "—"},{" "}
                             {location.country || "—"}
                           </p>
 
-                          <p className="text-sm text-muted">
+                          <p className="text-sm text-[#3F5A58]">
                             Type: {location.locationType || "—"}
                           </p>
 
-                          <p className="text-sm text-muted">
+                          <p className="text-sm text-[#3F5A58]">
                             Priority: {location.priority || "—"}
                           </p>
                         </div>
                       ))
                     ) : (
-                      <p className="text-sm text-muted">
+                      <p className="text-sm text-[#3F5A58]">
                         No location preferences added.
                       </p>
                     )}
@@ -1005,7 +1008,7 @@ function Student() {
 
                 {/* Budget */}
                 <section>
-                  <h3 className="mb-3 font-bold text-brand-dark">
+                  <h3 className="mb-3 font-bold text-[#0B2B2A]">
                     Budget
                   </h3>
 
@@ -1015,13 +1018,13 @@ function Student() {
                       ([key, value]) => (
                         <div
                           key={key}
-                          className="rounded-xl bg-surface p-3"
+                          className="rounded-xl bg-[#F1F8F7] p-3"
                         >
-                          <p className="text-xs capitalize text-muted">
+                          <p className="text-xs capitalize text-[#3F5A58]">
                             {key.replace(/([A-Z])/g, " $1")}
                           </p>
 
-                          <p className="mt-1 text-sm font-semibold text-brand-dark">
+                          <p className="mt-1 text-sm font-semibold text-[#0B2B2A]">
                             {value || "—"}
                           </p>
                         </div>
@@ -1033,7 +1036,7 @@ function Student() {
 
                 {/* Documents */}
                 <section>
-                  <h3 className="mb-3 font-bold text-brand-dark">
+                  <h3 className="mb-3 font-bold text-[#0B2B2A]">
                     Documents
                   </h3>
 
@@ -1043,15 +1046,15 @@ function Student() {
                       profile.documents.map((doc) => (
                         <div
                           key={doc._id}
-                          className="flex flex-wrap items-center justify-between gap-3 rounded-xl border border-line p-4"
+                          className="flex flex-wrap items-center justify-between gap-3 rounded-xl border border-[#CFE5E2] p-4"
                         >
 
                           <div>
-                            <p className="text-sm font-semibold text-brand-dark">
+                            <p className="text-sm font-semibold text-[#0B2B2A]">
                               {doc.documentType || doc.fileName}
                             </p>
 
-                            <p className="text-xs text-muted">
+                            <p className="text-xs text-[#3F5A58]">
                               {doc.fileName}
                             </p>
                           </div>
@@ -1067,7 +1070,7 @@ function Student() {
                                 href={doc.url}
                                 target="_blank"
                                 rel="noreferrer"
-                                className="text-sm font-semibold text-brand underline"
+                                className="text-sm font-semibold text-teal-700 underline"
                               >
                                 View
                               </a>
@@ -1078,7 +1081,7 @@ function Student() {
                         </div>
                       ))
                     ) : (
-                      <p className="text-sm text-muted">
+                      <p className="text-sm text-[#3F5A58]">
                         No documents uploaded.
                       </p>
                     )}
@@ -1090,14 +1093,14 @@ function Student() {
             )}
 
             {/* Modal Footer */}
-            <div className="border-t border-line p-5">
+            <div className="border-t border-[#CFE5E2] p-5">
               <button
                 type="button"
                 onClick={() => {
                   setRegisteredProfile(null);
                   setIsProfileLoading(false);
                 }}
-                className="w-full rounded-xl border border-line px-5 py-3 text-sm font-semibold text-brand-dark transition hover:bg-surface"
+                className="w-full rounded-xl border border-[#CFE5E2] px-5 py-3 text-sm font-semibold text-[#0B2B2A] transition hover:bg-teal-50"
               >
                 Close
               </button>
@@ -1113,7 +1116,7 @@ function Student() {
 
       {showForm && (
         <div
-          className="fixed inset-0 z-50 flex items-center justify-center overflow-y-auto bg-brand-dark/60 p-4 backdrop-blur-sm"
+          className="fixed inset-0 z-50 flex items-center justify-center overflow-y-auto bg-[#0B2B2A]/60 p-4 backdrop-blur-sm"
           onMouseDown={(e) => {
             if (e.target === e.currentTarget) {
               handleCancel();
@@ -1121,15 +1124,15 @@ function Student() {
           }}
         >
 
-          <div className="my-auto w-full max-w-lg overflow-hidden rounded-2xl border border-line bg-white shadow-2xl">
+          <div className="my-auto w-full max-w-lg overflow-hidden rounded-2xl border border-[#CFE5E2] bg-white shadow-2xl">
 
-            <div className="flex items-center justify-between bg-brand px-6 py-5 text-white">
+            <div className="flex items-center justify-between bg-teal-700 px-6 py-5 text-white">
               <div>
-                <p className="text-xs font-semibold uppercase tracking-widest text-white/60">
+                <p className="text-xs font-semibold uppercase tracking-widest text-teal-100">
                   Student Management
                 </p>
 
-                <h2 className="mt-1 font-display text-xl font-bold">
+                <h2 className="mt-1 text-xl font-bold">
                   {editingId ? "Edit Student" : "Add New Student"}
                 </h2>
               </div>
@@ -1147,7 +1150,7 @@ function Student() {
             <form onSubmit={handleSubmit} className="space-y-5 p-6">
 
               <div>
-                <label className="mb-2 block text-sm font-semibold text-brand-dark">
+                <label className="mb-2 block text-sm font-semibold text-[#0B2B2A]">
                   Student Name
                 </label>
 
@@ -1164,7 +1167,7 @@ function Student() {
               </div>
 
               <div>
-                <label className="mb-2 block text-sm font-semibold text-brand-dark">
+                <label className="mb-2 block text-sm font-semibold text-[#0B2B2A]">
                   Email Address
                 </label>
 
@@ -1181,7 +1184,7 @@ function Student() {
               </div>
 
               <div>
-                <label className="mb-2 block text-sm font-semibold text-brand-dark">
+                <label className="mb-2 block text-sm font-semibold text-[#0B2B2A]">
                   Phone Number
                 </label>
 
@@ -1197,19 +1200,19 @@ function Student() {
                 />
               </div>
 
-              <div className="flex justify-end gap-3 border-t border-line pt-5">
+              <div className="flex justify-end gap-3 border-t border-[#CFE5E2] pt-5">
 
                 <button
                   type="button"
                   onClick={handleCancel}
-                  className="rounded-xl border border-line px-5 py-3 text-sm font-semibold text-muted transition hover:bg-surface"
+                  className="rounded-xl border border-[#CFE5E2] px-5 py-3 text-sm font-semibold text-[#3F5A58] transition hover:bg-teal-50"
                 >
                   Cancel
                 </button>
 
                 <button
                   type="submit"
-                  className="rounded-xl bg-accent px-5 py-3 text-sm font-semibold text-white transition hover:opacity-90"
+                  className="rounded-xl bg-teal-700 px-5 py-3 text-sm font-semibold text-white transition hover:opacity-90"
                 >
                   {editingId ? "Update Student" : "Save Student"}
                 </button>
@@ -1227,7 +1230,7 @@ function Student() {
 
       {viewStudent && (
         <div
-          className="fixed inset-0 z-50 flex items-center justify-center overflow-y-auto bg-brand-dark/60 p-4 backdrop-blur-sm"
+          className="fixed inset-0 z-50 flex items-center justify-center overflow-y-auto bg-[#0B2B2A]/60 p-4 backdrop-blur-sm"
           onMouseDown={(e) => {
             if (e.target === e.currentTarget) {
               setViewStudent(null);
@@ -1235,15 +1238,15 @@ function Student() {
           }}
         >
 
-          <div className="my-auto w-full max-w-lg overflow-hidden rounded-2xl border border-line bg-white shadow-2xl">
+          <div className="my-auto w-full max-w-lg overflow-hidden rounded-2xl border border-[#CFE5E2] bg-white shadow-2xl">
 
-            <div className="flex items-center justify-between bg-brand px-6 py-5 text-white">
+            <div className="flex items-center justify-between bg-teal-700 px-6 py-5 text-white">
               <div>
-                <p className="text-xs font-semibold uppercase tracking-widest text-white/60">
+                <p className="text-xs font-semibold uppercase tracking-widest text-teal-100">
                   Student Information
                 </p>
 
-                <h2 className="mt-1 font-display text-xl font-bold">
+                <h2 className="mt-1 text-xl font-bold">
                   Student Details
                 </h2>
               </div>
@@ -1260,32 +1263,32 @@ function Student() {
 
             <div className="space-y-4 p-6">
 
-              <div className="rounded-xl bg-surface p-4">
-                <p className="text-xs text-muted">
+              <div className="rounded-xl bg-[#F1F8F7] p-4">
+                <p className="text-xs text-[#3F5A58]">
                   Student Name
                 </p>
 
-                <p className="mt-2 break-words text-sm font-semibold text-brand-dark">
+                <p className="mt-2 break-words text-sm font-semibold text-[#0B2B2A]">
                   {viewStudent.name}
                 </p>
               </div>
 
-              <div className="rounded-xl bg-surface p-4">
-                <p className="text-xs text-muted">
+              <div className="rounded-xl bg-[#F1F8F7] p-4">
+                <p className="text-xs text-[#3F5A58]">
                   Email Address
                 </p>
 
-                <p className="mt-2 break-words text-sm font-semibold text-brand-dark">
+                <p className="mt-2 break-words text-sm font-semibold text-[#0B2B2A]">
                   {viewStudent.email}
                 </p>
               </div>
 
-              <div className="rounded-xl bg-surface p-4">
-                <p className="text-xs text-muted">
+              <div className="rounded-xl bg-[#F1F8F7] p-4">
+                <p className="text-xs text-[#3F5A58]">
                   Phone Number
                 </p>
 
-                <p className="mt-2 break-words text-sm font-semibold text-brand-dark">
+                <p className="mt-2 break-words text-sm font-semibold text-[#0B2B2A]">
                   {viewStudent.phone}
                 </p>
               </div>
@@ -1293,7 +1296,7 @@ function Student() {
               <button
                 type="button"
                 onClick={() => setViewStudent(null)}
-                className="w-full rounded-xl border border-line px-5 py-3 text-sm font-semibold text-brand-dark transition hover:bg-surface"
+                className="w-full rounded-xl border border-[#CFE5E2] px-5 py-3 text-sm font-semibold text-[#0B2B2A] transition hover:bg-teal-50"
               >
                 Close
               </button>

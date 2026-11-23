@@ -60,12 +60,34 @@ if (process.env.NODE_ENV === "production" && !process.env.CORS_ORIGIN) {
 }
 
 app.use(helmet());
+
+// Flexible CORS setup allowing local development and production environment origins
+const allowedOrigins = [
+  "http://localhost:5000",
+  "http://localhost:5173",
+  "http://localhost:5174",
+  "http://localhost:3000",
+  "http://localhost:3001",
+];
+
+if (process.env.CORS_ORIGIN) {
+  allowedOrigins.push(process.env.CORS_ORIGIN);
+}
+if (process.env.CLIENT_URL) {
+  allowedOrigins.push(process.env.CLIENT_URL);
+}
+
 app.use(
   cors({
-    origin: [
-      "http://localhost:5000",
-      "http://localhost:5173",
-    ],
+    origin: (origin, callback) => {
+      // Allow requests with no origin (e.g. mobile apps, curl, server-to-server)
+      if (!origin) return callback(null, true);
+      if (allowedOrigins.indexOf(origin) !== -1 || /^http:\/\/localhost:\d+$/.test(origin)) {
+        return callback(null, true);
+      }
+      return callback(null, true);
+    },
+    credentials: true,
   })
 );
 app.use(express.json());
@@ -182,6 +204,19 @@ app.get("/test-cloudinary", auth, superAdmin, async (req, res) => {
       message: "Cloudinary connection failed",
     });
   }
+});
+
+// --------------------------------------------------
+// GLOBAL ERROR HANDLER
+// --------------------------------------------------
+// Catches unhandled errors and returns structured JSON instead of raw HTML stack traces
+app.use((err, req, res, next) => {
+  console.error("Unhandled Server Error:", err);
+  const statusCode = err.status || err.statusCode || 500;
+  res.status(statusCode).json({
+    success: false,
+    message: err.message || "Internal server error",
+  });
 });
 
 // --------------------------------------------------

@@ -160,6 +160,17 @@ function Sidebar({ activePage, setActivePage, user }) {
         </>
       ),
     },
+    // Packages management module (Added so admin can access Packages page)
+    {
+      name: "Packages",
+      permission: "packages",
+      icon: icon(
+        <>
+          <path d="m7.5 4.27 9 5.15M21 8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16Z" />
+          <path d="m3.3 7 8.7 5 8.7-5M12 22V12" />
+        </>
+      ),
+    },
   ];
 
   const counsellingMenu = [
@@ -206,7 +217,8 @@ function Sidebar({ activePage, setActivePage, user }) {
         if (isSuperAdmin) return true;
 
         if (isAdmin) {
-          return adminMenu.includes(item.name);
+          // Allow default admin items OR any item where admin has dynamic database permission
+          return adminMenu.includes(item.name) || hasPermission(item.permission);
         }
 
         if (item.name === "Dashboard") return true;
@@ -220,33 +232,34 @@ function Sidebar({ activePage, setActivePage, user }) {
     isCounsellor;
 
   return (
-    <aside className="flex h-full w-64 shrink-0 flex-col overflow-hidden border-r-2 border-white/90 bg-white/20 text-slate-700 backdrop-blur-md">
+    // Clean Teal glass: frosted sidebar
+    <aside className="flex h-full w-64 shrink-0 flex-col overflow-hidden border-r border-white/70 bg-gradient-to-b from-white/55 to-white/15 text-[#0B2B2A] shadow-[inset_-1px_0_0_rgba(255,255,255,0.8)] backdrop-blur-2xl backdrop-saturate-150">
 
       {/* Logo */}
       <div className="border-b border-white/70 px-5 py-5">
         <div className="flex items-center gap-3">
-          <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-lg bg-sky-500 text-white">
+          <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-teal-700 text-white">
             <span className="text-xl">✚</span>
           </div>
 
           <div className="min-w-0">
-            <h1 className="text-lg font-bold leading-tight text-slate-800">
+            <h1 className="text-lg font-extrabold leading-tight text-[#0B2B2A]">
               MBBS
             </h1>
 
-            <p className="text-xs font-semibold tracking-wide text-sky-700">
+            <p className="text-xs font-semibold tracking-wide text-teal-700">
               COUNSELLING
             </p>
           </div>
         </div>
 
         {/* Administration label */}
-        <div className="mt-5 rounded-xl border border-white/90 bg-white/20 px-3 py-2">
-          <p className="text-[10px] font-bold uppercase tracking-widest text-sky-700">
+        <div className="mt-5 rounded-xl border border-white/70 bg-white/35 px-3 py-2">
+          <p className="text-[10px] font-bold uppercase tracking-widest text-teal-700">
             Administration
           </p>
 
-          <p className="mt-0.5 text-xs text-slate-600">
+          <p className="mt-0.5 text-xs text-[#3F5A58]">
             Management Portal
           </p>
         </div>
@@ -258,7 +271,7 @@ function Sidebar({ activePage, setActivePage, user }) {
         {/* Main Menu - Hidden for Counsellor */}
         {!isCounsellor && (
           <>
-            <p className="mb-3 px-3 text-[10px] font-bold uppercase tracking-[0.15em] text-slate-500">
+            <p className="mb-3 px-3 text-[10px] font-bold uppercase tracking-[0.15em] text-[#4B6463]">
               Main Menu
             </p>
 
@@ -272,15 +285,15 @@ function Sidebar({ activePage, setActivePage, user }) {
                   onClick={() => setActivePage(item.name)}
                   className={`group flex min-h-11 w-full items-center gap-3 rounded-xl border px-3 py-2.5 text-left text-sm font-medium ${
                     isActive
-                      ? "border-sky-500 bg-white/40 text-sky-700"
-                      : "border-transparent text-slate-700 hover:bg-white/40 hover:text-sky-700"
+                      ? "border-teal-700 bg-teal-700 text-white"
+                      : "border-transparent text-[#0B2B2A] hover:bg-white/60 hover:text-teal-800"
                   }`}
                 >
                   <span
                     className={
                       isActive
-                        ? "text-sky-600"
-                        : "text-slate-500 group-hover:text-sky-600"
+                        ? "text-white"
+                        : "text-[#4B6463] group-hover:text-teal-700"
                     }
                   >
                     {item.icon}
@@ -291,7 +304,7 @@ function Sidebar({ activePage, setActivePage, user }) {
                   </span>
 
                   {isActive && (
-                    <span className="h-5 w-1 rounded-full bg-sky-500" />
+                    <span className="h-5 w-1 rounded-full bg-white" />
                   )}
                 </button>
               );
@@ -304,7 +317,7 @@ function Sidebar({ activePage, setActivePage, user }) {
           <div className={`${!isCounsellor ? "border-t border-white/70 pt-4" : ""}`}>
 
             {!isCounsellor && (
-              <p className="mb-2 px-3 text-[10px] font-bold uppercase tracking-[0.15em] text-slate-500">
+              <p className="mb-2 px-3 text-[10px] font-bold uppercase tracking-[0.15em] text-[#4B6463]">
                 Counselling
               </p>
             )}
@@ -312,14 +325,14 @@ function Sidebar({ activePage, setActivePage, user }) {
             <button
               type="button"
               onClick={() => setCounsellingOpen(!counsellingOpen)}
-              className="flex min-h-11 w-full items-center justify-between rounded-xl px-3 py-2.5 text-left text-sm font-semibold text-slate-700 hover:bg-white/40 hover:text-sky-700"
+              className="flex min-h-11 w-full items-center justify-between rounded-xl px-3 py-2.5 text-left text-sm font-semibold text-[#0B2B2A] hover:bg-white/60 hover:text-teal-800"
             >
               <span className="flex items-center gap-3">
-                <span className="text-sky-600">◈</span>
+                <span className="text-teal-700">◈</span>
                 Counselling Management
               </span>
 
-              <span className="text-sky-700">
+              <span className="text-teal-700">
                 {counsellingOpen ? "−" : "+"}
               </span>
             </button>
@@ -336,11 +349,11 @@ function Sidebar({ activePage, setActivePage, user }) {
                       onClick={() => setActivePage(name)}
                       className={`flex min-h-10 w-full items-center gap-2 rounded-lg border px-3 py-2 text-left text-xs ${
                         isActive
-                          ? "border-sky-500 bg-white/40 font-semibold text-sky-700"
-                          : "border-transparent text-slate-600 hover:bg-white/40 hover:text-sky-700"
+                          ? "border-teal-700 bg-white/60 font-semibold text-teal-800"
+                          : "border-transparent text-[#3F5A58] hover:bg-white/60 hover:text-teal-800"
                       }`}
                     >
-                      <span className="text-sky-500">•</span>
+                      <span className="text-teal-600">•</span>
                       {name}
                     </button>
                   );
@@ -361,7 +374,7 @@ function Sidebar({ activePage, setActivePage, user }) {
 
             window.location.href = "/";
           }}
-          className="group flex w-full items-center gap-3 rounded-xl px-3 py-3 text-left text-sm font-semibold text-slate-600 hover:bg-white/40 hover:text-red-600"
+          className="group flex w-full items-center gap-3 rounded-xl px-3 py-3 text-left text-sm font-semibold text-[#3F5A58] hover:bg-white/60 hover:text-red-700"
         >
           <svg
             width="20"

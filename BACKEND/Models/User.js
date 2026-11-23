@@ -42,6 +42,12 @@ activePackage: {
   default: null,
 },
 
+    // Added to support free and paid plan activations
+    activePlan: {
+      type: String,
+      default: null,
+    },
+
     planStatus: {
       type: String,
       enum: ["Active", "Inactive"],

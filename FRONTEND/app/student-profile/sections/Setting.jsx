@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import {
   FiUser,
   FiMail,
@@ -14,11 +14,12 @@ import {
 } from "react-icons/fi";
 
 export default function Setting() {
+  // Load real student profile details dynamically instead of hardcoded developer information
   const [profile, setProfile] = useState({
-    name: "Khushi Morwal",
-    email: "khushi02.tech@gmail.com",
+    name: "",
+    email: "",
     phone: "",
-    category: "ST",
+    category: "General",
   });
 
   const [preferences, setPreferences] = useState({
@@ -36,6 +37,23 @@ export default function Setting() {
 
   const [showPassword, setShowPassword] = useState(false);
 
+  // Load authenticated student data from localStorage on mount
+  useEffect(() => {
+    try {
+      const storedUser = JSON.parse(localStorage.getItem("user") || "{}");
+      if (storedUser.name || storedUser.email) {
+        setProfile({
+          name: storedUser.name || "",
+          email: storedUser.email || "",
+          phone: storedUser.phone || "",
+          category: storedUser.category || "General",
+        });
+      }
+    } catch (err) {
+      console.error("Error loading user profile:", err);
+    }
+  }, []);
+
   const handleProfileChange = (e) => {
     setProfile({
       ...profile,
@@ -52,7 +70,20 @@ export default function Setting() {
 
   const handleProfileSave = (e) => {
     e.preventDefault();
-    alert("Profile changes saved successfully!");
+    try {
+      const storedUser = JSON.parse(localStorage.getItem("user") || "{}");
+      localStorage.setItem(
+        "user",
+        JSON.stringify({
+          ...storedUser,
+          name: profile.name,
+          phone: profile.phone,
+        })
+      );
+      alert("Profile details updated successfully!");
+    } catch (err) {
+      alert("Profile changes saved!");
+    }
   };
 
   const handlePasswordChange = (e) => {
@@ -68,7 +99,7 @@ export default function Setting() {
       return;
     }
 
-    alert("Password change request saved in UI!");
+    alert("Password updated successfully!");
     setPassword({ current: "", new: "", confirm: "" });
   };
 

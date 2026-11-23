@@ -1,4 +1,3 @@
-
 import { useEffect, useRef, useState } from "react";
 import { API } from "../api/axios.js";
 
@@ -20,15 +19,19 @@ const initialForm = {
   displayOrder: 0,
 };
 
+// Shared classes (same as College page)
 const inputClass =
-  "w-full rounded-lg border border-line bg-white px-3 py-2.5 text-sm outline-none focus:border-brand focus:ring-2 focus:ring-brand/10";
+  "w-full rounded-lg border border-[#9DBDBA] bg-white px-3 py-2.5 text-sm text-[#0B2B2A] outline-none placeholder:text-[#4B6463] focus:border-teal-700 focus:ring-2 focus:ring-teal-200";
+
+const labelClass = "mb-1.5 block text-sm font-medium text-[#0B2B2A]";
+
+const actionButton =
+  "inline-flex h-9 w-9 items-center justify-center rounded-lg border transition";
 
 function Field({ label, children, className = "" }) {
   return (
     <div className={className}>
-      <label className="mb-1.5 block text-sm font-medium text-brand-dark">
-        {label}
-      </label>
+      <label className={labelClass}>{label}</label>
       {children}
     </div>
   );
@@ -41,23 +44,29 @@ function IconButton({ title, onClick, children, className = "" }) {
       title={title}
       aria-label={title}
       onClick={onClick}
-      className={`inline-flex h-9 w-9 items-center justify-center rounded-lg border border-line transition hover:bg-surface ${className}`}
+      className={`${actionButton} ${className}`}
     >
       {children}
     </button>
   );
 }
 
+const iconProps = {
+  width: 17,
+  height: 17,
+  viewBox: "0 0 24 24",
+  fill: "none",
+  stroke: "currentColor",
+  strokeWidth: 1.8,
+  strokeLinecap: "round",
+  strokeLinejoin: "round",
+  "aria-hidden": true,
+};
+
 function EyeIcon() {
   return (
-    <svg
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="1.8"
-      className="h-4 w-4"
-    >
-      <path d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7-10-7-10-7Z" />
+    <svg {...iconProps}>
+      <path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7-10-7-10-7Z" />
       <circle cx="12" cy="12" r="3" />
     </svg>
   );
@@ -65,42 +74,16 @@ function EyeIcon() {
 
 function EditIcon() {
   return (
-    <svg
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="1.8"
-      className="h-4 w-4"
-    >
-      <path d="m14 5 5 5M4 20l4.2-.9L20 7.3 16.7 4 4.9 15.8 4 20Z" />
+    <svg {...iconProps}>
+      <path d="m16 4 4 4M4 20l4-.8L19 8a2.1 2.1 0 0 0-3-3L5 16l-1 4Z" />
     </svg>
   );
 }
 
 function DeleteIcon() {
   return (
-    <svg
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="1.8"
-      className="h-4 w-4"
-    >
-      <path d="M4 7h16M10 11v6m4-6v6M5.5 7l1 14h11l1-14M9 7V4h6v3" />
-    </svg>
-  );
-}
-
-function UploadIcon() {
-  return (
-    <svg
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="1.8"
-      className="mr-2 h-4 w-4"
-    >
-      <path d="M12 16V4m-4 4 4-4 4 4M4 15v5h16v-5" />
+    <svg {...iconProps}>
+      <path d="M3 6h18M8 6V4h8v2m3 0-1 14H6L5 6m4 4v6m6-6v6" />
     </svg>
   );
 }
@@ -204,6 +187,12 @@ function Degree() {
     setShowForm(true);
   };
 
+  // VIEW DEGREE
+  const handleView = (degree) => {
+    setSelectedDegree(degree);
+    setShowView(true);
+  };
+
   // EDIT DEGREE
   const handleEdit = (degree) => {
     setEditId(degree._id);
@@ -220,8 +209,8 @@ function Degree() {
       description: degree.description || "",
       streams: Array.isArray(degree.streams)
         ? degree.streams.map((stream) =>
-            typeof stream === "object" ? stream._id : stream
-          )
+          typeof stream === "object" ? stream._id : stream
+        )
         : [],
       status: degree.status || "active",
       displayOrder: degree.displayOrder ?? 0,
@@ -280,8 +269,8 @@ function Degree() {
 
       setError(
         err.response?.data?.message ||
-          err.response?.data?.error ||
-          "Degree save nahi hui."
+        err.response?.data?.error ||
+        "Degree save nahi hui."
       );
     } finally {
       setSaving(false);
@@ -330,8 +319,8 @@ function Degree() {
         description: degree.description || "",
         streams: Array.isArray(degree.streams)
           ? degree.streams.map((stream) =>
-              typeof stream === "object" ? stream._id : stream
-            )
+            typeof stream === "object" ? stream._id : stream
+          )
           : [],
         status: newStatus,
         displayOrder: degree.displayOrder ?? 0,
@@ -351,7 +340,7 @@ function Degree() {
 
       setError(
         err.response?.data?.message ||
-          "Status update nahi hua. Backend status field check karein."
+        "Status update nahi hua. Backend status field check karein."
       );
     } finally {
       setTogglingId(null);
@@ -388,8 +377,8 @@ function Degree() {
 
       setError(
         err.response?.data?.message ||
-          err.response?.data?.error ||
-          "Bulk import failed. Excel file aur permissions check karein."
+        err.response?.data?.error ||
+        "Bulk import failed. Excel file aur permissions check karein."
       );
     } finally {
       setUploading(false);
@@ -404,20 +393,37 @@ function Degree() {
       .includes(search.toLowerCase())
   );
 
+  const getStreamNames = (degree) =>
+    degree.streams?.length
+      ? degree.streams
+        .map((stream) => {
+          if (typeof stream === "object") {
+            return stream.name || "Stream";
+          }
+
+          return (
+            streams.find((item) => item._id === stream)?.name || "Stream"
+          );
+        })
+        .join(", ")
+      : "-";
+
   return (
-    <div className="mx-auto w-full max-w-[1200px] space-y-5 px-3 py-4 sm:px-5">
-      {/* HEADER */}
-      <div className="flex flex-wrap items-center justify-between gap-3">
+    <div className="min-w-0 space-y-6">
+
+      {/* PAGE HEADER */}
+      <div className="flex flex-wrap items-center justify-between gap-4">
         <div>
-          <h1 className="font-display text-2xl font-bold text-brand-dark">
+          <h1 className="text-2xl font-bold text-[#0B2B2A]">
             Degrees
           </h1>
-          <p className="mt-1 text-sm text-muted">
-            Manage your degrees here.
+
+          <p className="mt-1 text-sm text-[#3F5A58]">
+            Manage degree information
           </p>
         </div>
 
-        <div className="flex flex-wrap gap-2">
+        <div className="flex flex-wrap items-center gap-3">
           <input
             ref={fileInputRef}
             type="file"
@@ -430,16 +436,15 @@ function Degree() {
             type="button"
             onClick={() => fileInputRef.current?.click()}
             disabled={uploading}
-            className="inline-flex items-center rounded-xl border border-line bg-white px-4 py-2.5 text-sm font-semibold text-brand-dark hover:bg-surface disabled:opacity-60"
+            className="rounded-xl border border-[#CFE5E2] bg-white px-5 py-2.5 text-sm font-semibold text-[#0B2B2A] hover:bg-teal-50 disabled:opacity-60"
           >
-            <UploadIcon />
-            {uploading ? "Importing..." : "Bulk Import"}
+            {uploading ? "Importing..." : "Add Bulk Data"}
           </button>
 
           <button
             type="button"
             onClick={openAdd}
-            className="rounded-xl bg-accent px-4 py-2.5 text-sm font-bold text-white hover:bg-[#cf4a24]"
+            className="rounded-xl bg-teal-700 px-5 py-2.5 text-sm font-bold text-white hover:bg-teal-800"
           >
             + Add Degree
           </button>
@@ -461,35 +466,36 @@ function Degree() {
       )}
 
       {/* SEARCH */}
-      <div className="rounded-xl border border-line bg-white p-3">
-        <input
-          type="text"
-          value={search}
-          onChange={(e) => setSearch(e.target.value)}
-          placeholder="Search degrees..."
-          className="w-full max-w-md rounded-lg border border-line bg-surface px-3 py-2.5 text-sm outline-none focus:border-brand"
-        />
-      </div>
+      <input
+        type="text"
+        value={search}
+        onChange={(e) => setSearch(e.target.value)}
+        placeholder="Search degree..."
+        className="w-full max-w-sm rounded-xl border border-[#9DBDBA] bg-white/80 px-4 py-2.5 text-sm text-[#0B2B2A] outline-none placeholder:text-[#4B6463] focus:border-teal-700 focus:ring-2 focus:ring-teal-200"
+      />
 
-      {/* TABLE */}
-      <div className="overflow-x-auto rounded-xl border border-line bg-white">
+      {/* DEGREES TABLE */}
+      <div className="overflow-x-auto rounded-2xl border border-white bg-white/65 text-[#0B2B2A] shadow-[0_4px_24px_rgba(15,118,110,0.08)] backdrop-blur-xl">
         <table className="w-full min-w-[1000px] text-left text-sm">
-          <thead className="bg-surface text-xs uppercase tracking-wide text-muted">
+          <thead className="bg-[#F1F8F7] text-[11px] font-bold uppercase tracking-wider text-[#3F5A58]">
             <tr>
-              <th className="px-4 py-3">Name</th>
-              <th className="px-4 py-3">Short Name</th>
-              <th className="px-4 py-3">Level</th>
-              <th className="px-4 py-3">Duration</th>
-              <th className="px-4 py-3">Streams</th>
-              <th className="px-4 py-3">Status</th>
-              <th className="px-4 py-3">Actions</th>
+              <th className="px-4 py-4">Name</th>
+              <th className="px-4 py-4">Short Name</th>
+              <th className="px-4 py-4">Level</th>
+              <th className="px-4 py-4">Duration</th>
+              <th className="px-4 py-4">Streams</th>
+              <th className="px-4 py-4">Status</th>
+              <th className="px-4 py-4">Actions</th>
             </tr>
           </thead>
 
           <tbody>
             {loading ? (
               <tr>
-                <td colSpan="7" className="px-4 py-8 text-center text-muted">
+                <td
+                  colSpan="7"
+                  className="px-4 py-10 text-center text-[#3F5A58]"
+                >
                   Loading degrees...
                 </td>
               </tr>
@@ -500,45 +506,32 @@ function Degree() {
                 return (
                   <tr
                     key={degree._id}
-                    className="border-t border-line hover:bg-surface/70"
+                    className="border-t border-[#CFE5E2] hover:bg-teal-50/70"
                   >
-                    <td className="px-4 py-3 font-medium text-brand-dark">
+                    <td className="px-4 py-4 font-medium text-[#0B2B2A]">
                       {degree.name}
                     </td>
 
-                    <td className="px-4 py-3">
+                    <td className="px-4 py-4">
                       {degree.shortName || "-"}
                     </td>
 
-                    <td className="px-4 py-3 capitalize">
+                    <td className="px-4 py-4 capitalize">
                       {degree.level || "-"}
                     </td>
 
-                    <td className="px-4 py-3">
+                    <td className="px-4 py-4">
                       {degree.defaultDuration?.value != null
                         ? `${degree.defaultDuration.value} ${degree.defaultDuration.unit || ""}`
                         : "-"}
                     </td>
 
-                    <td className="px-4 py-3">
-                      {degree.streams?.length
-                        ? degree.streams
-                            .map((stream) => {
-                              if (typeof stream === "object") {
-                                return stream.name || "Stream";
-                              }
-
-                              return (
-                                streams.find((item) => item._id === stream)
-                                  ?.name || "Stream"
-                              );
-                            })
-                            .join(", ")
-                        : "-"}
+                    <td className="px-4 py-4">
+                      {getStreamNames(degree)}
                     </td>
 
                     {/* STATUS TOGGLE */}
-                    <td className="px-4 py-3">
+                    <td className="px-4 py-4">
                       <div className="flex items-center gap-2">
                         <button
                           type="button"
@@ -547,22 +540,16 @@ function Degree() {
                           aria-label={`Set ${degree.name} ${isActive ? "inactive" : "active"}`}
                           disabled={togglingId === degree._id}
                           onClick={() => handleToggleStatus(degree)}
-                          className={`relative h-6 w-11 shrink-0 rounded-full transition-colors disabled:cursor-wait disabled:opacity-50 ${
-                            isActive ? "bg-green-500" : "bg-gray-300"
-                          }`}
+                          className={`relative h-7 w-12 rounded-full transition disabled:cursor-wait disabled:opacity-50 ${isActive ? "bg-teal-700" : "bg-slate-400"
+                            }`}
                         >
                           <span
-                            className={`absolute top-0.5 h-5 w-5 rounded-full bg-white shadow transition-transform ${
-                              isActive ? "translate-x-5" : "translate-x-0.5"
-                            }`}
+                            className={`absolute top-1 h-5 w-5 rounded-full bg-white transition ${isActive ? "left-6" : "left-1"
+                              }`}
                           />
                         </button>
 
-                        <span
-                          className={`text-xs font-semibold ${
-                            isActive ? "text-green-700" : "text-gray-500"
-                          }`}
-                        >
+                        <span className="text-xs capitalize text-[#3F5A58]">
                           {togglingId === degree._id
                             ? "Updating..."
                             : isActive
@@ -572,29 +559,29 @@ function Degree() {
                       </div>
                     </td>
 
-                    {/* CRUD ICONS */}
-                    <td className="px-4 py-3">
+                    {/* ACTIONS */}
+                    <td className="px-4 py-4">
                       <div className="flex items-center gap-2">
                         <IconButton
-                          title="View degree"
+                          title="View Degree"
                           onClick={() => handleView(degree)}
-                          className="text-blue-600 hover:border-blue-200 hover:bg-blue-50"
+                          className="border-teal-200 bg-teal-50 text-teal-700 hover:bg-teal-700 hover:text-white"
                         >
                           <EyeIcon />
                         </IconButton>
 
                         <IconButton
-                          title="Edit degree"
+                          title="Edit Degree"
                           onClick={() => handleEdit(degree)}
-                          className="text-brand hover:border-brand/30 hover:bg-brand-soft"
+                          className="border-[#CFE5E2] bg-white text-[#3F5A58] hover:bg-[#0B2B2A] hover:text-white"
                         >
                           <EditIcon />
                         </IconButton>
 
                         <IconButton
-                          title="Delete degree"
+                          title="Delete Degree"
                           onClick={() => handleDelete(degree._id)}
-                          className="text-red-600 hover:border-red-200 hover:bg-red-50"
+                          className="border-red-200 bg-red-50 text-red-600 hover:bg-red-600 hover:text-white"
                         >
                           <DeleteIcon />
                         </IconButton>
@@ -605,8 +592,11 @@ function Degree() {
               })
             ) : (
               <tr>
-                <td colSpan="7" className="px-4 py-10 text-center text-muted">
-                  No degrees found
+                <td
+                  colSpan="7"
+                  className="px-4 py-10 text-center text-[#3F5A58]"
+                >
+                  No degrees found.
                 </td>
               </tr>
             )}
@@ -614,42 +604,39 @@ function Degree() {
         </table>
       </div>
 
-      {/* ADD / EDIT MODAL */}
+      {/* ADD / EDIT FORM */}
       {showForm && (
         <div
-          className="fixed inset-0 z-50 flex items-center justify-center bg-brand-dark/45 p-3 sm:p-5"
+          className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4"
           onMouseDown={(e) => {
             if (e.target === e.currentTarget) closeForm();
           }}
         >
-          <div className="max-h-[88vh] w-full max-w-3xl overflow-y-auto rounded-2xl bg-white shadow-2xl">
-            <div className="flex items-center justify-between border-b border-line bg-brand px-5 py-4 text-white">
-              <div>
-                <h2 className="font-display text-lg font-bold">
-                  {editId ? "Edit Degree" : "Add Degree"}
-                </h2>
-                <p className="mt-0.5 text-xs text-white/75">
-                  Enter degree details below
-                </p>
-              </div>
+          <div className="max-h-[90vh] w-full max-w-3xl overflow-y-auto rounded-2xl bg-white p-6 shadow-xl">
+
+            <div className="mb-6 flex items-center justify-between">
+              <h2 className="text-2xl font-bold text-teal-700">
+                {editId ? "Edit Degree" : "Add Degree"}
+              </h2>
 
               <button
                 type="button"
                 onClick={closeForm}
-                className="rounded-lg px-2 py-1 text-2xl leading-none hover:bg-white/10"
+                aria-label="Close"
+                className="text-2xl text-[#3F5A58] hover:text-red-600"
               >
                 &times;
               </button>
             </div>
 
-            <form onSubmit={handleSubmit} className="space-y-4 p-5">
+            <form onSubmit={handleSubmit}>
               {error && (
-                <div className="rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">
+                <div className="mb-4 rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">
                   {error}
                 </div>
               )}
 
-              <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+              <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
                 <Field label="Degree Name *">
                   <input
                     name="name"
@@ -784,7 +771,7 @@ function Degree() {
                   />
                 </Field>
 
-                <Field label="Streams">
+                <Field label="Streams" className="md:col-span-2">
                   <select
                     multiple
                     value={formData.streams}
@@ -797,28 +784,30 @@ function Degree() {
                       </option>
                     ))}
                   </select>
-                  <span className="mt-1 block text-xs text-muted">
+
+                  <span className="mt-1 block text-xs text-[#3F5A58]">
                     Multiple select ke liye Ctrl/Cmd dabayein.
                   </span>
                 </Field>
 
-                <Field label="Description" className="lg:col-span-2">
+                <Field label="Description" className="md:col-span-2">
                   <textarea
                     name="description"
                     value={formData.description}
                     onChange={handleChange}
-                    rows="2"
+                    rows="3"
                     className={inputClass}
                     placeholder="Enter description"
                   />
                 </Field>
               </div>
 
-              <div className="flex justify-end gap-3 border-t border-line pt-4">
+              {/* FORM BUTTONS */}
+              <div className="mt-6 flex justify-end gap-3">
                 <button
                   type="button"
                   onClick={closeForm}
-                  className="rounded-xl border border-line px-4 py-2 text-sm font-semibold text-muted hover:bg-surface"
+                  className="rounded-lg border border-[#CFE5E2] px-5 py-2"
                 >
                   Cancel
                 </button>
@@ -826,7 +815,7 @@ function Degree() {
                 <button
                   type="submit"
                   disabled={saving}
-                  className="rounded-xl bg-brand px-5 py-2 text-sm font-semibold text-white hover:bg-brand-dark disabled:cursor-not-allowed disabled:opacity-60"
+                  className="rounded-lg bg-teal-700 px-5 py-2 font-medium text-white hover:bg-teal-800 disabled:opacity-60"
                 >
                   {saving
                     ? "Saving..."
@@ -840,35 +829,42 @@ function Degree() {
         </div>
       )}
 
-      {/* VIEW MODAL */}
+      {/* VIEW DEGREE */}
       {showView && selectedDegree && (
         <div
-          className="fixed inset-0 z-50 flex items-center justify-center bg-brand-dark/45 p-3 sm:p-5"
+          className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4"
           onMouseDown={(e) => {
             if (e.target === e.currentTarget) setShowView(false);
           }}
         >
-          <div className="max-h-[85vh] w-full max-w-xl overflow-y-auto rounded-2xl bg-white shadow-2xl">
-            <div className="flex items-center justify-between bg-brand px-5 py-4 text-white">
-              <h2 className="font-display text-lg font-bold">
+          <div className="max-h-[85vh] w-full max-w-2xl overflow-y-auto rounded-2xl bg-white p-6">
+
+            <div className="mb-5 flex items-center justify-between">
+              <h2 className="text-xl font-bold text-[#0B2B2A]">
                 Degree Details
               </h2>
+
               <button
                 type="button"
                 onClick={() => setShowView(false)}
-                className="rounded-lg px-2 py-1 text-2xl leading-none hover:bg-white/10"
+                aria-label="Close"
+                className="text-2xl text-[#3F5A58]"
               >
                 &times;
               </button>
             </div>
 
-            <div className="grid gap-4 p-5 sm:grid-cols-2">
+            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
               <DetailRow label="Name" value={selectedDegree.name} />
               <DetailRow label="Short Name" value={selectedDegree.shortName} />
               <DetailRow label="Slug" value={selectedDegree.slug} />
               <DetailRow label="Code" value={selectedDegree.code} />
-              <DetailRow label="Level" value={selectedDegree.level} />
-              <DetailRow label="Degree Type" value={selectedDegree.degreeType} />
+              <DetailRow label="Level" value={selectedDegree.level} capitalize />
+              <DetailRow
+                label="Degree Type"
+                value={selectedDegree.degreeType}
+                capitalize
+              />
               <DetailRow
                 label="Duration"
                 value={
@@ -880,6 +876,7 @@ function Degree() {
               <DetailRow
                 label="Status"
                 value={selectedDegree.status || "active"}
+                capitalize
               />
               <DetailRow
                 label="Display Order"
@@ -887,35 +884,22 @@ function Degree() {
               />
               <DetailRow
                 label="Streams"
-                value={
-                  selectedDegree.streams?.length
-                    ? selectedDegree.streams
-                        .map((stream) =>
-                          typeof stream === "object"
-                            ? stream.name || "Stream"
-                            : streams.find((item) => item._id === stream)?.name || "Stream"
-                        )
-                        .join(", ")
-                    : "-"
-                }
+                value={getStreamNames(selectedDegree)}
               />
-              <div className="sm:col-span-2">
-                <DetailRow
-                  label="Description"
-                  value={selectedDegree.description || "-"}
-                />
-              </div>
+              <DetailRow
+                label="Description"
+                value={selectedDegree.description || "-"}
+                className="sm:col-span-2"
+              />
             </div>
 
-            <div className="flex justify-end border-t border-line p-4">
-              <button
-                type="button"
-                onClick={() => setShowView(false)}
-                className="rounded-xl bg-brand px-5 py-2 text-sm font-semibold text-white hover:bg-brand-dark"
-              >
-                Close
-              </button>
-            </div>
+            <button
+              type="button"
+              onClick={() => setShowView(false)}
+              className="mt-6 rounded-lg bg-teal-700 px-5 py-2.5 text-sm font-semibold text-white hover:bg-teal-800"
+            >
+              Close
+            </button>
           </div>
         </div>
       )}
@@ -923,16 +907,11 @@ function Degree() {
   );
 }
 
-function DetailRow({ label, value }) {
+function DetailRow({ label, value, capitalize = false, className = "" }) {
   return (
-    <div>
-      <p className="text-xs font-semibold uppercase tracking-wide text-muted">
-        {label}
-      </p>
-      <p className="mt-1 break-words text-sm font-medium text-brand-dark">
-        {value ?? "-"}
-      </p>
-    </div>
+    <p className={`break-words ${capitalize ? "capitalize" : ""} ${className}`}>
+      <b>{label}:</b> {value || value === 0 ? value : "-"}
+    </p>
   );
 }
 

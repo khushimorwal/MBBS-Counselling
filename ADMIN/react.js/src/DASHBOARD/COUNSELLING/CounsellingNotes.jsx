@@ -328,7 +328,7 @@ setNotes(response.data.notes || []);
   // =====================================
 
   const inputClass =
-    "w-full rounded-xl border border-line bg-white px-4 py-3 text-sm outline-none transition focus:border-brand";
+    "w-full rounded-xl border border-[#CFE5E2] bg-white px-4 py-3 text-sm outline-none transition focus:border-teal-700";
 
   // =====================================
   // MAIN UI
@@ -342,11 +342,11 @@ setNotes(response.data.notes || []);
       <div className="mb-6 flex flex-col justify-between gap-4 sm:flex-row sm:items-end">
         <div>
 
-          <h1 className="mt-2 font-display text-3xl font-bold text-brand-dark">
+          <h1 className="mt-2 font-display text-3xl font-bold text-[#0B2B2A]">
             Counselling Notes
           </h1>
 
-          <p className="mt-2 text-sm text-muted">
+          <p className="mt-2 text-sm text-[#3F5A58]">
             Maintain and review notes from student counselling sessions.
           </p>
         </div>
@@ -357,7 +357,7 @@ setNotes(response.data.notes || []);
               fetchNotes();
               fetchSessions();
             }}
-            className="flex items-center gap-2 rounded-xl border border-line bg-white px-4 py-3 text-sm font-semibold text-brand-dark hover:bg-surface"
+            className="flex items-center gap-2 rounded-xl border border-[#CFE5E2] bg-white px-4 py-3 text-sm font-semibold text-[#0B2B2A] hover:bg-[#F1F8F7]"
           >
             <FiRefreshCw />
             Refresh
@@ -365,7 +365,7 @@ setNotes(response.data.notes || []);
 
           <button
             onClick={openCreateModal}
-            className="flex items-center gap-2 rounded-xl bg-accent px-5 py-3 text-sm font-semibold text-white shadow-sm hover:opacity-90"
+            className="flex items-center gap-2 rounded-xl bg-teal-700 px-5 py-3 text-sm font-semibold text-white shadow-sm hover:opacity-90"
           >
             <FiPlus />
             Add Note
@@ -413,10 +413,10 @@ setNotes(response.data.notes || []);
         ].map((card) => (
           <div
             key={card.title}
-            className="rounded-2xl border border-line bg-white p-5"
+            className="rounded-2xl border border-[#CFE5E2] bg-white p-5"
           >
             <div className="flex items-center justify-between">
-              <p className="text-sm font-medium text-muted">
+              <p className="text-sm font-medium text-[#3F5A58]">
                 {card.title}
               </p>
 
@@ -427,7 +427,7 @@ setNotes(response.data.notes || []);
               </span>
             </div>
 
-            <h2 className="mt-3 font-display text-3xl font-bold text-brand-dark">
+            <h2 className="mt-3 font-display text-3xl font-bold text-[#0B2B2A]">
               {card.count}
             </h2>
 
@@ -442,10 +442,10 @@ setNotes(response.data.notes || []);
 
       {/* SEARCH AND FILTER */}
 
-      <div className="mb-5 flex flex-col gap-3 rounded-2xl border border-line bg-white p-4 sm:flex-row">
+      <div className="mb-5 flex flex-col gap-3 rounded-2xl border border-[#CFE5E2] bg-white p-4 sm:flex-row">
 
         <div className="relative min-w-0 flex-1">
-          <FiSearch className="absolute left-4 top-1/2 -translate-y-1/2 text-muted" />
+          <FiSearch className="absolute left-4 top-1/2 -translate-y-1/2 text-[#3F5A58]" />
 
           <input
             type="search"
@@ -469,20 +469,20 @@ setNotes(response.data.notes || []);
 
       {/* NOTES TABLE */}
 
-      <div className="overflow-hidden rounded-2xl border border-line bg-white">
+      <div className="overflow-hidden rounded-2xl border border-[#CFE5E2] bg-white">
 
-        <div className="flex flex-col justify-between gap-2 border-b border-line p-5 sm:flex-row sm:items-center">
+        <div className="flex flex-col justify-between gap-2 border-b border-[#CFE5E2] p-5 sm:flex-row sm:items-center">
           <div>
-            <h2 className="font-display text-lg font-bold text-brand-dark">
+            <h2 className="font-display text-lg font-bold text-[#0B2B2A]">
               Counselling Note Records
             </h2>
 
-            <p className="mt-1 text-xs text-muted">
+            <p className="mt-1 text-xs text-[#3F5A58]">
               Review notes recorded during counselling sessions.
             </p>
           </div>
 
-          <span className="text-xs font-semibold text-muted">
+          <span className="text-xs font-semibold text-[#3F5A58]">
             {filteredNotes.length} Records
           </span>
         </div>
@@ -491,7 +491,7 @@ setNotes(response.data.notes || []);
           <table className="w-full min-w-[1000px] text-left">
 
             <thead className="bg-[#F9FBFA]">
-              <tr className="text-xs font-semibold uppercase tracking-wide text-muted">
+              <tr className="text-xs font-semibold uppercase tracking-wide text-[#3F5A58]">
                 <th className="px-5 py-4">Student</th>
                 <th className="px-5 py-4">Counsellor</th>
                 <th className="px-5 py-4">Session</th>
@@ -506,56 +506,56 @@ setNotes(response.data.notes || []);
 
               {loading ? (
                 <tr>
-                  <td colSpan="7" className="px-5 py-12 text-center text-sm text-muted">
+                  <td colSpan="7" className="px-5 py-12 text-center text-sm text-[#3F5A58]">
                     Loading counselling notes...
                   </td>
                 </tr>
               ) : filteredNotes.length === 0 ? (
                 <tr>
-                  <td colSpan="7" className="px-5 py-12 text-center text-sm text-muted">
+                  <td colSpan="7" className="px-5 py-12 text-center text-sm text-[#3F5A58]">
                     No counselling notes found.
                   </td>
                 </tr>
               ) : (
                 filteredNotes.map((note) => (
-                  <tr key={note._id} className="transition hover:bg-surface/50">
+                  <tr key={note._id} className="transition hover:bg-[#F1F8F7]/50">
 
                     <td className="px-5 py-4">
-                      <p className="font-semibold text-brand-dark">
+                      <p className="font-semibold text-[#0B2B2A]">
                         {getStudent(note)}
                       </p>
 
-                      <p className="mt-1 text-xs text-muted">
+                      <p className="mt-1 text-xs text-[#3F5A58]">
                         {note.session?.student?.email || "—"}
                       </p>
                     </td>
 
                     <td className="px-5 py-4">
-                      <p className="font-semibold text-brand-dark">
+                      <p className="font-semibold text-[#0B2B2A]">
                         {getCounsellor(note)}
                       </p>
 
-                      <p className="mt-1 text-xs text-muted">
+                      <p className="mt-1 text-xs text-[#3F5A58]">
                         {note.session?.counsellor?.email || "—"}
                       </p>
                     </td>
 
                     <td className="px-5 py-4">
-                      <span className="font-semibold text-brand-dark">
+                      <span className="font-semibold text-[#0B2B2A]">
                         Session #{note.session?.sessionNumber || "—"}
                       </span>
 
-                      <p className="mt-1 text-xs capitalize text-muted">
+                      <p className="mt-1 text-xs capitalize text-[#3F5A58]">
                         {note.session?.status?.replace("_", " ") || "—"}
                       </p>
                     </td>
 
                     <td className="max-w-[220px] px-5 py-4">
-                      <p className="truncate text-sm text-brand-dark">
+                      <p className="truncate text-sm text-[#0B2B2A]">
                         {note.content}
                       </p>
 
-                      <p className="mt-1 text-xs capitalize text-muted">
+                      <p className="mt-1 text-xs capitalize text-[#3F5A58]">
                         {note.category?.replace("_", " ")}
                       </p>
                     </td>
@@ -564,7 +564,7 @@ setNotes(response.data.notes || []);
                       <VisibilityBadge visibility={note.visibility} />
                     </td>
 
-                    <td className="px-5 py-4 text-sm text-muted">
+                    <td className="px-5 py-4 text-sm text-[#3F5A58]">
                       {formatDate(note.createdAt)}
                     </td>
 
@@ -615,10 +615,10 @@ setNotes(response.data.notes || []);
 
             {/* MODAL HEADER */}
 
-            <div className="flex items-center justify-between border-b border-line p-5">
+            <div className="flex items-center justify-between border-b border-[#CFE5E2] p-5">
 
               <div>
-                <h2 className="font-display text-xl font-bold text-brand-dark">
+                <h2 className="font-display text-xl font-bold text-[#0B2B2A]">
                   {modalType === "create"
                     ? "Add Counselling Note"
                     : modalType === "edit"
@@ -626,14 +626,14 @@ setNotes(response.data.notes || []);
                     : "Counselling Note Details"}
                 </h2>
 
-                <p className="mt-1 text-xs text-muted">
+                <p className="mt-1 text-xs text-[#3F5A58]">
                   Manage counselling session notes.
                 </p>
               </div>
 
               <button
                 onClick={() => setShowModal(false)}
-                className="rounded-lg bg-surface p-2 text-muted hover:text-red-600"
+                className="rounded-lg bg-[#F1F8F7] p-2 text-[#3F5A58] hover:text-red-600"
               >
                 <FiX size={18} />
               </button>
@@ -648,51 +648,51 @@ setNotes(response.data.notes || []);
                 <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
 
                   <div>
-                    <p className="text-xs text-muted">Student</p>
-                    <p className="mt-1 font-semibold text-brand-dark">
+                    <p className="text-xs text-[#3F5A58]">Student</p>
+                    <p className="mt-1 font-semibold text-[#0B2B2A]">
                       {getStudent(selectedNote)}
                     </p>
                   </div>
 
                   <div>
-                    <p className="text-xs text-muted">Counsellor</p>
-                    <p className="mt-1 font-semibold text-brand-dark">
+                    <p className="text-xs text-[#3F5A58]">Counsellor</p>
+                    <p className="mt-1 font-semibold text-[#0B2B2A]">
                       {getCounsellor(selectedNote)}
                     </p>
                   </div>
 
                   <div>
-                    <p className="text-xs text-muted">Session</p>
-                    <p className="mt-1 font-semibold text-brand-dark">
+                    <p className="text-xs text-[#3F5A58]">Session</p>
+                    <p className="mt-1 font-semibold text-[#0B2B2A]">
                       #{selectedNote.session?.sessionNumber || "—"}
                     </p>
                   </div>
 
                   <div>
-                    <p className="text-xs text-muted">Category</p>
-                    <p className="mt-1 font-semibold capitalize text-brand-dark">
+                    <p className="text-xs text-[#3F5A58]">Category</p>
+                    <p className="mt-1 font-semibold capitalize text-[#0B2B2A]">
                       {selectedNote.category?.replace("_", " ")}
                     </p>
                   </div>
 
                   <div>
-                    <p className="text-xs text-muted">Visibility</p>
+                    <p className="text-xs text-[#3F5A58]">Visibility</p>
                     <div className="mt-2">
                       <VisibilityBadge visibility={selectedNote.visibility} />
                     </div>
                   </div>
 
                   <div>
-                    <p className="text-xs text-muted">Created Date</p>
-                    <p className="mt-1 font-semibold text-brand-dark">
+                    <p className="text-xs text-[#3F5A58]">Created Date</p>
+                    <p className="mt-1 font-semibold text-[#0B2B2A]">
                       {formatDate(selectedNote.createdAt)}
                     </p>
                   </div>
 
                   {selectedNote.editedAt && (
                     <div>
-                      <p className="text-xs text-muted">Last Edited</p>
-                      <p className="mt-1 font-semibold text-brand-dark">
+                      <p className="text-xs text-[#3F5A58]">Last Edited</p>
+                      <p className="mt-1 font-semibold text-[#0B2B2A]">
                         {formatDate(selectedNote.editedAt)}
                       </p>
                     </div>
@@ -701,11 +701,11 @@ setNotes(response.data.notes || []);
                 </div>
 
                 <div>
-                  <p className="mb-2 text-xs font-semibold uppercase text-muted">
+                  <p className="mb-2 text-xs font-semibold uppercase text-[#3F5A58]">
                     Note Content
                   </p>
 
-                  <div className="whitespace-pre-wrap rounded-xl bg-surface p-4 text-sm leading-6 text-brand-dark">
+                  <div className="whitespace-pre-wrap rounded-xl bg-[#F1F8F7] p-4 text-sm leading-6 text-[#0B2B2A]">
                     {selectedNote.content}
                   </div>
                 </div>
@@ -713,7 +713,7 @@ setNotes(response.data.notes || []);
                 <div className="flex justify-end">
                   <button
                     onClick={() => setShowModal(false)}
-                    className="rounded-xl bg-accent px-5 py-2.5 text-sm font-semibold text-white"
+                    className="rounded-xl bg-teal-700 px-5 py-2.5 text-sm font-semibold text-white"
                   >
                     Close
                   </button>
@@ -741,7 +741,7 @@ setNotes(response.data.notes || []);
 
                 {modalType === "create" && (
                   <div>
-                    <label className="mb-2 block text-sm font-semibold text-brand-dark">
+                    <label className="mb-2 block text-sm font-semibold text-[#0B2B2A]">
                       Select Counselling Session *
                     </label>
 
@@ -774,7 +774,7 @@ setNotes(response.data.notes || []);
                 {/* CATEGORY */}
 
                 <div>
-                  <label className="mb-2 block text-sm font-semibold text-brand-dark">
+                  <label className="mb-2 block text-sm font-semibold text-[#0B2B2A]">
                     Note Category *
                   </label>
 
@@ -796,7 +796,7 @@ setNotes(response.data.notes || []);
                 {/* VISIBILITY */}
 
                 <div>
-                  <label className="mb-2 block text-sm font-semibold text-brand-dark">
+                  <label className="mb-2 block text-sm font-semibold text-[#0B2B2A]">
                     Note Visibility *
                   </label>
 
@@ -813,7 +813,7 @@ setNotes(response.data.notes || []);
                     </option>
                   </select>
 
-                  <p className="mt-2 text-xs text-muted">
+                  <p className="mt-2 text-xs text-[#3F5A58]">
                     Internal notes are visible only to Admin and assigned
                     Counsellor. Student-visible notes can also be viewed by
                     the student.
@@ -823,7 +823,7 @@ setNotes(response.data.notes || []);
                 {/* CONTENT */}
 
                 <div>
-                  <label className="mb-2 block text-sm font-semibold text-brand-dark">
+                  <label className="mb-2 block text-sm font-semibold text-[#0B2B2A]">
                     Note Content *
                   </label>
 
@@ -838,19 +838,19 @@ setNotes(response.data.notes || []);
                     className={`${inputClass} resize-none`}
                   />
 
-                  <p className="mt-1 text-right text-xs text-muted">
+                  <p className="mt-1 text-right text-xs text-[#3F5A58]">
                     {form.content.length}/10000
                   </p>
                 </div>
 
                 {/* FOOTER */}
 
-                <div className="flex justify-end gap-3 border-t border-line pt-4">
+                <div className="flex justify-end gap-3 border-t border-[#CFE5E2] pt-4">
 
                   <button
                     type="button"
                     onClick={() => setShowModal(false)}
-                    className="rounded-xl border border-line px-5 py-2.5 text-sm font-semibold text-brand-dark hover:bg-surface"
+                    className="rounded-xl border border-[#CFE5E2] px-5 py-2.5 text-sm font-semibold text-[#0B2B2A] hover:bg-[#F1F8F7]"
                   >
                     Cancel
                   </button>
@@ -858,7 +858,7 @@ setNotes(response.data.notes || []);
                   <button
                     type="submit"
                     disabled={saving || (modalType === "create" && sessions.length === 0)}
-                    className="rounded-xl bg-accent px-6 py-2.5 text-sm font-semibold text-white hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-60"
+                    className="rounded-xl bg-teal-700 px-6 py-2.5 text-sm font-semibold text-white hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-60"
                   >
                     {saving
                       ? "Saving..."

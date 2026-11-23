@@ -35,6 +35,37 @@ const userSchema = new mongoose.Schema(
       ref: "Role",
       required: true,
     },
+
+    // Package and OTP fields aligned with User model
+    otp: {
+      type: String,
+    },
+
+    otpExpiresAt: {
+      type: Date,
+    },
+
+    activePackage: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Package",
+      default: null,
+    },
+
+    activePlan: {
+      type: String,
+      default: null,
+    },
+
+    planStatus: {
+      type: String,
+      enum: ["Active", "Inactive"],
+      default: "Active",
+    },
+
+    planActivatedAt: {
+      type: Date,
+      default: Date.now,
+    },
   },
   { timestamps: true },
 );

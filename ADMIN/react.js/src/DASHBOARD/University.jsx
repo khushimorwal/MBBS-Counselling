@@ -1,4 +1,3 @@
-
 import { useEffect, useState, useRef } from "react";
 import { API } from "../api/axios.js";
 
@@ -16,16 +15,38 @@ const emptyForm = {
   logo: "",
 };
 
+// Static default logo (used when a university has no logo / logo fails to load)
+const DEFAULT_LOGO =
+  "data:image/svg+xml;utf8," +
+  encodeURIComponent(
+    '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" fill="none">' +
+    '<rect width="48" height="48" rx="10" fill="#F0FDFA"/>' +
+    '<g stroke="#0F766E" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">' +
+    '<path d="M9 20 24 11l15 9z"/>' +
+    '<path d="M14 23v11M24 23v11M34 23v11M10 37h28"/>' +
+    '</g></svg>'
+  );
+
+// Logo to display: logo URL saved for the university, otherwise the static default
+const getLogoSrc = (logo) =>
+  typeof logo === "string" && logo.trim() ? logo.trim() : DEFAULT_LOGO;
+
+// If a logo fails to load, fall back to the static default
+const handleLogoError = (e) => {
+  e.currentTarget.onerror = null;
+  e.currentTarget.src = DEFAULT_LOGO;
+};
+
+// Shared classes (same as College page)
 const inputClass =
-  "w-full rounded-xl border border-line bg-white px-4 py-3 text-sm text-brand-dark outline-none transition placeholder:text-gray-400 focus:border-brand focus:ring-2 focus:ring-brand/10";
+  "w-full rounded-lg border border-[#9DBDBA] bg-white px-3 py-2.5 text-sm text-[#0B2B2A] outline-none placeholder:text-[#4B6463] focus:border-teal-700 focus:ring-2 focus:ring-teal-200";
 
-const labelClass = "mb-2 block text-sm font-semibold text-brand-dark";
+const labelClass = "mb-1.5 block text-sm font-medium text-[#0B2B2A]";
 
-const buttonClass =
-  "rounded-xl px-5 py-2.5 text-sm font-semibold transition";
+const actionButton =
+  "inline-flex h-9 w-9 items-center justify-center rounded-lg border transition";
 
 function University() {
-
   const role = localStorage.getItem("role");
 
   const [universities, setUniversities] = useState([]);
@@ -242,12 +263,12 @@ function University() {
       setIsBulkUploading(true);
       setError("");
 
-      const formData = new FormData();
-      formData.append("file", file);
+      const uploadData = new FormData();
+      uploadData.append("file", file);
 
       const response = await API.post(
         "/university/universities/bulk-import",
-        formData
+        uploadData
       );
 
       alert(
@@ -307,20 +328,20 @@ function University() {
   };
 
   return (
-    <div className="min-h-full bg-surface p-4 sm:p-6 lg:p-8">
+    <div className="min-w-0 space-y-6">
+
       {/* PAGE HEADER */}
-      <div className="mb-6 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+      <div className="flex flex-wrap items-center justify-between gap-4">
         <div>
-          <h1 className="font-display text-2xl font-bold text-brand-dark sm:text-3xl">
+          <h1 className="text-2xl font-bold text-[#0B2B2A]">
             Universities
           </h1>
 
-          <p className="mt-2 text-sm text-muted">
-            Manage university details and information.
+          <p className="mt-1 text-sm text-[#3F5A58]">
+            Manage university information
           </p>
         </div>
 
-        {/* BULK IMPORT AND ADD BUTTONS */}
         <div className="flex flex-wrap items-center gap-3">
           <input
             type="file"
@@ -334,38 +355,24 @@ function University() {
             type="button"
             onClick={() => fileInputRef.current?.click()}
             disabled={isBulkUploading}
-            className={`${buttonClass} border border-line bg-white text-brand-dark hover:bg-surface disabled:cursor-not-allowed disabled:opacity-60`}
+            className="rounded-xl border border-[#CFE5E2] bg-white px-5 py-2.5 text-sm font-semibold text-[#0B2B2A] hover:bg-teal-50 disabled:opacity-60"
           >
-            {isBulkUploading ? "Uploading..." : "Bulk Import"}
+            {isBulkUploading ? "Importing..." : "Add Bulk Data"}
           </button>
 
           <button
             type="button"
             onClick={handleAdd}
-            className={`${buttonClass} flex items-center justify-center gap-2 bg-accent font-bold text-white hover:bg-[#cf4a24]`}
+            className="rounded-xl bg-teal-700 px-5 py-2.5 text-sm font-bold text-white hover:bg-teal-800"
           >
-            <svg
-              width="18"
-              height="18"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="2"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              aria-hidden="true"
-            >
-              <path d="M12 5v14" />
-              <path d="M5 12h14" />
-            </svg>
-            Add University
+            + Add University
           </button>
         </div>
       </div>
 
       {/* ERROR MESSAGE */}
       {error && !showModal && !viewUniversity && (
-        <div className="mb-4 flex items-center justify-between gap-3 rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">
+        <div className="flex items-center justify-between gap-3 rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">
           <span>{error}</span>
 
           <button
@@ -379,359 +386,310 @@ function University() {
         </div>
       )}
 
-      {/* TABLE CARD */}
-      <div className="overflow-hidden rounded-2xl border border-line bg-white shadow-sm">
-        {/* SEARCH SECTION */}
-        <div className="flex flex-col gap-4 border-b border-line p-4 sm:flex-row sm:items-center sm:justify-between sm:p-5">
-          <div>
-            <h2 className="font-display text-lg font-bold text-brand-dark">
-              University List
-            </h2>
+      {/* SEARCH */}
+      <input
+        type="text"
+        placeholder="Search university..."
+        value={search}
+        onChange={(e) => setSearch(e.target.value)}
+        className="w-full max-w-sm rounded-xl border border-[#9DBDBA] bg-white/80 px-4 py-2.5 text-sm text-[#0B2B2A] outline-none placeholder:text-[#4B6463] focus:border-teal-700 focus:ring-2 focus:ring-teal-200"
+      />
 
-            <p className="mt-1 text-sm text-muted">
-              {filteredUniversities.length} universities found
-            </p>
-          </div>
+      {/* UNIVERSITIES TABLE */}
+      <div className="overflow-x-auto rounded-2xl border border-white bg-white/65 text-[#0B2B2A] shadow-[0_4px_24px_rgba(15,118,110,0.08)] backdrop-blur-xl">
+        <table className="w-full min-w-[950px] text-left text-sm">
+          <thead className="bg-[#F1F8F7] text-[11px] font-bold uppercase tracking-wider text-[#3F5A58]">
+            <tr>
+              <th className="px-4 py-4">Logo</th>
+              <th className="px-4 py-4">University Name</th>
+              <th className="px-4 py-4">Short Name</th>
+              <th className="px-4 py-4">Type</th>
+              <th className="px-4 py-4">State</th>
+              <th className="px-4 py-4">City</th>
+              <th className="px-4 py-4">Website</th>
+              <th className="px-4 py-4">Status</th>
+              <th className="px-4 py-4">Actions</th>
+            </tr>
+          </thead>
 
-          <div className="relative w-full sm:max-w-xs">
-            <svg
-              width="18"
-              height="18"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="2"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              className="absolute left-3 top-1/2 -translate-y-1/2 text-muted"
-              aria-hidden="true"
-            >
-              <circle cx="11" cy="11" r="8" />
-              <path d="m21 21-4.35-4.35" />
-            </svg>
-
-            <input
-              type="text"
-              value={search}
-              onChange={(e) => setSearch(e.target.value)}
-              placeholder="Search university..."
-              className={`${inputClass} pl-10`}
-            />
-          </div>
-        </div>
-
-        {/* TABLE */}
-        <div className="overflow-x-auto">
-          <table className="w-full min-w-[900px] text-left">
-            <thead className="bg-[#F9FBFA] text-muted">
+          <tbody>
+            {loading ? (
               <tr>
-                <th className="px-5 py-4 text-xs font-semibold uppercase tracking-wider">
-                  #
-                </th>
-                <th className="px-5 py-4 text-xs font-semibold uppercase tracking-wider">
-                  University
-                </th>
-                <th className="px-5 py-4 text-xs font-semibold uppercase tracking-wider">
-                  Short Name
-                </th>
-                <th className="px-5 py-4 text-xs font-semibold uppercase tracking-wider">
-                  Type
-                </th>
-                <th className="px-5 py-4 text-xs font-semibold uppercase tracking-wider">
-                  Location
-                </th>
-                <th className="px-5 py-4 text-xs font-semibold uppercase tracking-wider">
-                  Status
-                </th>
-                <th className="px-5 py-4 text-xs font-semibold uppercase tracking-wider">
-                  Actions
-                </th>
+                <td
+                  colSpan="9"
+                  className="px-4 py-10 text-center text-[#3F5A58]"
+                >
+                  Loading universities...
+                </td>
               </tr>
-            </thead>
+            ) : filteredUniversities.length > 0 ? (
+              filteredUniversities.map((university) => {
+                const status =
+                  universityStatuses[university._id] ??
+                  (university.status === "inactive" ? "inactive" : "active");
 
-            <tbody className="divide-y divide-line">
-              {loading ? (
-                <tr>
-                  <td
-                    colSpan="7"
-                    className="px-5 py-12 text-center text-sm text-muted"
+                const isActive = status === "active";
+
+                return (
+                  <tr
+                    key={university._id}
+                    className="border-t border-[#CFE5E2] hover:bg-teal-50/70"
                   >
-                    Loading universities...
-                  </td>
-                </tr>
-              ) : filteredUniversities.length === 0 ? (
-                <tr>
-                  <td colSpan="7" className="px-5 py-12 text-center">
-                    <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-brand-soft text-brand">
-                      <svg
-                        width="24"
-                        height="24"
-                        viewBox="0 0 24 24"
-                        fill="none"
-                        stroke="currentColor"
-                        strokeWidth="1.7"
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        aria-hidden="true"
-                      >
-                        <path d="M3 21h18" />
-                        <path d="M5 21V7l8-4v18" />
-                        <path d="M19 21V11l-6-4" />
-                        <path d="M9 9v.01M9 12v.01M9 15v.01M9 18v.01" />
-                      </svg>
-                    </div>
+                    <td className="px-4 py-4">
+                      <img
+                        key={university.logo}
+                        src={getLogoSrc(university.logo)}
+                        alt={university.name}
+                        onError={handleLogoError}
+                        referrerPolicy="no-referrer"
+                        className="h-11 w-11 rounded-lg border border-[#CFE5E2] bg-white object-contain"
+                      />
+                    </td>
 
-                    <p className="mt-3 font-semibold text-brand-dark">
-                      No universities found
-                    </p>
+                    <td className="px-4 py-4">
+                      <p className="font-medium text-[#0B2B2A]">
+                        {university.name || "-"}
+                      </p>
 
-                    <p className="mt-1 text-sm text-muted">
-                      Add a university or try a different search.
-                    </p>
-                  </td>
-                </tr>
-              ) : (
-                filteredUniversities.map((university, index) => {
-                  const status =
-                    universityStatuses[university._id] ??
-                    (university.status === "inactive" ? "inactive" : "active");
+                      <p className="mt-0.5 text-xs text-[#3F5A58]">
+                        {university.establishedYear
+                          ? `Established ${university.establishedYear}`
+                          : "Year not provided"}
+                      </p>
+                    </td>
 
-                  const isActive = status === "active";
+                    <td className="px-4 py-4">
+                      {university.shortName || "-"}
+                    </td>
 
-                  return (
-                    <tr
-                      key={university._id}
-                      className="transition hover:bg-brand-soft/30"
-                    >
-                      <td className="px-5 py-4 text-sm text-muted">
-                        {index + 1}
-                      </td>
+                    <td className="px-4 py-4 capitalize">
+                      {university.type || "-"}
+                    </td>
 
-                      <td className="px-5 py-4">
-                        <div className="flex items-center gap-3">
-                          <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-brand-soft font-display font-bold text-brand">
-                            {university.shortName
-                              ? university.shortName.slice(0, 2).toUpperCase()
-                              : university.name?.slice(0, 1).toUpperCase() || "U"}
-                          </div>
+                    <td className="px-4 py-4">
+                      {university.location?.state || "-"}
+                    </td>
 
-                          <div>
-                            <p className="font-semibold text-brand-dark">
-                              {university.name || "—"}
-                            </p>
+                    <td className="px-4 py-4">
+                      {university.location?.city || "-"}
+                    </td>
 
-                            <p className="mt-1 text-xs text-muted">
-                              {university.establishedYear
-                                ? `Established ${university.establishedYear}`
-                                : "Year not provided"}
-                            </p>
-                          </div>
-                        </div>
-                      </td>
+                    <td className="px-4 py-4">
+                      {university.website ? (
+                        <a
+                          href={
+                            university.website.startsWith("http")
+                              ? university.website
+                              : `https://${university.website}`
+                          }
+                          target="_blank"
+                          rel="noreferrer"
+                          className="text-teal-700 underline"
+                        >
+                          Visit Website
+                        </a>
+                      ) : (
+                        "-"
+                      )}
+                    </td>
 
-                      <td className="px-5 py-4 text-sm text-muted">
-                        {university.shortName || "—"}
-                      </td>
-
-                      <td className="px-5 py-4">
-                        <span className="inline-flex rounded-full bg-brand-soft px-3 py-1 text-xs font-semibold text-brand">
-                          {university.type || "—"}
-                        </span>
-                      </td>
-
-                      <td className="px-5 py-4 text-sm text-muted">
-                        {[
-                          university.location?.city,
-                          university.location?.state,
-                        ]
-                          .filter(Boolean)
-                          .join(", ") || "—"}
-                      </td>
-
-                      {/* STATUS TOGGLE */}
-                      <td className="px-5 py-4">
-                        <div className="flex items-center gap-2">
-                          <button
-                            type="button"
-                            role="switch"
-                            aria-checked={isActive}
-                            aria-label={`Toggle ${university.name} status`}
-                            title="UI only — not saved to database yet"
-                            onClick={() => handleStatusToggle(university)}
-                            className={`relative inline-flex h-6 w-11 shrink-0 items-center rounded-full transition-colors ${isActive ? "bg-emerald-500" : "bg-gray-300"
-                              }`}
-                          >
-                            <span
-                              className={`inline-block h-4 w-4 rounded-full bg-white shadow transition-transform ${isActive ? "translate-x-6" : "translate-x-1"
-                                }`}
-                            />
-                          </button>
-
+                    {/* STATUS TOGGLE */}
+                    <td className="px-4 py-4">
+                      <div className="flex items-center gap-2">
+                        <button
+                          type="button"
+                          role="switch"
+                          aria-checked={isActive}
+                          aria-label={`Toggle ${university.name} status`}
+                          title="UI only — not saved to database yet"
+                          onClick={() => handleStatusToggle(university)}
+                          className={`relative h-7 w-12 rounded-full transition ${isActive ? "bg-teal-700" : "bg-slate-400"
+                            }`}
+                        >
                           <span
-                            className={`text-xs font-semibold ${isActive
-                                ? "text-emerald-700"
-                                : "text-gray-500"
+                            className={`absolute top-1 h-5 w-5 rounded-full bg-white transition ${isActive ? "left-6" : "left-1"
                               }`}
-                          >
-                            {isActive ? "Active" : "Inactive"}
-                          </span>
-                        </div>
-                      </td>
+                          />
+                        </button>
 
-                      {/* VIEW / EDIT / DELETE ICONS */}
-                      <td className="px-5 py-4">
-                        <div className="flex items-center gap-2">
-                          {/* VIEW */}
+                        <span className="text-xs capitalize text-[#3F5A58]">
+                          {status}
+                        </span>
+                      </div>
+                    </td>
+
+                    {/* VIEW / EDIT / DELETE */}
+                    <td className="px-4 py-4">
+                      <div className="flex items-center gap-2">
+                        <button
+                          type="button"
+                          title="View University"
+                          aria-label="View University"
+                          onClick={() => handleView(university._id)}
+                          className={`${actionButton} border-teal-200 bg-teal-50 text-teal-700 hover:bg-teal-700 hover:text-white`}
+                        >
+                          <svg
+                            width="17"
+                            height="17"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke="currentColor"
+                            strokeWidth="1.8"
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            aria-hidden="true"
+                          >
+                            <path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7-10-7-10-7Z" />
+                            <circle cx="12" cy="12" r="3" />
+                          </svg>
+                        </button>
+
+                        <button
+                          type="button"
+                          title="Edit University"
+                          aria-label="Edit University"
+                          onClick={() => handleEdit(university)}
+                          className={`${actionButton} border-[#CFE5E2] bg-white text-[#3F5A58] hover:bg-[#0B2B2A] hover:text-white`}
+                        >
+                          <svg
+                            width="17"
+                            height="17"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke="currentColor"
+                            strokeWidth="1.8"
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            aria-hidden="true"
+                          >
+                            <path d="m16 4 4 4M4 20l4-.8L19 8a2.1 2.1 0 0 0-3-3L5 16l-1 4Z" />
+                          </svg>
+                        </button>
+
+                        {role === "Super Admin" && (
                           <button
                             type="button"
-                            onClick={() => handleView(university._id)}
-                            title="View"
-                            aria-label="View university"
-                            className="flex h-9 w-9 items-center justify-center rounded-lg border border-brand/20 bg-brand-soft text-brand transition hover:bg-brand hover:text-white"
+                            title="Delete University"
+                            aria-label="Delete University"
+                            onClick={() => handleDelete(university._id)}
+                            className={`${actionButton} border-red-200 bg-red-50 text-red-600 hover:bg-red-600 hover:text-white`}
                           >
                             <svg
-                              width="18"
-                              height="18"
+                              width="17"
+                              height="17"
                               viewBox="0 0 24 24"
                               fill="none"
                               stroke="currentColor"
-                              strokeWidth="2"
+                              strokeWidth="1.8"
                               strokeLinecap="round"
                               strokeLinejoin="round"
                               aria-hidden="true"
                             >
-                              <path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12Z" />
-                              <circle cx="12" cy="12" r="3" />
+                              <path d="M3 6h18M8 6V4h8v2m3 0-1 14H6L5 6m4 4v6m6-6v6" />
                             </svg>
                           </button>
-
-                          {/* EDIT */}
-                          <button
-                            type="button"
-                            onClick={() => handleEdit(university)}
-                            title="Edit"
-                            aria-label="Edit university"
-                            className="flex h-9 w-9 items-center justify-center rounded-lg border border-orange-200 bg-orange-50 text-accent transition hover:bg-accent hover:text-white"
-                          >
-                            <svg
-                              width="18"
-                              height="18"
-                              viewBox="0 0 24 24"
-                              fill="none"
-                              stroke="currentColor"
-                              strokeWidth="2"
-                              strokeLinecap="round"
-                              strokeLinejoin="round"
-                              aria-hidden="true"
-                            >
-                              <path d="M12 20h9" />
-                              <path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L8 18l-4 1 1-4Z" />
-                            </svg>
-                          </button>
-
-                          {/* DELETE */}
-                          {role === "Super Admin" && (
-                            <button
-                              type="button"
-                              onClick={() => handleDelete(university._id)}
-                              title="Delete"
-                              aria-label="Delete university"
-                              className="flex h-9 w-9 items-center justify-center rounded-lg border border-red-200 bg-red-50 text-red-600 transition hover:bg-red-600 hover:text-white"
-                            >
-                              <svg
-                                width="18"
-                                height="18"
-                                viewBox="0 0 24 24"
-                                fill="none"
-                                stroke="currentColor"
-                                strokeWidth="2"
-                                strokeLinecap="round"
-                                strokeLinejoin="round"
-                                aria-hidden="true"
-                              >
-                                <path d="M3 6h18" />
-                                <path d="M8 6V4h8v2" />
-                                <path d="m19 6-1 14H6L5 6" />
-                                <path d="M10 11v5" />
-                                <path d="M14 11v5" />
-                              </svg>
-                            </button>
-                          )}
-                        </div>
-                      </td>
-                    </tr>
-                  );
-                })
-              )}
-            </tbody>
-          </table>
-        </div>
+                        )}
+                      </div>
+                    </td>
+                  </tr>
+                );
+              })
+            ) : (
+              <tr>
+                <td
+                  colSpan="9"
+                  className="px-4 py-10 text-center text-[#3F5A58]"
+                >
+                  No universities found.
+                </td>
+              </tr>
+            )}
+          </tbody>
+        </table>
       </div>
 
-      {/* ADD / EDIT MODAL */}
+      {/* ADD / EDIT FORM */}
       {showModal && (
         <div
-          className="fixed inset-0 z-50 flex items-center justify-center overflow-y-auto bg-brand-dark/60 p-4 backdrop-blur-sm"
+          className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4"
           onMouseDown={(e) => {
             if (e.target === e.currentTarget) closeModal();
           }}
         >
-          <div className="my-auto w-full max-w-2xl overflow-hidden rounded-2xl bg-white shadow-2xl">
-            <div className="flex items-center justify-between bg-brand px-6 py-5 text-white">
-              <div>
-                <h2 className="font-display text-xl font-bold">
-                  {editId ? "Edit University" : "Add University"}
-                </h2>
+          <div className="max-h-[90vh] w-full max-w-3xl overflow-y-auto rounded-2xl bg-white p-6 shadow-xl">
 
-                <p className="mt-1 text-sm text-white/70">
-                  Enter university details below.
-                </p>
-              </div>
+            <div className="mb-6 flex items-center justify-between">
+              <h2 className="text-2xl font-bold text-teal-700">
+                {editId ? "Edit University" : "Add University"}
+              </h2>
 
               <button
                 type="button"
                 onClick={closeModal}
-                title="Close"
-                aria-label="Close modal"
-                className="flex h-9 w-9 items-center justify-center rounded-lg text-white transition hover:bg-white/15"
+                className="text-2xl text-[#3F5A58] hover:text-red-600"
+                aria-label="Close"
               >
-                <svg
-                  width="22"
-                  height="22"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="2"
-                  strokeLinecap="round"
-                  aria-hidden="true"
-                >
-                  <path d="m18 6-12 12" />
-                  <path d="m6 6 12 12" />
-                </svg>
+                &times;
               </button>
             </div>
 
             <form onSubmit={handleSubmit}>
-              <div className="grid grid-cols-1 gap-5 p-6 sm:grid-cols-2">
-                {error && (
-                  <div className="col-span-full rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">
-                    {error}
-                  </div>
-                )}
+              {error && (
+                <div className="mb-4 rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">
+                  {error}
+                </div>
+              )}
 
+              <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+
+                {/* LOGO PREVIEW + URL */}
+                <div className="md:col-span-2">
+                  <label className={labelClass}>University Logo</label>
+
+                  <div className="flex flex-wrap items-center gap-4 rounded-xl border border-[#CFE5E2] p-4">
+                    <div className="flex h-24 w-24 items-center justify-center overflow-hidden rounded-xl border border-[#CFE5E2] bg-[#F1F8F7]">
+                      <img
+                        key={formData.logo}
+                        src={getLogoSrc(formData.logo)}
+                        alt="University Logo Preview"
+                        onError={handleLogoError}
+                        referrerPolicy="no-referrer"
+                        className="h-full w-full object-contain"
+                      />
+                    </div>
+
+                    <div className="min-w-[220px] flex-1">
+                      <input
+                        type="url"
+                        name="logo"
+                        value={formData.logo}
+                        onChange={handleChange}
+                        placeholder="Enter logo image URL"
+                        className={inputClass}
+                      />
+
+                      <p className="mt-2 text-xs text-[#3F5A58]">
+                        Paste a direct image link. Default logo is shown if empty.
+                      </p>
+                    </div>
+                  </div>
+                </div>
+
+                {/* UNIVERSITY NAME */}
                 <div>
                   <label className={labelClass}>University Name *</label>
                   <input
                     type="text"
                     name="name"
+                    required
                     value={formData.name}
                     onChange={handleChange}
                     placeholder="Enter university name"
                     className={inputClass}
-                    required
                   />
                 </div>
 
+                {/* SHORT NAME */}
                 <div>
                   <label className={labelClass}>Short Name</label>
                   <input
@@ -744,6 +702,7 @@ function University() {
                   />
                 </div>
 
+                {/* TYPE */}
                 <div>
                   <label className={labelClass}>University Type</label>
                   <select
@@ -761,6 +720,7 @@ function University() {
                   </select>
                 </div>
 
+                {/* ESTABLISHED YEAR */}
                 <div>
                   <label className={labelClass}>Established Year</label>
                   <input
@@ -775,42 +735,7 @@ function University() {
                   />
                 </div>
 
-                <div>
-                  <label className={labelClass}>City</label>
-                  <input
-                    type="text"
-                    name="city"
-                    value={formData.city}
-                    onChange={handleChange}
-                    placeholder="Enter city"
-                    className={inputClass}
-                  />
-                </div>
-
-                <div>
-                  <label className={labelClass}>State</label>
-                  <input
-                    type="text"
-                    name="state"
-                    value={formData.state}
-                    onChange={handleChange}
-                    placeholder="Enter state"
-                    className={inputClass}
-                  />
-                </div>
-
-                <div>
-                  <label className={labelClass}>Country</label>
-                  <input
-                    type="text"
-                    name="country"
-                    value={formData.country}
-                    onChange={handleChange}
-                    placeholder="Enter country"
-                    className={inputClass}
-                  />
-                </div>
-
+                {/* WEBSITE */}
                 <div>
                   <label className={labelClass}>Website</label>
                   <input
@@ -823,24 +748,52 @@ function University() {
                   />
                 </div>
 
-                <div className="sm:col-span-2">
-                  <label className={labelClass}>Logo URL</label>
+                {/* COUNTRY */}
+                <div>
+                  <label className={labelClass}>Country</label>
                   <input
-                    type="url"
-                    name="logo"
-                    value={formData.logo}
+                    type="text"
+                    name="country"
+                    value={formData.country}
                     onChange={handleChange}
-                    placeholder="Enter logo image URL"
+                    placeholder="Enter country"
+                    className={inputClass}
+                  />
+                </div>
+
+                {/* STATE */}
+                <div>
+                  <label className={labelClass}>State</label>
+                  <input
+                    type="text"
+                    name="state"
+                    value={formData.state}
+                    onChange={handleChange}
+                    placeholder="Enter state"
+                    className={inputClass}
+                  />
+                </div>
+
+                {/* CITY */}
+                <div>
+                  <label className={labelClass}>City</label>
+                  <input
+                    type="text"
+                    name="city"
+                    value={formData.city}
+                    onChange={handleChange}
+                    placeholder="Enter city"
                     className={inputClass}
                   />
                 </div>
               </div>
 
-              <div className="flex flex-col-reverse gap-3 border-t border-line bg-surface px-6 py-4 sm:flex-row sm:justify-end">
+              {/* FORM BUTTONS */}
+              <div className="mt-6 flex justify-end gap-3">
                 <button
                   type="button"
                   onClick={closeModal}
-                  className={`${buttonClass} border border-line bg-white text-muted hover:bg-gray-50`}
+                  className="rounded-lg border border-[#CFE5E2] px-5 py-2"
                 >
                   Cancel
                 </button>
@@ -848,7 +801,7 @@ function University() {
                 <button
                   type="submit"
                   disabled={saving}
-                  className={`${buttonClass} bg-brand text-white hover:bg-brand-dark disabled:cursor-not-allowed disabled:opacity-60`}
+                  className="rounded-lg bg-teal-700 px-5 py-2 font-medium text-white hover:bg-teal-800 disabled:opacity-60"
                 >
                   {saving
                     ? "Saving..."
@@ -862,150 +815,108 @@ function University() {
         </div>
       )}
 
-      {/* VIEW MODAL */}
+      {/* VIEW UNIVERSITY */}
       {viewUniversity && (
         <div
-          className="fixed inset-0 z-50 flex items-center justify-center overflow-y-auto bg-brand-dark/60 p-4 backdrop-blur-sm"
+          className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4"
           onMouseDown={(e) => {
-            if (e.target === e.currentTarget) {
-              setViewUniversity(null);
-            }
+            if (e.target === e.currentTarget) setViewUniversity(null);
           }}
         >
-          <div className="my-auto w-full max-w-lg overflow-hidden rounded-2xl bg-white shadow-2xl">
-            <div className="flex items-center justify-between bg-brand px-6 py-5 text-white">
-              <div>
-                <h2 className="font-display text-xl font-bold">
-                  University Details
-                </h2>
+          <div className="max-h-[85vh] w-full max-w-2xl overflow-y-auto rounded-2xl bg-white p-6">
 
-                <p className="mt-1 text-sm text-white/70">
-                  Complete university information
-                </p>
-              </div>
+            <div className="mb-5 flex items-center justify-between">
+              <h2 className="text-xl font-bold text-[#0B2B2A]">
+                University Details
+              </h2>
 
               <button
                 type="button"
                 onClick={() => setViewUniversity(null)}
-                title="Close"
-                aria-label="Close details"
-                className="flex h-9 w-9 items-center justify-center rounded-lg transition hover:bg-white/15"
+                className="text-2xl text-[#3F5A58]"
+                aria-label="Close"
               >
-                <svg
-                  width="22"
-                  height="22"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="2"
-                  strokeLinecap="round"
-                  aria-hidden="true"
-                >
-                  <path d="m18 6-12 12" />
-                  <path d="m6 6 12 12" />
-                </svg>
+                &times;
               </button>
             </div>
 
-            <div className="p-6">
-              <div className="mb-6 flex items-center gap-4">
-                {viewUniversity.logo ? (
-                  <img
-                    src={viewUniversity.logo}
-                    alt="University logo"
-                    className="h-16 w-16 rounded-xl border border-line object-contain p-2"
-                  />
-                ) : (
-                  <div className="flex h-16 w-16 items-center justify-center rounded-xl bg-brand-soft font-display text-xl font-bold text-brand">
-                    {viewUniversity.shortName
-                      ? viewUniversity.shortName.slice(0, 2).toUpperCase()
-                      : viewUniversity.name?.slice(0, 1).toUpperCase() || "U"}
-                  </div>
-                )}
-
-                <div>
-                  <h3 className="font-display text-lg font-bold text-brand-dark">
-                    {viewUniversity.name || "—"}
-                  </h3>
-
-                  <p className="mt-1 text-sm text-muted">
-                    {viewUniversity.shortName || "No short name"}
-                  </p>
-                </div>
-              </div>
-
-              <div className="divide-y divide-line rounded-xl border border-line">
-                <DetailRow
-                  label="University Type"
-                  value={viewUniversity.type}
-                />
-                <DetailRow
-                  label="Established Year"
-                  value={viewUniversity.establishedYear}
-                />
-                <DetailRow
-                  label="City"
-                  value={viewUniversity.location?.city}
-                />
-                <DetailRow
-                  label="State"
-                  value={viewUniversity.location?.state}
-                />
-                <DetailRow
-                  label="Country"
-                  value={viewUniversity.location?.country}
-                />
-                <DetailRow
-                  label="Website"
-                  value={viewUniversity.website}
-                />
-                <DetailRow
-                  label="Status"
-                  value={
-                    universityStatuses[viewUniversity._id] ??
-                    (viewUniversity.status === "inactive"
-                      ? "inactive"
-                      : "active")
-                  }
-                />
-              </div>
-
-              <div className="mt-6 flex justify-end">
-                <button
-                  type="button"
-                  onClick={() => setViewUniversity(null)}
-                  className={`${buttonClass} bg-brand text-white hover:bg-brand-dark`}
-                >
-                  Close
-                </button>
-              </div>
+            <div className="mb-5">
+              <img
+                src={getLogoSrc(viewUniversity.logo)}
+                alt={viewUniversity.name}
+                onError={handleLogoError}
+                        referrerPolicy="no-referrer"
+                className="h-24 w-24 rounded-xl border border-[#CFE5E2] bg-white object-contain"
+              />
             </div>
+
+            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+              <p>
+                <b>Name:</b> {viewUniversity.name || "-"}
+              </p>
+
+              <p>
+                <b>Short Name:</b> {viewUniversity.shortName || "-"}
+              </p>
+
+              <p className="capitalize">
+                <b>Type:</b> {viewUniversity.type || "-"}
+              </p>
+
+              <p>
+                <b>Established:</b> {viewUniversity.establishedYear || "-"}
+              </p>
+
+              <p>
+                <b>City:</b> {viewUniversity.location?.city || "-"}
+              </p>
+
+              <p>
+                <b>State:</b> {viewUniversity.location?.state || "-"}
+              </p>
+
+              <p>
+                <b>Country:</b> {viewUniversity.location?.country || "-"}
+              </p>
+
+              <p className="capitalize">
+                <b>Status:</b>{" "}
+                {universityStatuses[viewUniversity._id] ??
+                  (viewUniversity.status === "inactive"
+                    ? "inactive"
+                    : "active")}
+              </p>
+
+              <p className="break-all sm:col-span-2">
+                <b>Website:</b>{" "}
+                {viewUniversity.website ? (
+                  <a
+                    href={
+                      viewUniversity.website.startsWith("http")
+                        ? viewUniversity.website
+                        : `https://${viewUniversity.website}`
+                    }
+                    target="_blank"
+                    rel="noreferrer"
+                    className="text-teal-700 underline"
+                  >
+                    {viewUniversity.website}
+                  </a>
+                ) : (
+                  "-"
+                )}
+              </p>
+            </div>
+
+            <button
+              type="button"
+              onClick={() => setViewUniversity(null)}
+              className="mt-6 rounded-lg bg-teal-700 px-5 py-2.5 text-sm font-semibold text-white"
+            >
+              Close
+            </button>
           </div>
         </div>
-      )}
-    </div>
-  );
-}
-
-// REUSABLE DETAIL ROW
-function DetailRow({ label, value }) {
-  return (
-    <div className="flex flex-col gap-1 px-4 py-3 sm:flex-row sm:items-center sm:justify-between sm:gap-4">
-      <span className="text-sm font-medium text-muted">{label}</span>
-
-      {label === "Website" && value ? (
-        <a
-          href={value}
-          target="_blank"
-          rel="noreferrer"
-          className="break-all text-sm font-semibold text-brand hover:underline"
-        >
-          {value}
-        </a>
-      ) : (
-        <span className="break-words text-sm font-semibold capitalize text-brand-dark sm:text-right">
-          {value || "—"}
-        </span>
       )}
     </div>
   );

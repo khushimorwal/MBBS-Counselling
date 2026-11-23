@@ -1,9 +1,12 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 
-const colleges = [
+// Read backend API URL from environment variable
+const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3000";
+
+const defaultColleges = [
   {
     name: "AIIMS Delhi",
     slug: "aiims-delhi",
@@ -70,6 +73,39 @@ const fallbackImage =
   "https://images.unsplash.com/photo-1562774053-701939374585?auto=format&fit=crop&w=1000&q=85";
 
 export default function CollegePage() {
+  // Store live colleges from database with initial fallback list
+  const [collegesList, setCollegesList] = useState(defaultColleges);
+
+  // Fetch colleges from backend API
+  useEffect(() => {
+    const fetchColleges = async () => {
+      try {
+        const response = await fetch(`${API_URL}/college/public-list`);
+        if (!response.ok) return;
+        const data = await response.json();
+        const list = Array.isArray(data) ? data : data.colleges || data.data || [];
+        if (list.length > 0) {
+          const formatted = list.map((item) => ({
+            name: item.name,
+            slug: item.slug || item._id,
+            location: item.location?.city
+              ? `${item.location.city}, ${item.location.state || "India"}`
+              : (item.location?.state || "India"),
+            type: item.collegeType === "government" ? "Government" : "Private",
+            image: item.logo || fallbackImage,
+            description:
+              item.description ||
+              "Explore college information, medical education and admission details.",
+          }));
+          setCollegesList(formatted);
+        }
+      } catch (err) {
+        console.log("Using default colleges list:", err.message);
+      }
+    };
+
+    fetchColleges();
+  }, []);
 
   const handleLoginCheck = (e) => {
   const token = localStorage.getItem("token");
@@ -189,7 +225,7 @@ export default function CollegePage() {
           {/* College Cards */}
           <div className="grid gap-7 sm:grid-cols-2 lg:grid-cols-3">
 
-            {colleges.map((college, index) => (
+            {collegesList.map((college, index) => (
               <div
                 key={college.slug}
                 style={{ transitionDelay: `${index * 80}ms` }}

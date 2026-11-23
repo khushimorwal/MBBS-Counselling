@@ -17,7 +17,15 @@ deleteStream,
 const Auth = require("../Auth");
 const Permission = require("../Middleware/Permission");
 
-// Bulk Import Streams
+// Bulk Import Streams (Supports both /bulk-import and legacy /streams/bulk-import)
+router.post(
+  "/bulk-import",
+  Auth,
+  Permission("streams.add"),
+  upload.single("file"),
+  bulkImportStreams
+);
+
 router.post(
   "/streams/bulk-import",
   Auth,

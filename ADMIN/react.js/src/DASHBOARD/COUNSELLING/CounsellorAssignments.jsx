@@ -609,7 +609,7 @@ const CounsellorAssignments = () => {
 
   const CounsellorSelect = () => (
     <div>
-      <label className="mb-2 block text-sm font-semibold text-brand-dark">
+      <label className="mb-2 block text-sm font-semibold text-[#0B2B2A]">
         Select Counsellor <span className="text-red-500">*</span>
       </label>
 
@@ -623,7 +623,7 @@ const CounsellorAssignments = () => {
           })
         }
         disabled={loadingCounsellors}
-        className="w-full rounded-xl border border-line bg-white px-4 py-3 text-sm outline-none focus:border-brand"
+        className="w-full rounded-xl border border-[#CFE5E2] bg-white px-4 py-3 text-sm outline-none focus:border-teal-700"
       >
         <option value="">
           {loadingCounsellors
@@ -650,18 +650,18 @@ const CounsellorAssignments = () => {
   // UI
 
   return (
-    <div className="space-y-6">
+    <div className="min-w-0 space-y-6 rounded-2xl bg-gradient-to-br from-[#DDF5F1] via-[#EDF8F6] to-[#F5FAF9] p-4 sm:p-6">
 
       {/* HEADER */}
 
       <div className="flex flex-col justify-between gap-4 md:flex-row md:items-center">
         <div>
-          <h1 className="flex items-center gap-3 text-2xl font-bold text-brand-dark">
-            <FiUsers className="text-brand" />
+          <h1 className="flex items-center gap-3 text-2xl font-bold text-[#0B2B2A]">
+            <FiUsers className="text-teal-700" />
             Counsellor Assignments
           </h1>
 
-          <p className="mt-1 text-sm text-muted">
+          <p className="mt-1 text-sm text-[#3F5A58]">
             {isAdmin
               ? "Assign counsellors to students and manage all assignments."
               : "View your assigned counselling requests."}
@@ -679,7 +679,7 @@ const CounsellorAssignments = () => {
                 fetchCounsellors();
               }
             }}
-            className="flex items-center gap-2 rounded-xl border border-line bg-white px-4 py-3 text-sm font-semibold text-brand-dark hover:bg-surface"
+            className="flex items-center gap-2 rounded-xl border border-[#CFE5E2] bg-white px-4 py-3 text-sm font-semibold text-[#0B2B2A] hover:bg-[#F1F8F7]"
           >
             <FiRefreshCw />
             Refresh
@@ -692,7 +692,7 @@ const CounsellorAssignments = () => {
                   setCounsellorError("");
                   setShowCounsellorModal(true);
                 }}
-                className="flex items-center gap-2 rounded-xl border border-brand bg-white px-5 py-3 text-sm font-bold text-brand hover:bg-surface"
+                className="flex items-center gap-2 rounded-xl border border-teal-700 bg-white px-5 py-3 text-sm font-bold text-teal-700 hover:bg-[#F1F8F7]"
               >
                 <FiUserPlus />
                 Add Counsellor
@@ -700,7 +700,7 @@ const CounsellorAssignments = () => {
 
               <button
                 onClick={openAssignModal}
-                className="flex items-center gap-2 rounded-xl bg-accent px-5 py-3 text-sm font-bold text-white hover:bg-[#cf4a24]"
+                className="flex items-center gap-2 rounded-xl bg-teal-700 px-5 py-3 text-sm font-bold text-white hover:bg-teal-800"
               >
                 <FiPlus />
                 Assign Counsellor
@@ -729,41 +729,41 @@ const CounsellorAssignments = () => {
 
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
 
-        <div className="rounded-2xl border border-line bg-white p-5 shadow-sm">
+        <div className="rounded-2xl border border-[#CFE5E2] bg-white p-5 shadow-sm">
           <div className="flex items-center justify-between">
-            <p className="text-sm font-medium text-muted">
+            <p className="text-sm font-medium text-[#3F5A58]">
               Total Assignments
             </p>
-            <FiClipboard className="text-xl text-brand" />
+            <FiClipboard className="text-xl text-teal-700" />
           </div>
 
-          <h2 className="mt-3 text-3xl font-bold text-brand-dark">
+          <h2 className="mt-3 text-3xl font-bold text-[#0B2B2A]">
             {totalAssignments}
           </h2>
         </div>
 
-        <div className="rounded-2xl border border-line bg-white p-5 shadow-sm">
+        <div className="rounded-2xl border border-[#CFE5E2] bg-white p-5 shadow-sm">
           <div className="flex items-center justify-between">
-            <p className="text-sm font-medium text-muted">
+            <p className="text-sm font-medium text-[#3F5A58]">
               Active Assignments
             </p>
             <FiUsers className="text-xl text-blue-600" />
           </div>
 
-          <h2 className="mt-3 text-3xl font-bold text-brand-dark">
+          <h2 className="mt-3 text-3xl font-bold text-[#0B2B2A]">
             {activeAssignments}
           </h2>
         </div>
 
-        <div className="rounded-2xl border border-line bg-white p-5 shadow-sm">
+        <div className="rounded-2xl border border-[#CFE5E2] bg-white p-5 shadow-sm">
           <div className="flex items-center justify-between">
-            <p className="text-sm font-medium text-muted">
+            <p className="text-sm font-medium text-[#3F5A58]">
               Completed Assignments
             </p>
             <FiCheckCircle className="text-xl text-green-600" />
           </div>
 
-          <h2 className="mt-3 text-3xl font-bold text-brand-dark">
+          <h2 className="mt-3 text-3xl font-bold text-[#0B2B2A]">
             {completedAssignments}
           </h2>
         </div>
@@ -772,28 +772,28 @@ const CounsellorAssignments = () => {
 
       {/* FILTERS */}
 
-      <div className="rounded-2xl border border-line bg-white p-4 shadow-sm">
+      <div className="rounded-2xl border border-[#CFE5E2] bg-white p-4 shadow-sm">
         <div
           className={`grid grid-cols-1 gap-3 ${isAdmin ? "md:grid-cols-3" : "md:grid-cols-2"
             }`}
         >
 
           <div className="relative">
-            <FiSearch className="absolute left-4 top-1/2 -translate-y-1/2 text-muted" />
+            <FiSearch className="absolute left-4 top-1/2 -translate-y-1/2 text-[#3F5A58]" />
 
             <input
               type="text"
               value={search}
               onChange={(e) => setSearch(e.target.value)}
               placeholder="Search student or counsellor..."
-              className="w-full rounded-xl border border-line py-3 pl-11 pr-4 text-sm outline-none focus:border-brand"
+              className="w-full rounded-xl border border-[#CFE5E2] py-3 pl-11 pr-4 text-sm outline-none focus:border-teal-700"
             />
           </div>
 
           <select
             value={statusFilter}
             onChange={(e) => setStatusFilter(e.target.value)}
-            className="rounded-xl border border-line bg-white px-4 py-3 text-sm outline-none focus:border-brand"
+            className="rounded-xl border border-[#CFE5E2] bg-white px-4 py-3 text-sm outline-none focus:border-teal-700"
           >
             <option value="All">All Statuses</option>
             <option value="Assigned">Assigned</option>
@@ -808,7 +808,7 @@ const CounsellorAssignments = () => {
               onChange={(e) =>
                 setCounsellorFilter(e.target.value)
               }
-              className="rounded-xl border border-line bg-white px-4 py-3 text-sm outline-none focus:border-brand"
+              className="rounded-xl border border-[#CFE5E2] bg-white px-4 py-3 text-sm outline-none focus:border-teal-700"
             >
               <option value="All">All Counsellors</option>
 
@@ -825,22 +825,22 @@ const CounsellorAssignments = () => {
 
       {/* ASSIGNMENT TABLE */}
 
-      <div className="overflow-hidden rounded-2xl border border-line bg-white shadow-sm">
+      <div className="overflow-hidden rounded-2xl border border-[#CFE5E2] bg-white shadow-sm">
 
-        <div className="flex items-center justify-between border-b border-line px-5 py-4">
+        <div className="flex items-center justify-between border-b border-[#CFE5E2] px-5 py-4">
           <div>
-            <h2 className="font-bold text-brand-dark">
+            <h2 className="font-bold text-[#0B2B2A]">
               Assignment List
             </h2>
 
-            <p className="mt-1 text-xs text-muted">
+            <p className="mt-1 text-xs text-[#3F5A58]">
               {isAdmin
                 ? "Manage all counsellor assignments."
                 : "Your assigned counselling requests."}
             </p>
           </div>
 
-          <span className="rounded-full bg-surface px-3 py-1 text-xs font-semibold text-muted">
+          <span className="rounded-full bg-[#F1F8F7] px-3 py-1 text-xs font-semibold text-[#3F5A58]">
             {filteredAssignments.length} Records
           </span>
         </div>
@@ -848,7 +848,7 @@ const CounsellorAssignments = () => {
         <div className="overflow-x-auto">
           <table className="w-full min-w-[950px] text-left">
 
-            <thead className="bg-[#F9FBFA] text-[11px] font-bold uppercase tracking-wider text-muted">
+            <thead className="bg-[#F9FBFA] text-[11px] font-bold uppercase tracking-wider text-[#3F5A58]">
               <tr>
                 <th className="px-5 py-4">#</th>
                 <th className="px-5 py-4">Student</th>
@@ -869,7 +869,7 @@ const CounsellorAssignments = () => {
                 <tr>
                   <td
                     colSpan={isAdmin ? 6 : 5}
-                    className="px-5 py-12 text-center text-sm text-muted"
+                    className="px-5 py-12 text-center text-sm text-[#3F5A58]"
                   >
                     Loading assignments...
                   </td>
@@ -878,7 +878,7 @@ const CounsellorAssignments = () => {
                 <tr>
                   <td
                     colSpan={isAdmin ? 6 : 5}
-                    className="px-5 py-12 text-center text-sm text-muted"
+                    className="px-5 py-12 text-center text-sm text-[#3F5A58]"
                   >
                     No assignments found.
                   </td>
@@ -896,32 +896,32 @@ const CounsellorAssignments = () => {
                   return (
                     <tr
                       key={item._id}
-                      className="hover:bg-surface/60"
+                      className="hover:bg-[#F1F8F7]/60"
                     >
 
-                      <td className="px-5 py-4 text-sm text-muted">
+                      <td className="px-5 py-4 text-sm text-[#3F5A58]">
                         {(page - 1) * limit + index + 1}
                       </td>
 
                       <td className="px-5 py-4">
-                        <p className="text-sm font-semibold text-brand-dark">
+                        <p className="text-sm font-semibold text-[#0B2B2A]">
                           {getStudentName(item)}
                         </p>
                       </td>
 
                       {isAdmin && (
                         <td className="px-5 py-4">
-                          <p className="text-sm font-medium text-brand-dark">
+                          <p className="text-sm font-medium text-[#0B2B2A]">
                             {getCounsellorName(item)}
                           </p>
 
-                          <p className="mt-1 text-xs text-muted">
+                          <p className="mt-1 text-xs text-[#3F5A58]">
                             {getCounsellorEmail(item)}
                           </p>
                         </td>
                       )}
 
-                      <td className="px-5 py-4 text-sm text-muted">
+                      <td className="px-5 py-4 text-sm text-[#3F5A58]">
                         {formatDate(
                           item.createdAt || item.assignedAt
                         )}
@@ -988,9 +988,9 @@ const CounsellorAssignments = () => {
 
         {/* PAGINATION */}
 
-        <div className="flex flex-col items-center justify-between gap-3 border-t border-line px-5 py-4 sm:flex-row">
+        <div className="flex flex-col items-center justify-between gap-3 border-t border-[#CFE5E2] px-5 py-4 sm:flex-row">
 
-          <p className="text-sm text-muted">
+          <p className="text-sm text-[#3F5A58]">
             Showing{" "}
             {filteredAssignments.length === 0
               ? 0
@@ -1008,19 +1008,19 @@ const CounsellorAssignments = () => {
             <button
               disabled={page === 1}
               onClick={() => setPage((prev) => prev - 1)}
-              className="rounded-lg border border-line p-2 text-brand-dark disabled:cursor-not-allowed disabled:opacity-40"
+              className="rounded-lg border border-[#CFE5E2] p-2 text-[#0B2B2A] disabled:cursor-not-allowed disabled:opacity-40"
             >
               <FiChevronLeft />
             </button>
 
-            <span className="px-2 text-sm font-semibold text-brand-dark">
+            <span className="px-2 text-sm font-semibold text-[#0B2B2A]">
               {page} / {totalPages}
             </span>
 
             <button
               disabled={page === totalPages}
               onClick={() => setPage((prev) => prev + 1)}
-              className="rounded-lg border border-line p-2 text-brand-dark disabled:cursor-not-allowed disabled:opacity-40"
+              className="rounded-lg border border-[#CFE5E2] p-2 text-[#0B2B2A] disabled:cursor-not-allowed disabled:opacity-40"
             >
               <FiChevronRight />
             </button>
@@ -1038,22 +1038,22 @@ const CounsellorAssignments = () => {
 
           <div className="max-h-[90vh] w-full max-w-lg overflow-y-auto rounded-2xl bg-white shadow-xl">
 
-            <div className="flex items-center justify-between border-b border-line px-6 py-5">
+            <div className="flex items-center justify-between border-b border-[#CFE5E2] px-6 py-5">
 
               <div>
-                <h2 className="flex items-center gap-2 text-xl font-bold text-brand-dark">
-                  <FiUserPlus className="text-brand" />
+                <h2 className="flex items-center gap-2 text-xl font-bold text-[#0B2B2A]">
+                  <FiUserPlus className="text-teal-700" />
                   Add Counsellor
                 </h2>
 
-                <p className="mt-1 text-sm text-muted">
+                <p className="mt-1 text-sm text-[#3F5A58]">
                   Create a new counsellor account.
                 </p>
               </div>
 
               <button
                 onClick={closeCounsellorModal}
-                className="rounded-lg p-2 text-muted hover:bg-surface"
+                className="rounded-lg p-2 text-[#3F5A58] hover:bg-[#F1F8F7]"
               >
                 <FiX />
               </button>
@@ -1074,12 +1074,12 @@ const CounsellorAssignments = () => {
               {/* NAME */}
 
               <div>
-                <label className="mb-2 block text-sm font-semibold text-brand-dark">
+                <label className="mb-2 block text-sm font-semibold text-[#0B2B2A]">
                   Counsellor Name *
                 </label>
 
                 <div className="relative">
-                  <FiUser className="absolute left-4 top-1/2 -translate-y-1/2 text-muted" />
+                  <FiUser className="absolute left-4 top-1/2 -translate-y-1/2 text-[#3F5A58]" />
 
                   <input
                     type="text"
@@ -1092,7 +1092,7 @@ const CounsellorAssignments = () => {
                       })
                     }
                     placeholder="Enter counsellor name"
-                    className="w-full rounded-xl border border-line py-3 pl-11 pr-4 text-sm outline-none focus:border-brand"
+                    className="w-full rounded-xl border border-[#CFE5E2] py-3 pl-11 pr-4 text-sm outline-none focus:border-teal-700"
                   />
                 </div>
               </div>
@@ -1100,12 +1100,12 @@ const CounsellorAssignments = () => {
               {/* EMAIL */}
 
               <div>
-                <label className="mb-2 block text-sm font-semibold text-brand-dark">
+                <label className="mb-2 block text-sm font-semibold text-[#0B2B2A]">
                   Email Address *
                 </label>
 
                 <div className="relative">
-                  <FiMail className="absolute left-4 top-1/2 -translate-y-1/2 text-muted" />
+                  <FiMail className="absolute left-4 top-1/2 -translate-y-1/2 text-[#3F5A58]" />
 
                   <input
                     type="email"
@@ -1118,7 +1118,7 @@ const CounsellorAssignments = () => {
                       })
                     }
                     placeholder="Enter email address"
-                    className="w-full rounded-xl border border-line py-3 pl-11 pr-4 text-sm outline-none focus:border-brand"
+                    className="w-full rounded-xl border border-[#CFE5E2] py-3 pl-11 pr-4 text-sm outline-none focus:border-teal-700"
                   />
                 </div>
               </div>
@@ -1126,7 +1126,7 @@ const CounsellorAssignments = () => {
               {/* ROLE */}
 
               <div>
-                <label className="mb-2 block text-sm font-semibold text-brand-dark">
+                <label className="mb-2 block text-sm font-semibold text-[#0B2B2A]">
                   Role
                 </label>
 
@@ -1134,19 +1134,19 @@ const CounsellorAssignments = () => {
                   type="text"
                   value="Counsellor"
                   disabled
-                  className="w-full rounded-xl border border-line bg-surface px-4 py-3 text-sm font-medium text-brand-dark"
+                  className="w-full rounded-xl border border-[#CFE5E2] bg-[#F1F8F7] px-4 py-3 text-sm font-medium text-[#0B2B2A]"
                 />
               </div>
 
               {/* BUTTONS */}
 
-              <div className="flex justify-end gap-3 border-t border-line pt-5">
+              <div className="flex justify-end gap-3 border-t border-[#CFE5E2] pt-5">
 
                 <button
                   type="button"
                   onClick={closeCounsellorModal}
                   disabled={savingCounsellor}
-                  className="rounded-xl border border-line px-5 py-3 text-sm font-semibold text-brand-dark hover:bg-surface"
+                  className="rounded-xl border border-[#CFE5E2] px-5 py-3 text-sm font-semibold text-[#0B2B2A] hover:bg-[#F1F8F7]"
                 >
                   Cancel
                 </button>
@@ -1154,7 +1154,7 @@ const CounsellorAssignments = () => {
                 <button
                   type="submit"
                   disabled={savingCounsellor}
-                  className="flex items-center gap-2 rounded-xl bg-accent px-6 py-3 text-sm font-bold text-white hover:bg-[#cf4a24] disabled:cursor-not-allowed disabled:opacity-50"
+                  className="flex items-center gap-2 rounded-xl bg-teal-700 px-6 py-3 text-sm font-bold text-white hover:bg-teal-800 disabled:cursor-not-allowed disabled:opacity-50"
                 >
                   {savingCounsellor ? (
                     "Creating..."
@@ -1183,16 +1183,16 @@ const CounsellorAssignments = () => {
 
             <div className="max-h-[90vh] w-full max-w-xl overflow-y-auto rounded-2xl bg-white shadow-xl">
 
-              <div className="flex items-center justify-between border-b border-line px-6 py-5">
+              <div className="flex items-center justify-between border-b border-[#CFE5E2] px-6 py-5">
 
                 <div>
-                  <h2 className="text-xl font-bold text-brand-dark">
+                  <h2 className="text-xl font-bold text-[#0B2B2A]">
                     {modalType === "assign"
                       ? "Assign Counsellor"
                       : "Reassign Counsellor"}
                   </h2>
 
-                  <p className="mt-1 text-sm text-muted">
+                  <p className="mt-1 text-sm text-[#3F5A58]">
                     {modalType === "assign"
                       ? "Select a request and assign a counsellor."
                       : "Choose another counsellor for this assignment."}
@@ -1201,7 +1201,7 @@ const CounsellorAssignments = () => {
 
                 <button
                   onClick={closeModal}
-                  className="rounded-lg p-2 text-muted hover:bg-surface"
+                  className="rounded-lg p-2 text-[#3F5A58] hover:bg-[#F1F8F7]"
                 >
                   <FiX />
                 </button>
@@ -1227,7 +1227,7 @@ const CounsellorAssignments = () => {
 
                 {modalType === "assign" && (
                   <div>
-                    <label className="mb-2 block text-sm font-semibold text-brand-dark">
+                    <label className="mb-2 block text-sm font-semibold text-[#0B2B2A]">
                       Select Counselling Request *
                     </label>
 
@@ -1240,7 +1240,7 @@ const CounsellorAssignments = () => {
                           counsellingId: e.target.value,
                         })
                       }
-                      className="w-full rounded-xl border border-line bg-white px-4 py-3 text-sm outline-none focus:border-brand"
+                      className="w-full rounded-xl border border-[#CFE5E2] bg-white px-4 py-3 text-sm outline-none focus:border-teal-700"
                     >
                       <option value="">
                         Select Student Request
@@ -1264,7 +1264,7 @@ const CounsellorAssignments = () => {
                 {/* ASSIGNMENT TYPE */}
 
                 <div>
-                  <label className="mb-2 block text-sm font-semibold text-brand-dark">
+                  <label className="mb-2 block text-sm font-semibold text-[#0B2B2A]">
                     Assignment Type
                   </label>
 
@@ -1276,7 +1276,7 @@ const CounsellorAssignments = () => {
                         assignmentType: e.target.value,
                       })
                     }
-                    className="w-full rounded-xl border border-line bg-white px-4 py-3 text-sm outline-none focus:border-brand"
+                    className="w-full rounded-xl border border-[#CFE5E2] bg-white px-4 py-3 text-sm outline-none focus:border-teal-700"
                   >
                     <option value="manual">Manual</option>
                     <option value="automatic">Automatic</option>
@@ -1287,7 +1287,7 @@ const CounsellorAssignments = () => {
 
                 {modalType === "reassign" && (
                   <div>
-                    <label className="mb-2 block text-sm font-semibold text-brand-dark">
+                    <label className="mb-2 block text-sm font-semibold text-[#0B2B2A]">
                       Reassignment Reason
                     </label>
 
@@ -1301,19 +1301,19 @@ const CounsellorAssignments = () => {
                         })
                       }
                       placeholder="Enter reason for reassignment..."
-                      className="w-full rounded-xl border border-line px-4 py-3 text-sm outline-none focus:border-brand"
+                      className="w-full rounded-xl border border-[#CFE5E2] px-4 py-3 text-sm outline-none focus:border-teal-700"
                     />
                   </div>
                 )}
 
                 {/* BUTTONS */}
 
-                <div className="flex justify-end gap-3 border-t border-line pt-5">
+                <div className="flex justify-end gap-3 border-t border-[#CFE5E2] pt-5">
 
                   <button
                     type="button"
                     onClick={closeModal}
-                    className="rounded-xl border border-line px-5 py-3 text-sm font-semibold text-brand-dark hover:bg-surface"
+                    className="rounded-xl border border-[#CFE5E2] px-5 py-3 text-sm font-semibold text-[#0B2B2A] hover:bg-[#F1F8F7]"
                   >
                     Cancel
                   </button>
@@ -1325,7 +1325,7 @@ const CounsellorAssignments = () => {
                       loadingCounsellors ||
                       counsellors.length === 0
                     }
-                    className="rounded-xl bg-accent px-6 py-3 text-sm font-bold text-white hover:bg-[#cf4a24] disabled:cursor-not-allowed disabled:opacity-50"
+                    className="rounded-xl bg-teal-700 px-6 py-3 text-sm font-bold text-white hover:bg-teal-800 disabled:cursor-not-allowed disabled:opacity-50"
                   >
                     {saving
                       ? "Saving..."
@@ -1350,15 +1350,15 @@ const CounsellorAssignments = () => {
 
           <div className="w-full max-w-lg rounded-2xl bg-white shadow-xl">
 
-            <div className="flex items-center justify-between border-b border-line px-6 py-5">
+            <div className="flex items-center justify-between border-b border-[#CFE5E2] px-6 py-5">
 
-              <h2 className="text-xl font-bold text-brand-dark">
+              <h2 className="text-xl font-bold text-[#0B2B2A]">
                 Assignment Details
               </h2>
 
               <button
                 onClick={closeModal}
-                className="rounded-lg p-2 text-muted hover:bg-surface"
+                className="rounded-lg p-2 text-[#3F5A58] hover:bg-[#F1F8F7]"
               >
                 <FiX />
               </button>
@@ -1368,31 +1368,31 @@ const CounsellorAssignments = () => {
             <div className="space-y-4 p-6">
 
               <div>
-                <p className="text-xs font-medium text-muted">
+                <p className="text-xs font-medium text-[#3F5A58]">
                   Student
                 </p>
 
-                <p className="mt-1 font-semibold text-brand-dark">
+                <p className="mt-1 font-semibold text-[#0B2B2A]">
                   {getStudentName(selectedAssignment)}
                 </p>
               </div>
 
               <div>
-                <p className="text-xs font-medium text-muted">
+                <p className="text-xs font-medium text-[#3F5A58]">
                   Counsellor
                 </p>
 
-                <p className="mt-1 font-semibold text-brand-dark">
+                <p className="mt-1 font-semibold text-[#0B2B2A]">
                   {getCounsellorName(selectedAssignment)}
                 </p>
 
-                <p className="mt-1 text-sm text-muted">
+                <p className="mt-1 text-sm text-[#3F5A58]">
                   {getCounsellorEmail(selectedAssignment)}
                 </p>
               </div>
 
               <div>
-                <p className="text-xs font-medium text-muted">
+                <p className="text-xs font-medium text-[#3F5A58]">
                   Status
                 </p>
 
@@ -1402,21 +1402,21 @@ const CounsellorAssignments = () => {
               </div>
 
               <div>
-                <p className="text-xs font-medium text-muted">
+                <p className="text-xs font-medium text-[#3F5A58]">
                   Assignment Type
                 </p>
 
-                <p className="mt-1 font-semibold text-brand-dark">
+                <p className="mt-1 font-semibold text-[#0B2B2A]">
                   {selectedAssignment.assignmentType || "Manual"}
                 </p>
               </div>
 
               <div>
-                <p className="text-xs font-medium text-muted">
+                <p className="text-xs font-medium text-[#3F5A58]">
                   Assigned Date
                 </p>
 
-                <p className="mt-1 font-semibold text-brand-dark">
+                <p className="mt-1 font-semibold text-[#0B2B2A]">
                   {formatDate(
                     selectedAssignment.createdAt ||
                     selectedAssignment.assignedAt
@@ -1426,11 +1426,11 @@ const CounsellorAssignments = () => {
 
               {selectedAssignment.reason && (
                 <div>
-                  <p className="text-xs font-medium text-muted">
+                  <p className="text-xs font-medium text-[#3F5A58]">
                     Reassignment Reason
                   </p>
 
-                  <p className="mt-1 text-sm text-brand-dark">
+                  <p className="mt-1 text-sm text-[#0B2B2A]">
                     {selectedAssignment.reason}
                   </p>
                 </div>
@@ -1438,11 +1438,11 @@ const CounsellorAssignments = () => {
 
             </div>
 
-            <div className="border-t border-line px-6 py-4 text-right">
+            <div className="border-t border-[#CFE5E2] px-6 py-4 text-right">
 
               <button
                 onClick={closeModal}
-                className="rounded-xl bg-accent px-5 py-2.5 text-sm font-bold text-white hover:bg-[#cf4a24]"
+                className="rounded-xl bg-teal-700 px-5 py-2.5 text-sm font-bold text-white hover:bg-teal-800"
               >
                 Close
               </button>

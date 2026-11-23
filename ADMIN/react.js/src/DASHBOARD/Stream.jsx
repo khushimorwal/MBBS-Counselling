@@ -3,10 +3,8 @@ import {
   FiEye,
   FiEdit2,
   FiTrash2,
-  FiPlus,
-  FiSearch,
-  FiX,
   FiUpload,
+  FiX,
 } from "react-icons/fi";
 import { API } from "../api/axios.js";
 
@@ -24,15 +22,19 @@ const initialForm = {
   status: "active",
 };
 
+// Shared classes (same as College page)
 const inputClass =
-  "w-full rounded-lg border border-line bg-white px-3 py-2.5 text-sm outline-none focus:border-brand focus:ring-2 focus:ring-brand/10";
+  "w-full rounded-lg border border-[#9DBDBA] bg-white px-3 py-2.5 text-sm text-[#0B2B2A] outline-none placeholder:text-[#4B6463] focus:border-teal-700 focus:ring-2 focus:ring-teal-200";
+
+const labelClass = "mb-1.5 block text-sm font-medium text-[#0B2B2A]";
+
+const actionButton =
+  "inline-flex h-9 w-9 items-center justify-center rounded-lg border transition";
 
 function Field({ label, children }) {
   return (
     <div>
-      <label className="mb-1.5 block text-sm font-medium text-brand-dark">
-        {label}
-      </label>
+      <label className={labelClass}>{label}</label>
       {children}
     </div>
   );
@@ -77,7 +79,7 @@ function Stream() {
 
       setError(
         error.response?.data?.message ||
-          "Streams load nahi hui."
+        "Streams load nahi hui."
       );
     } finally {
       setLoading(false);
@@ -179,7 +181,7 @@ function Stream() {
 
       setError(
         error.response?.data?.message ||
-          "Stream save nahi hui."
+        "Stream save nahi hui."
       );
     } finally {
       setSaving(false);
@@ -212,7 +214,7 @@ function Stream() {
 
       alert(
         response.data.message ||
-          "Streams imported successfully"
+        "Streams imported successfully"
       );
 
       await getStreams();
@@ -224,7 +226,7 @@ function Stream() {
 
       setError(
         error.response?.data?.message ||
-          "Bulk upload failed."
+        "Bulk upload failed."
       );
     } finally {
       setBulkLoading(false);
@@ -256,7 +258,7 @@ function Stream() {
 
       setError(
         error.response?.data?.message ||
-          "Stream delete nahi hui."
+        "Stream delete nahi hui."
       );
     }
   };
@@ -283,7 +285,7 @@ function Stream() {
 
       setError(
         error.response?.data?.message ||
-          "Status update nahi hua."
+        "Status update nahi hua."
       );
     }
   };
@@ -296,33 +298,30 @@ function Stream() {
   );
 
   return (
-    <div className="mx-auto w-full max-w-[1200px] space-y-5 px-3 py-4 sm:px-5">
+    <div className="min-w-0 space-y-6">
 
-      {/* HEADER */}
-      <div className="flex flex-wrap items-center justify-between gap-3">
+      {/* PAGE HEADER */}
+      <div className="flex flex-wrap items-center justify-between gap-4">
         <div>
-          <h1 className="font-display text-2xl font-bold text-brand-dark">
+          <h1 className="text-2xl font-bold text-[#0B2B2A]">
             Streams
           </h1>
 
-          <p className="mt-1 text-sm text-muted">
-            Manage your streams here.
+          <p className="mt-1 text-sm text-[#3F5A58]">
+            Manage stream information
           </p>
         </div>
 
-        <div className="flex flex-wrap gap-3">
+        <div className="flex flex-wrap items-center gap-3">
 
           {/* BULK ADD */}
           <label
-            className={`flex cursor-pointer items-center gap-2 rounded-xl bg-green-600 px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-green-700 ${
-              bulkLoading
-                ? "pointer-events-none opacity-60"
-                : ""
-            }`}
+            className={`inline-flex cursor-pointer items-center gap-2 rounded-xl border border-[#CFE5E2] bg-white px-5 py-2.5 text-sm font-semibold text-[#0B2B2A] hover:bg-teal-50 ${bulkLoading ? "pointer-events-none opacity-60" : ""
+              }`}
           >
-            <FiUpload size={17} />
+            <FiUpload size={16} />
 
-            {bulkLoading ? "Uploading..." : "Bulk Add"}
+            {bulkLoading ? "Importing..." : "Add Bulk Data"}
 
             <input
               type="file"
@@ -337,12 +336,10 @@ function Stream() {
           <button
             type="button"
             onClick={openAdd}
-            className="flex items-center gap-2 rounded-xl bg-accent px-4 py-2.5 text-sm font-bold text-white transition hover:bg-[#cf4a24]"
+            className="rounded-xl bg-teal-700 px-5 py-2.5 text-sm font-bold text-white hover:bg-teal-800"
           >
-            <FiPlus size={17} />
-            Add Stream
+            + Add Stream
           </button>
-
         </div>
       </div>
 
@@ -362,33 +359,24 @@ function Stream() {
       )}
 
       {/* SEARCH */}
-      <div className="rounded-xl border border-line bg-white p-3">
-        <div className="relative max-w-md">
-          <FiSearch
-            size={18}
-            className="absolute left-3 top-1/2 -translate-y-1/2 text-muted"
-          />
+      <input
+        type="text"
+        value={search}
+        onChange={(e) => setSearch(e.target.value)}
+        placeholder="Search stream..."
+        className="w-full max-w-sm rounded-xl border border-[#9DBDBA] bg-white/80 px-4 py-2.5 text-sm text-[#0B2B2A] outline-none placeholder:text-[#4B6463] focus:border-teal-700 focus:ring-2 focus:ring-teal-200"
+      />
 
-          <input
-            type="text"
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
-            placeholder="Search streams..."
-            className="w-full rounded-lg border border-line bg-surface py-2.5 pl-10 pr-3 text-sm outline-none focus:border-brand"
-          />
-        </div>
-      </div>
-
-      {/* TABLE */}
-      <div className="overflow-x-auto rounded-xl border border-line bg-white">
+      {/* STREAMS TABLE */}
+      <div className="overflow-x-auto rounded-2xl border border-white bg-white/65 text-[#0B2B2A] shadow-[0_4px_24px_rgba(15,118,110,0.08)] backdrop-blur-xl">
         <table className="w-full min-w-[750px] text-left text-sm">
-          <thead className="bg-surface text-xs uppercase tracking-wide text-muted">
+          <thead className="bg-[#F1F8F7] text-[11px] font-bold uppercase tracking-wider text-[#3F5A58]">
             <tr>
-              <th className="px-4 py-3">Name</th>
-              <th className="px-4 py-3">Slug</th>
-              <th className="px-4 py-3">Code</th>
-              <th className="px-4 py-3">Status</th>
-              <th className="px-4 py-3 text-right">Actions</th>
+              <th className="px-4 py-4">Name</th>
+              <th className="px-4 py-4">Slug</th>
+              <th className="px-4 py-4">Code</th>
+              <th className="px-4 py-4">Status</th>
+              <th className="px-4 py-4">Actions</th>
             </tr>
           </thead>
 
@@ -397,7 +385,7 @@ function Stream() {
               <tr>
                 <td
                   colSpan="5"
-                  className="px-4 py-8 text-center text-muted"
+                  className="px-4 py-10 text-center text-[#3F5A58]"
                 >
                   Loading streams...
                 </td>
@@ -406,83 +394,81 @@ function Stream() {
               filtered.map((item) => (
                 <tr
                   key={item._id}
-                  className="border-t border-line hover:bg-surface/70"
+                  className="border-t border-[#CFE5E2] hover:bg-teal-50/70"
                 >
-                  <td className="px-4 py-3 font-medium text-brand-dark">
+                  <td className="px-4 py-4 font-medium text-[#0B2B2A]">
                     {item.name}
                   </td>
 
-                  <td className="px-4 py-3 text-muted">
-                    {item.slug}
+                  <td className="px-4 py-4">
+                    {item.slug || "-"}
                   </td>
 
-                  <td className="px-4 py-3 text-muted">
+                  <td className="px-4 py-4">
                     {item.code || "-"}
                   </td>
 
                   {/* STATUS TOGGLE */}
-                  <td className="px-4 py-3">
-                    <button
-                      type="button"
-                      onClick={() => handleStatusToggle(item)}
-                      className={`relative h-7 w-12 rounded-full transition ${
-                        item.status === "active"
-                          ? "bg-brand"
-                          : "bg-gray-300"
-                      }`}
-                    >
-                      <span
-                        className={`absolute top-1 h-5 w-5 rounded-full bg-white transition ${
-                          item.status === "active"
+                  <td className="px-4 py-4">
+                    <div className="flex items-center gap-2">
+                      <button
+                        type="button"
+                        onClick={() => handleStatusToggle(item)}
+                        className={`relative h-7 w-12 rounded-full transition ${item.status === "active"
+                          ? "bg-teal-700"
+                          : "bg-slate-400"
+                          }`}
+                      >
+                        <span
+                          className={`absolute top-1 h-5 w-5 rounded-full bg-white transition ${item.status === "active"
                             ? "left-6"
                             : "left-1"
-                        }`}
-                      />
+                            }`}
+                        />
 
-                      <span className="sr-only">
-                        Toggle status
+                        <span className="sr-only">
+                          Toggle status
+                        </span>
+                      </button>
+
+                      <span className="text-xs capitalize text-[#3F5A58]">
+                        {item.status || "inactive"}
                       </span>
-                    </button>
-
-                    <span className="ml-2 text-xs capitalize text-muted">
-                      {item.status}
-                    </span>
+                    </div>
                   </td>
 
                   {/* ACTION ICONS */}
-                  <td className="px-4 py-3">
-                    <div className="flex justify-end gap-2">
-
-                      {/* VIEW */}
+                  <td className="px-4 py-4">
+                    <div className="flex items-center gap-2">
                       <button
                         type="button"
                         onClick={() => handleView(item)}
-                        title="View"
-                        className="rounded-lg bg-brand px-2.5 py-2 text-white hover:bg-brand-dark"
+                        title="View Stream"
+                        aria-label="View Stream"
+                        className={`${actionButton} border-teal-200 bg-teal-50 text-teal-700 hover:bg-teal-700 hover:text-white`}
                       >
-                        <FiEye size={16} />
+                        <FiEye size={17} />
                       </button>
 
-                      {/* EDIT */}
                       <button
                         type="button"
                         onClick={() => handleEdit(item)}
-                        title="Edit"
-                        className="rounded-lg bg-blue-600 px-2.5 py-2 text-white hover:bg-blue-700"
+                        title="Edit Stream"
+                        aria-label="Edit Stream"
+                        className={`${actionButton} border-[#CFE5E2] bg-white text-[#3F5A58] hover:bg-[#0B2B2A] hover:text-white`}
                       >
-                        <FiEdit2 size={16} />
+                        <FiEdit2 size={17} />
                       </button>
 
-                      {/* DELETE */}
                       <button
                         type="button"
                         onClick={() => handleDelete(item._id)}
-                        title="Delete"
-                        className="rounded-lg bg-red-600 px-2.5 py-2 text-white hover:bg-red-700"
+                        title="Delete Stream"
+                        aria-label="Delete Stream"
+                        className={`${actionButton} border-red-200 bg-red-50 text-red-600 hover:bg-red-600 hover:text-white`}
                       >
-                        <FiTrash2 size={16} />
+                        <FiTrash2 size={17} />
                       </button>
-
                     </div>
                   </td>
                 </tr>
@@ -491,9 +477,9 @@ function Stream() {
               <tr>
                 <td
                   colSpan="5"
-                  className="px-4 py-10 text-center text-muted"
+                  className="px-4 py-10 text-center text-[#3F5A58]"
                 >
-                  No streams found
+                  No streams found.
                 </td>
               </tr>
             )}
@@ -504,44 +490,36 @@ function Stream() {
       {/* ADD / EDIT FORM */}
       {showForm && (
         <div
-          className="fixed inset-0 z-50 flex items-center justify-center bg-brand-dark/45 p-3 sm:p-5"
+          className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4"
           onMouseDown={(e) => {
             if (e.target === e.currentTarget) closeForm();
           }}
         >
-          <div className="max-h-[90vh] w-full max-w-3xl overflow-y-auto rounded-2xl bg-white shadow-2xl">
+          <div className="max-h-[90vh] w-full max-w-3xl overflow-y-auto rounded-2xl bg-white p-6 shadow-xl">
 
-            <div className="flex items-center justify-between border-b border-line bg-brand px-5 py-4 text-white">
-              <div>
-                <h2 className="font-display text-lg font-bold">
-                  {editId ? "Edit Stream" : "Add Stream"}
-                </h2>
-
-                <p className="mt-0.5 text-xs text-white/75">
-                  Enter stream details below
-                </p>
-              </div>
+            <div className="mb-6 flex items-center justify-between">
+              <h2 className="text-2xl font-bold text-teal-700">
+                {editId ? "Edit Stream" : "Add Stream"}
+              </h2>
 
               <button
                 type="button"
                 onClick={closeForm}
-                className="rounded-lg p-2 hover:bg-white/10"
+                aria-label="Close"
+                className="text-2xl text-[#3F5A58] hover:text-red-600"
               >
-                <FiX size={20} />
+                &times;
               </button>
             </div>
 
-            <form
-              onSubmit={handleSubmit}
-              className="space-y-4 p-5"
-            >
+            <form onSubmit={handleSubmit}>
               {error && (
-                <div className="rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">
+                <div className="mb-4 rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">
                   {error}
                 </div>
               )}
 
-              <div className="grid gap-4 sm:grid-cols-2">
+              <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
 
                 <Field label="Stream Name *">
                   <input
@@ -604,24 +582,19 @@ function Stream() {
                     onChange={handleChange}
                     className={inputClass}
                   >
-                    <option value="">
-                      No Parent Stream
-                    </option>
+                    <option value="">No Parent Stream</option>
 
                     {streams
                       .filter((item) => item._id !== editId)
                       .map((item) => (
-                        <option
-                          key={item._id}
-                          value={item._id}
-                        >
+                        <option key={item._id} value={item._id}>
                           {item.name}
                         </option>
                       ))}
                   </select>
                 </Field>
 
-                <div className="sm:col-span-2">
+                <div className="md:col-span-2">
                   <Field label="Description">
                     <textarea
                       name="description"
@@ -653,14 +626,14 @@ function Stream() {
                     className={inputClass}
                   />
                 </Field>
-
               </div>
 
-              <div className="flex justify-end gap-3 border-t border-line pt-4">
+              {/* FORM BUTTONS */}
+              <div className="mt-6 flex justify-end gap-3">
                 <button
                   type="button"
                   onClick={closeForm}
-                  className="rounded-xl border border-line px-4 py-2 text-sm font-semibold text-muted hover:bg-surface"
+                  className="rounded-lg border border-[#CFE5E2] px-5 py-2"
                 >
                   Cancel
                 </button>
@@ -668,7 +641,7 @@ function Stream() {
                 <button
                   type="submit"
                   disabled={saving}
-                  className="rounded-xl bg-brand px-5 py-2 text-sm font-semibold text-white hover:bg-brand-dark disabled:cursor-not-allowed disabled:opacity-60"
+                  className="rounded-lg bg-teal-700 px-5 py-2 font-medium text-white hover:bg-teal-800 disabled:opacity-60"
                 >
                   {saving
                     ? "Saving..."
@@ -682,77 +655,77 @@ function Stream() {
         </div>
       )}
 
-      {/* VIEW MODAL */}
+      {/* VIEW STREAM */}
       {showView && selectedStream && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-brand-dark/45 p-4">
-          <div className="w-full max-w-xl rounded-2xl bg-white shadow-2xl">
+        <div
+          className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4"
+          onMouseDown={(e) => {
+            if (e.target === e.currentTarget) setShowView(false);
+          }}
+        >
+          <div className="max-h-[85vh] w-full max-w-2xl overflow-y-auto rounded-2xl bg-white p-6">
 
-            <div className="flex items-center justify-between bg-brand px-5 py-4 text-white">
-              <h2 className="text-lg font-bold">
+            <div className="mb-5 flex items-center justify-between">
+              <h2 className="text-xl font-bold text-[#0B2B2A]">
                 Stream Details
               </h2>
 
               <button
                 type="button"
                 onClick={() => setShowView(false)}
+                aria-label="Close"
+                className="text-[#3F5A58]"
               >
-                <FiX size={20} />
+                <FiX size={24} />
               </button>
             </div>
 
-            <div className="grid gap-4 p-5 sm:grid-cols-2">
+            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
               <p>
-                <strong>Name:</strong> {selectedStream.name}
+                <b>Name:</b> {selectedStream.name || "-"}
               </p>
 
               <p>
-                <strong>Slug:</strong> {selectedStream.slug}
+                <b>Slug:</b> {selectedStream.slug || "-"}
               </p>
 
               <p>
-                <strong>Code:</strong>{" "}
-                {selectedStream.code || "-"}
+                <b>Code:</b> {selectedStream.code || "-"}
+              </p>
+
+              <p className="capitalize">
+                <b>Status:</b> {selectedStream.status || "-"}
               </p>
 
               <p>
-                <strong>Status:</strong>{" "}
-                {selectedStream.status}
+                <b>Display Order:</b> {selectedStream.displayOrder ?? "-"}
               </p>
 
               <p>
-                <strong>Display Order:</strong>{" "}
-                {selectedStream.displayOrder}
-              </p>
-
-              <p>
-                <strong>Parent Stream:</strong>{" "}
+                <b>Parent Stream:</b>{" "}
                 {selectedStream.parentStream?.name || "-"}
               </p>
 
-              <div className="sm:col-span-2">
-                <strong>Description:</strong>
+              <p className="sm:col-span-2">
+                <b>Description:</b> {selectedStream.description || "-"}
+              </p>
 
-                <p className="mt-1 text-muted">
-                  {selectedStream.description || "-"}
-                </p>
-              </div>
+              <p>
+                <b>Icon:</b> {selectedStream.icon || "-"}
+              </p>
 
-              <div>
-                <strong>Icon:</strong>
-
-                <p className="mt-1 text-muted">
-                  {selectedStream.icon || "-"}
-                </p>
-              </div>
-
-              <div>
-                <strong>Image:</strong>
-
-                <p className="mt-1 break-all text-muted">
-                  {selectedStream.image || "-"}
-                </p>
-              </div>
+              <p className="break-all">
+                <b>Image:</b> {selectedStream.image || "-"}
+              </p>
             </div>
+
+            <button
+              type="button"
+              onClick={() => setShowView(false)}
+              className="mt-6 rounded-lg bg-teal-700 px-5 py-2.5 text-sm font-semibold text-white hover:bg-teal-800"
+            >
+              Close
+            </button>
           </div>
         </div>
       )}

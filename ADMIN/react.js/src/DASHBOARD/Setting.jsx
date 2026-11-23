@@ -12,6 +12,15 @@ const emptyForm = {
   maintenanceMode: false,
 };
 
+// Shared classes (same as College page)
+const inputClass =
+  "w-full rounded-lg border border-[#9DBDBA] bg-white px-3 py-2.5 text-sm text-[#0B2B2A] outline-none placeholder:text-[#4B6463] focus:border-teal-700 focus:ring-2 focus:ring-teal-200";
+
+const labelClass = "mb-1.5 block text-sm font-medium text-[#0B2B2A]";
+
+const glassCard =
+  "rounded-2xl border border-white bg-white/65 p-6 text-[#0B2B2A] shadow-[0_4px_24px_rgba(15,118,110,0.08)] backdrop-blur-xl";
+
 function Settings() {
   const [formData, setFormData] = useState({ ...emptyForm });
   const [loading, setLoading] = useState(true);
@@ -67,8 +76,10 @@ function Settings() {
       const response = await API.put("/setting", formData);
 
       if (response.data.success) {
-        // Clear all inputs immediately after successful save
-        setFormData({ ...emptyForm });
+        // Keep the saved settings in the form instead of clearing them to blank
+        if (response.data.data) {
+          setFormData(response.data.data);
+        }
 
         alert("Settings saved successfully!");
       } else {
@@ -88,35 +99,45 @@ function Settings() {
   if (loading) {
     return (
       <div className="flex min-h-[300px] items-center justify-center">
-        <p className="text-muted">Loading settings...</p>
+        <p className="text-[#3F5A58]">Loading settings...</p>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-surface p-6">
-      {/* Page Heading */}
-      <div className="mb-6">
-        <h1 className="font-display text-2xl font-bold text-brand-dark">
-          Settings
-        </h1>
+    <div className="min-w-0 space-y-6">
 
-        <p className="mt-1 text-sm text-muted">
-          Manage your portal and system settings
-        </p>
+      {/* PAGE HEADER */}
+      <div className="flex flex-wrap items-center justify-between gap-4">
+        <div>
+          <h1 className="text-2xl font-bold text-[#0B2B2A]">
+            Settings
+          </h1>
+
+          <p className="mt-1 text-sm text-[#3F5A58]">
+            Manage your portal and system settings
+          </p>
+        </div>
+
+        <button
+          type="button"
+          onClick={handleSave}
+          disabled={saving}
+          className="rounded-xl bg-teal-700 px-5 py-2.5 text-sm font-bold text-white hover:bg-teal-800 disabled:opacity-60"
+        >
+          {saving ? "Saving..." : "Save Changes"}
+        </button>
       </div>
 
-      {/* Portal Information */}
-      <div className="mb-6 rounded-2xl border border-line bg-white p-6">
-        <h2 className="mb-5 text-lg font-semibold text-brand-dark">
+      {/* PORTAL INFORMATION */}
+      <div className={glassCard}>
+        <h2 className="mb-5 text-lg font-bold text-[#0B2B2A]">
           Portal Information
         </h2>
 
-        <div className="grid grid-cols-1 gap-5 md:grid-cols-2">
+        <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
           <div>
-            <label className="mb-2 block text-sm font-medium">
-              Portal Name
-            </label>
+            <label className={labelClass}>Portal Name</label>
 
             <input
               type="text"
@@ -124,14 +145,12 @@ function Settings() {
               value={formData.portalName}
               onChange={handleChange}
               placeholder="Enter portal name"
-              className="w-full rounded-xl border border-line bg-surface px-4 py-2.5 text-sm outline-none transition focus:border-brand focus:ring-2 focus:ring-brand/15"
+              className={inputClass}
             />
           </div>
 
           <div>
-            <label className="mb-2 block text-sm font-medium">
-              Academic Session
-            </label>
+            <label className={labelClass}>Academic Session</label>
 
             <input
               type="text"
@@ -139,14 +158,12 @@ function Settings() {
               value={formData.academicSession}
               onChange={handleChange}
               placeholder="2026-27"
-              className="w-full rounded-xl border border-line bg-surface px-4 py-2.5 text-sm outline-none transition focus:border-brand focus:ring-2 focus:ring-brand/15"
+              className={inputClass}
             />
           </div>
 
           <div className="md:col-span-2">
-            <label className="mb-2 block text-sm font-medium">
-              Portal Description
-            </label>
+            <label className={labelClass}>Portal Description</label>
 
             <textarea
               name="portalDescription"
@@ -154,23 +171,21 @@ function Settings() {
               onChange={handleChange}
               placeholder="Enter portal description"
               rows="3"
-              className="w-full rounded-xl border border-line bg-surface px-4 py-2.5 text-sm outline-none transition focus:border-brand focus:ring-2 focus:ring-brand/15"
+              className={inputClass}
             />
           </div>
         </div>
       </div>
 
-      {/* Contact Information */}
-      <div className="mb-6 rounded-2xl border border-line bg-white p-6">
-        <h2 className="mb-5 text-lg font-semibold text-brand-dark">
+      {/* CONTACT INFORMATION */}
+      <div className={glassCard}>
+        <h2 className="mb-5 text-lg font-bold text-[#0B2B2A]">
           Contact Information
         </h2>
 
-        <div className="grid grid-cols-1 gap-5 md:grid-cols-2">
+        <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
           <div>
-            <label className="mb-2 block text-sm font-medium">
-              Support Email
-            </label>
+            <label className={labelClass}>Support Email</label>
 
             <input
               type="email"
@@ -178,14 +193,12 @@ function Settings() {
               value={formData.supportEmail}
               onChange={handleChange}
               placeholder="Enter support email"
-              className="w-full rounded-xl border border-line bg-surface px-4 py-2.5 text-sm outline-none transition focus:border-brand focus:ring-2 focus:ring-brand/15"
+              className={inputClass}
             />
           </div>
 
           <div>
-            <label className="mb-2 block text-sm font-medium">
-              Support Phone
-            </label>
+            <label className={labelClass}>Support Phone</label>
 
             <input
               type="text"
@@ -193,14 +206,12 @@ function Settings() {
               value={formData.supportPhone}
               onChange={handleChange}
               placeholder="Enter support phone"
-              className="w-full rounded-xl border border-line bg-surface px-4 py-2.5 text-sm outline-none transition focus:border-brand focus:ring-2 focus:ring-brand/15"
+              className={inputClass}
             />
           </div>
 
           <div className="md:col-span-2">
-            <label className="mb-2 block text-sm font-medium">
-              Address
-            </label>
+            <label className={labelClass}>Address</label>
 
             <textarea
               name="address"
@@ -208,23 +219,21 @@ function Settings() {
               onChange={handleChange}
               placeholder="Enter address"
               rows="3"
-              className="w-full rounded-xl border border-line bg-surface px-4 py-2.5 text-sm outline-none transition focus:border-brand focus:ring-2 focus:ring-brand/15"
+              className={inputClass}
             />
           </div>
         </div>
       </div>
 
-      {/* Other Settings */}
-      <div className="rounded-2xl border border-line bg-white p-6">
-        <h2 className="mb-5 text-lg font-semibold text-brand-dark">
+      {/* OTHER SETTINGS */}
+      <div className={glassCard}>
+        <h2 className="mb-5 text-lg font-bold text-[#0B2B2A]">
           Other Settings
         </h2>
 
-        <div className="grid grid-cols-1 gap-5 md:grid-cols-2">
+        <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
           <div>
-            <label className="mb-2 block text-sm font-medium">
-              Website URL
-            </label>
+            <label className={labelClass}>Website URL</label>
 
             <input
               type="text"
@@ -232,51 +241,36 @@ function Settings() {
               value={formData.websiteUrl}
               onChange={handleChange}
               placeholder="https://example.com"
-              className="w-full rounded-xl border border-line bg-surface px-4 py-2.5 text-sm outline-none transition focus:border-brand focus:ring-2 focus:ring-brand/15"
+              className={inputClass}
             />
           </div>
 
-          <div className="flex items-center justify-between rounded-xl border border-line px-4 py-3">
+          <div className="flex items-center justify-between gap-4 rounded-xl border border-[#CFE5E2] bg-white px-4 py-3">
             <div>
-              <p className="font-medium text-brand-dark">
+              <p className="text-sm font-medium text-[#0B2B2A]">
                 Maintenance Mode
               </p>
 
-              <p className="text-sm text-muted">
+              <p className="text-xs text-[#3F5A58]">
                 Enable maintenance mode for the portal
               </p>
             </div>
 
             <button
               type="button"
+              role="switch"
+              aria-checked={formData.maintenanceMode}
+              aria-label="Toggle maintenance mode"
               onClick={handleToggle}
-              className={`relative h-7 w-12 rounded-full transition ${
-                formData.maintenanceMode
-                  ? "bg-brand"
-                  : "bg-gray-300"
-              }`}
+              className={`relative h-7 w-12 shrink-0 rounded-full transition ${formData.maintenanceMode ? "bg-teal-700" : "bg-slate-400"
+                }`}
             >
               <span
-                className={`absolute top-1 h-5 w-5 rounded-full bg-white transition ${
-                  formData.maintenanceMode
-                    ? "left-6"
-                    : "left-1"
-                }`}
+                className={`absolute top-1 h-5 w-5 rounded-full bg-white transition ${formData.maintenanceMode ? "left-6" : "left-1"
+                  }`}
               />
             </button>
           </div>
-        </div>
-
-        {/* Save Button */}
-        <div className="mt-6 flex justify-end">
-          <button
-            type="button"
-            onClick={handleSave}
-            disabled={saving}
-            className="rounded-xl bg-accent px-6 py-2.5 font-bold text-white transition hover:bg-[#cf4a24] disabled:cursor-not-allowed disabled:opacity-60"
-          >
-            {saving ? "Saving..." : "Save Changes"}
-          </button>
         </div>
       </div>
     </div>

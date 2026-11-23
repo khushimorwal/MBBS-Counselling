@@ -438,11 +438,11 @@ function Appointments() {
       <div className="mb-6 flex flex-col justify-between gap-3 sm:flex-row sm:items-center">
         <div>
 
-          <h1 className="mt-2 font-display text-3xl font-bold text-brand-dark">
+          <h1 className="mt-2 font-display text-3xl font-bold text-[#0B2B2A]">
             Appointments
           </h1>
 
-          <p className="mt-2 text-sm text-muted">
+          <p className="mt-2 text-sm text-[#3F5A58]">
             Schedule and manage student counselling appointments.
           </p>
         </div>
@@ -450,7 +450,7 @@ function Appointments() {
         <button
           type="button"
           onClick={fetchAppointments}
-          className="rounded-xl border border-line bg-white px-4 py-3 text-sm font-semibold text-brand-dark hover:bg-surface"
+          className="rounded-xl border border-[#CFE5E2] bg-white px-4 py-3 text-sm font-semibold text-[#0B2B2A] hover:bg-[#F1F8F7]"
         >
           Refresh
         </button>
@@ -495,11 +495,11 @@ function Appointments() {
         ].map(([title, count, color]) => (
           <div
             key={title}
-            className="rounded-2xl border border-line bg-white p-5"
+            className="rounded-2xl border border-[#CFE5E2] bg-white p-5"
           >
-            <p className="text-sm font-medium text-muted">{title}</p>
+            <p className="text-sm font-medium text-[#3F5A58]">{title}</p>
 
-            <h2 className="mt-3 font-display text-3xl font-bold text-brand-dark">
+            <h2 className="mt-3 font-display text-3xl font-bold text-[#0B2B2A]">
               {loading ? "—" : count}
             </h2>
 
@@ -513,19 +513,19 @@ function Appointments() {
       </div>
 
       {/* Search and Filters */}
-      <div className="mb-5 flex flex-col gap-3 rounded-2xl border border-line bg-white p-4 sm:flex-row">
+      <div className="mb-5 flex flex-col gap-3 rounded-2xl border border-[#CFE5E2] bg-white p-4 sm:flex-row">
         <input
           type="search"
           value={search}
           onChange={(event) => setSearch(event.target.value)}
           placeholder="Search student or counsellor..."
-          className="min-w-0 flex-1 rounded-xl border border-line px-4 py-3 text-sm outline-none focus:border-brand"
+          className="min-w-0 flex-1 rounded-xl border border-[#CFE5E2] px-4 py-3 text-sm outline-none focus:border-teal-700"
         />
 
         <select
           value={statusFilter}
           onChange={(event) => setStatusFilter(event.target.value)}
-          className="rounded-xl border border-line bg-white px-4 py-3 text-sm outline-none focus:border-brand"
+          className="rounded-xl border border-[#CFE5E2] bg-white px-4 py-3 text-sm outline-none focus:border-teal-700"
         >
           <option value="">All Status</option>
 
@@ -539,20 +539,20 @@ function Appointments() {
         <button
           type="button"
           onClick={openScheduleModal}
-          className="rounded-xl bg-accent px-5 py-3 text-sm font-semibold text-white transition hover:opacity-90"
+          className="rounded-xl bg-teal-700 px-5 py-3 text-sm font-semibold text-white transition hover:opacity-90"
         >
           + Schedule Appointment
         </button>
       </div>
 
       {/* Appointments Table */}
-      <div className="overflow-hidden rounded-2xl border border-line bg-white">
-        <div className="border-b border-line p-5">
-          <h2 className="font-display text-lg font-bold text-brand-dark">
+      <div className="overflow-hidden rounded-2xl border border-[#CFE5E2] bg-white">
+        <div className="border-b border-[#CFE5E2] p-5">
+          <h2 className="font-display text-lg font-bold text-[#0B2B2A]">
             Appointment Records
           </h2>
 
-          <p className="mt-1 text-xs text-muted">
+          <p className="mt-1 text-xs text-[#3F5A58]">
             View scheduled and completed appointments.
           </p>
         </div>
@@ -560,7 +560,7 @@ function Appointments() {
         <div className="overflow-x-auto">
           <table className="w-full min-w-[1100px] text-left">
             <thead className="bg-[#F9FBFA]">
-              <tr className="text-xs font-semibold uppercase tracking-wide text-muted">
+              <tr className="text-xs font-semibold uppercase tracking-wide text-[#3F5A58]">
                 <th className="px-5 py-4">Student</th>
                 <th className="px-5 py-4">Counsellor</th>
                 <th className="px-5 py-4">Date & Time</th>
@@ -576,7 +576,7 @@ function Appointments() {
                 <tr>
                   <td
                     colSpan="7"
-                    className="px-5 py-12 text-center text-sm text-muted"
+                    className="px-5 py-12 text-center text-sm text-[#3F5A58]"
                   >
                     Loading appointments...
                   </td>
@@ -585,7 +585,7 @@ function Appointments() {
                 <tr>
                   <td
                     colSpan="7"
-                    className="px-5 py-12 text-center text-sm text-muted"
+                    className="px-5 py-12 text-center text-sm text-[#3F5A58]"
                   >
                     No appointments found.
                   </td>
@@ -594,37 +594,37 @@ function Appointments() {
                 filteredAppointments.map((appointment) => (
                   <tr
                     key={appointment._id}
-                    className="border-t border-line text-sm"
+                    className="border-t border-[#CFE5E2] text-sm"
                   >
                     <td className="px-5 py-4">
-                      <p className="font-semibold text-brand-dark">
+                      <p className="font-semibold text-[#0B2B2A]">
                         {appointment.student?.name || "—"}
                       </p>
-                      <p className="mt-1 text-xs text-muted">
+                      <p className="mt-1 text-xs text-[#3F5A58]">
                         {appointment.student?.email || ""}
                       </p>
                     </td>
 
                     <td className="px-5 py-4">
-                      <p className="font-medium text-brand-dark">
+                      <p className="font-medium text-[#0B2B2A]">
                         {appointment.counsellor?.name || "—"}
                       </p>
-                      <p className="mt-1 text-xs text-muted">
+                      <p className="mt-1 text-xs text-[#3F5A58]">
                         {appointment.counsellor?.email || ""}
                       </p>
                     </td>
 
                     <td className="px-5 py-4">
-                      <p className="font-medium text-brand-dark">
+                      <p className="font-medium text-[#0B2B2A]">
                         {formatDate(appointment.scheduledStart)}
                       </p>
-                      <p className="mt-1 text-xs text-muted">
+                      <p className="mt-1 text-xs text-[#3F5A58]">
                         {formatTime(appointment.scheduledStart)} –{" "}
                         {formatTime(appointment.scheduledEnd)}
                       </p>
                     </td>
 
-                    <td className="px-5 py-4 text-brand-dark">
+                    <td className="px-5 py-4 text-[#0B2B2A]">
                       {getDuration(
                         appointment.scheduledStart,
                         appointment.scheduledEnd
@@ -632,7 +632,7 @@ function Appointments() {
                     </td>
 
                     <td className="px-5 py-4">
-                      <span className="capitalize text-brand-dark">
+                      <span className="capitalize text-[#0B2B2A]">
                         {appointment.mode?.replaceAll("_", " ") || "—"}
                       </span>
                     </td>
@@ -704,15 +704,15 @@ function Appointments() {
       {showModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center overflow-y-auto bg-black/50 p-4">
           <div className="my-6 w-full max-w-2xl rounded-2xl bg-white shadow-xl">
-            <div className="flex items-center justify-between border-b border-line p-5">
+            <div className="flex items-center justify-between border-b border-[#CFE5E2] p-5">
               <div>
-                <h2 className="font-display text-xl font-bold text-brand-dark">
+                <h2 className="font-display text-xl font-bold text-[#0B2B2A]">
                   {editingAppointment
                     ? "Reschedule Appointment"
                     : "Schedule Appointment"}
                 </h2>
 
-                <p className="mt-1 text-xs text-muted">
+                <p className="mt-1 text-xs text-[#3F5A58]">
                   Enter appointment details below.
                 </p>
               </div>
@@ -721,7 +721,7 @@ function Appointments() {
                 type="button"
                 onClick={closeModal}
                 disabled={saving}
-                className="rounded-lg px-3 py-2 text-xl text-muted hover:bg-surface"
+                className="rounded-lg px-3 py-2 text-xl text-[#3F5A58] hover:bg-[#F1F8F7]"
               >
                 ×
               </button>
@@ -737,7 +737,7 @@ function Appointments() {
               {/* Counselling Request */}
               {!editingAppointment && (
                 <div>
-                  <label className="mb-2 block text-sm font-semibold text-brand-dark">
+                  <label className="mb-2 block text-sm font-semibold text-[#0B2B2A]">
                     Counselling Request *
                   </label>
 
@@ -746,7 +746,7 @@ function Appointments() {
                     value={form.counsellingRequest}
                     onChange={updateForm}
                     required
-                    className="w-full rounded-xl border border-line bg-white px-4 py-3 text-sm outline-none focus:border-brand"
+                    className="w-full rounded-xl border border-[#CFE5E2] bg-white px-4 py-3 text-sm outline-none focus:border-teal-700"
                   >
                     <option value="">
                       {loadingRequests
@@ -773,7 +773,7 @@ function Appointments() {
               {/* Start and End */}
               <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
                 <div>
-                  <label className="mb-2 block text-sm font-semibold text-brand-dark">
+                  <label className="mb-2 block text-sm font-semibold text-[#0B2B2A]">
                     Start Date & Time *
                   </label>
 
@@ -783,12 +783,12 @@ function Appointments() {
                     value={form.scheduledStart}
                     onChange={updateForm}
                     required
-                    className="w-full rounded-xl border border-line px-4 py-3 text-sm outline-none focus:border-brand"
+                    className="w-full rounded-xl border border-[#CFE5E2] px-4 py-3 text-sm outline-none focus:border-teal-700"
                   />
                 </div>
 
                 <div>
-                  <label className="mb-2 block text-sm font-semibold text-brand-dark">
+                  <label className="mb-2 block text-sm font-semibold text-[#0B2B2A]">
                     End Date & Time *
                   </label>
 
@@ -798,14 +798,14 @@ function Appointments() {
                     value={form.scheduledEnd}
                     onChange={updateForm}
                     required
-                    className="w-full rounded-xl border border-line px-4 py-3 text-sm outline-none focus:border-brand"
+                    className="w-full rounded-xl border border-[#CFE5E2] px-4 py-3 text-sm outline-none focus:border-teal-700"
                   />
                 </div>
               </div>
 
               {/* Mode */}
               <div>
-                <label className="mb-2 block text-sm font-semibold text-brand-dark">
+                <label className="mb-2 block text-sm font-semibold text-[#0B2B2A]">
                   Appointment Mode *
                 </label>
 
@@ -814,7 +814,7 @@ function Appointments() {
                   value={form.mode}
                   onChange={updateForm}
                   required
-                  className="w-full rounded-xl border border-line bg-white px-4 py-3 text-sm outline-none focus:border-brand"
+                  className="w-full rounded-xl border border-[#CFE5E2] bg-white px-4 py-3 text-sm outline-none focus:border-teal-700"
                 >
                   <option value="phone">Phone</option>
                   <option value="video">Video</option>
@@ -826,7 +826,7 @@ function Appointments() {
               {/* Video Meeting Link */}
               {form.mode === "video" && (
                 <div>
-                  <label className="mb-2 block text-sm font-semibold text-brand-dark">
+                  <label className="mb-2 block text-sm font-semibold text-[#0B2B2A]">
                     Meeting Link *
                   </label>
 
@@ -837,7 +837,7 @@ function Appointments() {
                     onChange={updateForm}
                     required
                     placeholder="https://meet.google.com/..."
-                    className="w-full rounded-xl border border-line px-4 py-3 text-sm outline-none focus:border-brand"
+                    className="w-full rounded-xl border border-[#CFE5E2] px-4 py-3 text-sm outline-none focus:border-teal-700"
                   />
                 </div>
               )}
@@ -845,7 +845,7 @@ function Appointments() {
               {/* In Person Location */}
               {form.mode === "in_person" && (
                 <div>
-                  <label className="mb-2 block text-sm font-semibold text-brand-dark">
+                  <label className="mb-2 block text-sm font-semibold text-[#0B2B2A]">
                     Appointment Location *
                   </label>
 
@@ -856,17 +856,17 @@ function Appointments() {
                     onChange={updateForm}
                     required
                     placeholder="Enter counselling centre address"
-                    className="w-full rounded-xl border border-line px-4 py-3 text-sm outline-none focus:border-brand"
+                    className="w-full rounded-xl border border-[#CFE5E2] px-4 py-3 text-sm outline-none focus:border-teal-700"
                   />
                 </div>
               )}
 
-              <div className="flex flex-col-reverse gap-3 border-t border-line pt-5 sm:flex-row sm:justify-end">
+              <div className="flex flex-col-reverse gap-3 border-t border-[#CFE5E2] pt-5 sm:flex-row sm:justify-end">
                 <button
                   type="button"
                   onClick={closeModal}
                   disabled={saving}
-                  className="rounded-xl border border-line px-5 py-3 text-sm font-semibold text-brand-dark hover:bg-surface disabled:opacity-50"
+                  className="rounded-xl border border-[#CFE5E2] px-5 py-3 text-sm font-semibold text-[#0B2B2A] hover:bg-[#F1F8F7] disabled:opacity-50"
                 >
                   Cancel
                 </button>
@@ -874,7 +874,7 @@ function Appointments() {
                 <button
                   type="submit"
                   disabled={saving || (!editingAppointment && loadingRequests)}
-                  className="rounded-xl bg-accent px-6 py-3 text-sm font-semibold text-white hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-50"
+                  className="rounded-xl bg-teal-700 px-6 py-3 text-sm font-semibold text-white hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-50"
                 >
                   {saving
                     ? "Saving..."

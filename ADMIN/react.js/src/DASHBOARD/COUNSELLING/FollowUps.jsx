@@ -373,15 +373,15 @@ function FollowUps() {
 
   // UI
   return (
-    <div className="mx-auto w-full max-w-[1500px]">
+    <div className="mx-auto w-full max-w-[1500px] rounded-2xl bg-gradient-to-br from-[#DDF5F1] via-[#EDF8F6] to-[#F5FAF9] p-4 sm:p-6">
       {/* Heading */}
       <div className="mb-6 flex flex-col justify-between gap-4 sm:flex-row sm:items-end">
         <div>
-          <h1 className="mt-2 font-display text-3xl font-bold text-brand-dark">
+          <h1 className="mt-2 font-display text-3xl font-bold text-[#0B2B2A]">
             Follow-ups
           </h1>
 
-          <p className="mt-2 text-sm text-muted">
+          <p className="mt-2 text-sm text-[#3F5A58]">
             Track and manage your assigned student follow-up activities.
           </p>
         </div>
@@ -392,7 +392,7 @@ function FollowUps() {
               fetchFollowUps();
               fetchFormData();
             }}
-            className="flex items-center gap-2 rounded-xl border border-line bg-white px-4 py-3 text-sm font-semibold text-brand-dark hover:bg-surface"
+            className="flex items-center gap-2 rounded-xl border border-[#CFE5E2] bg-white px-4 py-3 text-sm font-semibold text-[#0B2B2A] hover:bg-[#F1F8F7]"
           >
             <FiRefreshCw />
             Refresh
@@ -400,7 +400,7 @@ function FollowUps() {
 
           <button
             onClick={openCreateModal}
-            className="flex items-center gap-2 rounded-xl bg-accent px-4 py-3 text-sm font-bold text-white hover:bg-[#cf4a24]"
+            className="flex items-center gap-2 rounded-xl bg-teal-700 px-4 py-3 text-sm font-bold text-white hover:bg-teal-800"
           >
             <FiPlus />
             Add Follow-up
@@ -439,13 +439,13 @@ function FollowUps() {
         ].map(([title, count, color]) => (
           <div
             key={title}
-            className="rounded-2xl border border-line bg-white p-5"
+            className="rounded-2xl border border-[#CFE5E2] bg-white p-5"
           >
-            <p className="text-sm font-medium text-muted">
+            <p className="text-sm font-medium text-[#3F5A58]">
               {title}
             </p>
 
-            <h2 className="mt-3 font-display text-3xl font-bold text-brand-dark">
+            <h2 className="mt-3 font-display text-3xl font-bold text-[#0B2B2A]">
               {count}
             </h2>
 
@@ -459,23 +459,23 @@ function FollowUps() {
       </div>
 
       {/* Search and Filters */}
-      <div className="mb-5 flex flex-col gap-3 rounded-2xl border border-line bg-white p-4 sm:flex-row">
+      <div className="mb-5 flex flex-col gap-3 rounded-2xl border border-[#CFE5E2] bg-white p-4 sm:flex-row">
         <div className="relative min-w-0 flex-1">
-          <FiSearch className="absolute left-4 top-1/2 -translate-y-1/2 text-muted" />
+          <FiSearch className="absolute left-4 top-1/2 -translate-y-1/2 text-[#3F5A58]" />
 
           <input
             type="search"
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             placeholder="Search student or follow-up..."
-            className="w-full rounded-xl border border-line py-3 pl-11 pr-4 text-sm outline-none focus:border-brand"
+            className="w-full rounded-xl border border-[#CFE5E2] py-3 pl-11 pr-4 text-sm outline-none focus:border-teal-700"
           />
         </div>
 
         <select
           value={statusFilter}
           onChange={(e) => setStatusFilter(e.target.value)}
-          className="rounded-xl border border-line bg-white px-4 py-3 text-sm outline-none focus:border-brand"
+          className="rounded-xl border border-[#CFE5E2] bg-white px-4 py-3 text-sm outline-none focus:border-teal-700"
         >
           <option value="">All Status</option>
           <option value="pending">Pending</option>
@@ -486,13 +486,13 @@ function FollowUps() {
       </div>
 
       {/* Follow-up Table */}
-      <div className="overflow-hidden rounded-2xl border border-line bg-white">
-        <div className="border-b border-line p-5">
-          <h2 className="font-display text-lg font-bold text-brand-dark">
+      <div className="overflow-hidden rounded-2xl border border-[#CFE5E2] bg-white">
+        <div className="border-b border-[#CFE5E2] p-5">
+          <h2 className="font-display text-lg font-bold text-[#0B2B2A]">
             My Follow-up Records
           </h2>
 
-          <p className="mt-1 text-xs text-muted">
+          <p className="mt-1 text-xs text-[#3F5A58]">
             Monitor your upcoming and overdue student follow-ups.
           </p>
         </div>
@@ -500,7 +500,7 @@ function FollowUps() {
         <div className="overflow-x-auto">
           <table className="w-full min-w-[950px] text-left">
             <thead className="bg-[#F9FBFA]">
-              <tr className="text-xs font-semibold uppercase tracking-wide text-muted">
+              <tr className="text-xs font-semibold uppercase tracking-wide text-[#3F5A58]">
                 <th className="px-5 py-4">Student</th>
                 <th className="px-5 py-4">Purpose</th>
                 <th className="px-5 py-4">Follow-up Date</th>
@@ -514,7 +514,7 @@ function FollowUps() {
                 <tr>
                   <td
                     colSpan="5"
-                    className="px-5 py-12 text-center text-sm text-muted"
+                    className="px-5 py-12 text-center text-sm text-[#3F5A58]"
                   >
                     Loading follow-ups...
                   </td>
@@ -523,7 +523,7 @@ function FollowUps() {
                 <tr>
                   <td
                     colSpan="5"
-                    className="px-5 py-12 text-center text-sm text-muted"
+                    className="px-5 py-12 text-center text-sm text-[#3F5A58]"
                   >
                     No follow-up records found.
                   </td>
@@ -532,37 +532,37 @@ function FollowUps() {
                 filteredFollowUps.map((item) => (
                   <tr
                     key={item._id}
-                    className="hover:bg-surface/60"
+                    className="hover:bg-[#F1F8F7]/60"
                   >
                     <td className="px-5 py-4">
-                      <p className="font-semibold text-brand-dark">
+                      <p className="font-semibold text-[#0B2B2A]">
                         {item.student?.name || "—"}
                       </p>
 
-                      <p className="mt-1 text-xs text-muted">
+                      <p className="mt-1 text-xs text-[#3F5A58]">
                         {item.student?.email || ""}
                       </p>
                     </td>
 
                     <td className="px-5 py-4">
                       <div className="flex items-center gap-2">
-                        <span className="text-brand">
+                        <span className="text-teal-700">
                           {getTypeIcon(item.type)}
                         </span>
 
                         <div>
-                          <p className="font-medium text-brand-dark">
+                          <p className="font-medium text-[#0B2B2A]">
                             {item.title}
                           </p>
 
-                          <p className="mt-1 text-xs capitalize text-muted">
+                          <p className="mt-1 text-xs capitalize text-[#3F5A58]">
                             {item.type}
                           </p>
                         </div>
                       </div>
                     </td>
 
-                    <td className="px-5 py-4 text-sm text-brand-dark">
+                    <td className="px-5 py-4 text-sm text-[#0B2B2A]">
                       {formatDate(item.dueAt)}
                     </td>
 
@@ -585,7 +585,7 @@ function FollowUps() {
                             <button
                               title="Edit"
                               onClick={() => openEditModal(item)}
-                              className="rounded-lg border border-line p-2 text-blue-600 hover:bg-blue-50"
+                              className="rounded-lg border border-[#CFE5E2] p-2 text-blue-600 hover:bg-blue-50"
                             >
                               <FiEdit2 />
                             </button>
@@ -595,7 +595,7 @@ function FollowUps() {
                               onClick={() =>
                                 openCompleteModal(item)
                               }
-                              className="rounded-lg border border-line p-2 text-emerald-600 hover:bg-emerald-50"
+                              className="rounded-lg border border-[#CFE5E2] p-2 text-emerald-600 hover:bg-emerald-50"
                             >
                               <FiCheck />
                             </button>
@@ -605,7 +605,7 @@ function FollowUps() {
                         {["completed", "cancelled"].includes(
                           item.status
                         ) && (
-                          <span className="text-xs text-muted">
+                          <span className="text-xs text-[#3F5A58]">
                             No actions
                           </span>
                         )}
@@ -625,20 +625,20 @@ function FollowUps() {
           <div className="max-h-[90vh] w-full max-w-2xl overflow-y-auto rounded-2xl bg-white p-6 shadow-xl">
             <div className="mb-6 flex items-center justify-between">
               <div>
-                <h2 className="font-display text-xl font-bold text-brand-dark">
+                <h2 className="font-display text-xl font-bold text-[#0B2B2A]">
                   {editingId
                     ? "Edit Follow-up"
                     : "Create Follow-up"}
                 </h2>
 
-                <p className="mt-1 text-sm text-muted">
+                <p className="mt-1 text-sm text-[#3F5A58]">
                   Add follow-up details below.
                 </p>
               </div>
 
               <button
                 onClick={closeModal}
-                className="rounded-lg p-2 text-muted hover:bg-surface"
+                className="rounded-lg p-2 text-[#3F5A58] hover:bg-[#F1F8F7]"
               >
                 <FiX size={20} />
               </button>
@@ -650,7 +650,7 @@ function FollowUps() {
             >
               {!editingId && (
                 <div>
-                  <label className="mb-2 block text-sm font-semibold text-brand-dark">
+                  <label className="mb-2 block text-sm font-semibold text-[#0B2B2A]">
                     Counselling Request *
                   </label>
 
@@ -659,7 +659,7 @@ function FollowUps() {
                     value={form.counsellingRequest}
                     onChange={handleChange}
                     required
-                    className="w-full rounded-xl border border-line bg-white px-4 py-3 text-sm outline-none focus:border-brand"
+                    className="w-full rounded-xl border border-[#CFE5E2] bg-white px-4 py-3 text-sm outline-none focus:border-teal-700"
                   >
                     <option value="">
                       Select your assigned request
@@ -681,14 +681,14 @@ function FollowUps() {
                     </p>
                   )}
 
-                  <p className="mt-2 text-xs text-muted">
+                  <p className="mt-2 text-xs text-[#3F5A58]">
                     This follow-up will automatically be assigned to you.
                   </p>
                 </div>
               )}
 
               <div>
-                <label className="mb-2 block text-sm font-semibold text-brand-dark">
+                <label className="mb-2 block text-sm font-semibold text-[#0B2B2A]">
                   Title *
                 </label>
 
@@ -699,12 +699,12 @@ function FollowUps() {
                   maxLength="200"
                   required
                   placeholder="Enter follow-up title"
-                  className="w-full rounded-xl border border-line px-4 py-3 text-sm outline-none focus:border-brand"
+                  className="w-full rounded-xl border border-[#CFE5E2] px-4 py-3 text-sm outline-none focus:border-teal-700"
                 />
               </div>
 
               <div>
-                <label className="mb-2 block text-sm font-semibold text-brand-dark">
+                <label className="mb-2 block text-sm font-semibold text-[#0B2B2A]">
                   Description
                 </label>
 
@@ -715,13 +715,13 @@ function FollowUps() {
                   maxLength="5000"
                   rows="3"
                   placeholder="Enter description..."
-                  className="w-full resize-none rounded-xl border border-line px-4 py-3 text-sm outline-none focus:border-brand"
+                  className="w-full resize-none rounded-xl border border-[#CFE5E2] px-4 py-3 text-sm outline-none focus:border-teal-700"
                 />
               </div>
 
               <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
                 <div>
-                  <label className="mb-2 block text-sm font-semibold text-brand-dark">
+                  <label className="mb-2 block text-sm font-semibold text-[#0B2B2A]">
                     Follow-up Date *
                   </label>
 
@@ -731,12 +731,12 @@ function FollowUps() {
                     value={form.dueAt}
                     onChange={handleChange}
                     required
-                    className="w-full rounded-xl border border-line px-4 py-3 text-sm outline-none focus:border-brand"
+                    className="w-full rounded-xl border border-[#CFE5E2] px-4 py-3 text-sm outline-none focus:border-teal-700"
                   />
                 </div>
 
                 <div>
-                  <label className="mb-2 block text-sm font-semibold text-brand-dark">
+                  <label className="mb-2 block text-sm font-semibold text-[#0B2B2A]">
                     Type
                   </label>
 
@@ -744,7 +744,7 @@ function FollowUps() {
                     name="type"
                     value={form.type}
                     onChange={handleChange}
-                    className="w-full rounded-xl border border-line bg-white px-4 py-3 text-sm outline-none focus:border-brand"
+                    className="w-full rounded-xl border border-[#CFE5E2] bg-white px-4 py-3 text-sm outline-none focus:border-teal-700"
                   >
                     {typeOptions.map((type) => (
                       <option key={type} value={type}>
@@ -756,11 +756,11 @@ function FollowUps() {
                 </div>
               </div>
 
-              <div className="flex justify-end gap-3 border-t border-line pt-5">
+              <div className="flex justify-end gap-3 border-t border-[#CFE5E2] pt-5">
                 <button
                   type="button"
                   onClick={closeModal}
-                  className="rounded-xl border border-line px-5 py-3 text-sm font-semibold text-muted hover:bg-surface"
+                  className="rounded-xl border border-[#CFE5E2] px-5 py-3 text-sm font-semibold text-[#3F5A58] hover:bg-[#F1F8F7]"
                 >
                   Cancel
                 </button>
@@ -768,7 +768,7 @@ function FollowUps() {
                 <button
                   type="submit"
                   disabled={saving}
-                  className="rounded-xl bg-accent px-6 py-3 text-sm font-bold text-white hover:bg-[#cf4a24] disabled:opacity-60"
+                  className="rounded-xl bg-teal-700 px-6 py-3 text-sm font-bold text-white hover:bg-teal-800 disabled:opacity-60"
                 >
                   {saving
                     ? "Saving..."
@@ -787,19 +787,19 @@ function FollowUps() {
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4">
           <div className="w-full max-w-lg rounded-2xl bg-white p-6 shadow-xl">
             <div className="mb-5 flex items-center justify-between">
-              <h2 className="font-display text-xl font-bold text-brand-dark">
+              <h2 className="font-display text-xl font-bold text-[#0B2B2A]">
                 Complete Follow-up
               </h2>
 
               <button
                 onClick={() => setShowCompleteModal(false)}
-                className="rounded-lg p-2 text-muted hover:bg-surface"
+                className="rounded-lg p-2 text-[#3F5A58] hover:bg-[#F1F8F7]"
               >
                 <FiX size={20} />
               </button>
             </div>
 
-            <p className="mb-4 text-sm text-muted">
+            <p className="mb-4 text-sm text-[#3F5A58]">
               Add the outcome of this follow-up.
             </p>
 
@@ -809,13 +809,13 @@ function FollowUps() {
               maxLength="5000"
               rows="4"
               placeholder="Enter follow-up outcome..."
-              className="w-full resize-none rounded-xl border border-line px-4 py-3 text-sm outline-none focus:border-brand"
+              className="w-full resize-none rounded-xl border border-[#CFE5E2] px-4 py-3 text-sm outline-none focus:border-teal-700"
             />
 
             <div className="mt-5 flex justify-end gap-3">
               <button
                 onClick={() => setShowCompleteModal(false)}
-                className="rounded-xl border border-line px-5 py-3 text-sm font-semibold text-muted"
+                className="rounded-xl border border-[#CFE5E2] px-5 py-3 text-sm font-semibold text-[#3F5A58]"
               >
                 Cancel
               </button>

@@ -25,8 +25,19 @@ console.log({
 });
 
 
+// Restrict note creation and modification to Counsellor, Admin and Super Admin
+const counsellorOrAdmin = (req, res, next) => {
+  if (!["Counsellor", "Admin", "Super Admin"].includes(req.user.role)) {
+    return res.status(403).json({
+      success: false,
+      message: "Only Counsellors and Admins can create or modify counselling notes.",
+    });
+  }
+  next();
+};
+
 // Create note
-router.post("/create", auth, createCounsellingNote);
+router.post("/create", auth, counsellorOrAdmin, createCounsellingNote);
 
 // Get notes
 router.get("/all", auth, getAllCounsellingNotes);
@@ -35,8 +46,8 @@ router.get("/my-notes", auth, getMyCounsellingNotes);
 router.get("/session/:sessionId", auth, getSessionNotes);
 
 // Update and delete
-router.put("/update/:id", auth, updateCounsellingNote);
-router.delete("/delete/:id", auth, deleteCounsellingNote);
+router.put("/update/:id", auth, counsellorOrAdmin, updateCounsellingNote);
+router.delete("/delete/:id", auth, counsellorOrAdmin, deleteCounsellingNote);
 
 module.exports = router;
 

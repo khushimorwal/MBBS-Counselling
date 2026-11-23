@@ -15,7 +15,7 @@ import {
   FiPlus,
 } from "react-icons/fi";
 
-const API_URL = "http://localhost:3000";
+const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3000";
 
 const initialDocuments = [
   { name: "Passport Size Photo", type: "Photo", format: "JPG, PNG" },

@@ -1,5 +1,9 @@
 import { useEffect, useState } from "react";
+import { FiEye } from "react-icons/fi";
 import { API } from "../api/axios";
+
+const actionButton =
+  "inline-flex h-9 w-9 items-center justify-center rounded-lg border transition";
 
 function ContactInquiries() {
   const [contacts, setContacts] = useState([]);
@@ -41,187 +45,168 @@ function ContactInquiries() {
   };
 
   return (
-    <div className="mx-auto w-full max-w-[1500px]">
+    <div className="min-w-0 space-y-6">
 
-      {/* Heading */}
-      <div className="mb-6">
-        <h1 className="font-display text-3xl font-bold text-brand-dark">
+      {/* PAGE HEADER */}
+      <div>
+        <h1 className="text-2xl font-bold text-[#0B2B2A]">
           Contact Inquiries
         </h1>
 
-        <p className="mt-2 text-sm text-muted">
-          View messages submitted through the contact form.
+        <p className="mt-1 text-sm text-[#3F5A58]">
+          View messages submitted through the contact form
         </p>
       </div>
 
-      {/* Total Count */}
-      <div className="mb-6 rounded-2xl border border-line bg-white p-5">
-        <p className="text-sm text-muted">Total Inquiries</p>
+      {/* TOTAL COUNT */}
+      <div className="max-w-xs rounded-2xl border border-white bg-white/65 p-5 text-[#0B2B2A] shadow-[0_4px_24px_rgba(15,118,110,0.08)] backdrop-blur-xl">
+        <p className="text-sm font-medium text-[#3F5A58]">
+          Total Inquiries
+        </p>
 
-        <h2 className="mt-2 text-3xl font-bold text-brand-dark">
+        <h2 className="mt-2 text-3xl font-bold text-[#0B2B2A]">
           {contacts.length}
         </h2>
       </div>
 
-      {/* Search */}
-      <div className="mb-5 rounded-2xl border border-line bg-white p-4">
-        <input
-          type="search"
-          value={search}
-          onChange={(e) => setSearch(e.target.value)}
-          placeholder="Search by name, email or subject..."
-          className="w-full rounded-xl border border-line px-4 py-3 text-sm outline-none focus:border-brand"
-        />
-      </div>
+      {/* SEARCH */}
+      <input
+        type="search"
+        value={search}
+        onChange={(e) => setSearch(e.target.value)}
+        placeholder="Search by name, email or subject..."
+        className="w-full max-w-sm rounded-xl border border-[#9DBDBA] bg-white/80 px-4 py-2.5 text-sm text-[#0B2B2A] outline-none placeholder:text-[#4B6463] focus:border-teal-700 focus:ring-2 focus:ring-teal-200"
+      />
 
-      {/* Table */}
-      <div className="overflow-hidden rounded-2xl border border-line bg-white">
+      {/* INQUIRIES TABLE */}
+      <div className="overflow-x-auto rounded-2xl border border-white bg-white/65 text-[#0B2B2A] shadow-[0_4px_24px_rgba(15,118,110,0.08)] backdrop-blur-xl">
+        <table className="w-full min-w-[850px] text-left text-sm">
+          <thead className="bg-[#F1F8F7] text-[11px] font-bold uppercase tracking-wider text-[#3F5A58]">
+            <tr>
+              <th className="px-4 py-4">Name</th>
+              <th className="px-4 py-4">Email</th>
+              <th className="px-4 py-4">Phone</th>
+              <th className="px-4 py-4">Subject</th>
+              <th className="px-4 py-4">Date</th>
+              <th className="px-4 py-4">Actions</th>
+            </tr>
+          </thead>
 
-        <div className="overflow-x-auto">
-
-          <table className="w-full text-left text-sm">
-
-            <thead className="bg-[#F9FBFA] text-[11px] font-bold uppercase tracking-wider text-muted">
+          <tbody>
+            {loading ? (
               <tr>
-                <th className="px-5 py-4 font-semibold">Name</th>
-                <th className="px-5 py-4 font-semibold">Email</th>
-                <th className="px-5 py-4 font-semibold">Phone</th>
-                <th className="px-5 py-4 font-semibold">Subject</th>
-                <th className="px-5 py-4 font-semibold">Date</th>
-                <th className="px-5 py-4 font-semibold">Action</th>
+                <td
+                  colSpan="6"
+                  className="px-4 py-10 text-center text-[#3F5A58]"
+                >
+                  Loading inquiries...
+                </td>
               </tr>
-            </thead>
+            ) : filteredContacts.length === 0 ? (
+              <tr>
+                <td
+                  colSpan="6"
+                  className="px-4 py-10 text-center text-[#3F5A58]"
+                >
+                  No inquiries found.
+                </td>
+              </tr>
+            ) : (
+              filteredContacts.map((contact) => (
+                <tr
+                  key={contact._id}
+                  className="border-t border-[#CFE5E2] hover:bg-teal-50/70"
+                >
+                  <td className="px-4 py-4 font-medium text-[#0B2B2A]">
+                    {contact.name}
+                  </td>
 
-            <tbody className="divide-y divide-line">
+                  <td className="px-4 py-4">{contact.email}</td>
 
-              {loading ? (
-                <tr>
-                  <td colSpan="6" className="px-5 py-10 text-center text-muted">
-                    Loading inquiries...
+                  <td className="px-4 py-4">{contact.phone || "-"}</td>
+
+                  <td className="px-4 py-4">{contact.subject}</td>
+
+                  <td className="px-4 py-4">
+                    {formatDate(contact.createdAt)}
+                  </td>
+
+                  <td className="px-4 py-4">
+                    <button
+                      type="button"
+                      onClick={() => setSelectedContact(contact)}
+                      title="View Inquiry"
+                      aria-label="View Inquiry"
+                      className={`${actionButton} border-teal-200 bg-teal-50 text-teal-700 hover:bg-teal-700 hover:text-white`}
+                    >
+                      <FiEye size={17} />
+                    </button>
                   </td>
                 </tr>
-              ) : filteredContacts.length === 0 ? (
-                <tr>
-                  <td colSpan="6" className="px-5 py-10 text-center text-muted">
-                    No inquiries found.
-                  </td>
-                </tr>
-              ) : (
-                filteredContacts.map((contact) => (
-                  <tr key={contact._id} className="hover:bg-surface/60">
-
-                    <td className="px-5 py-4 font-semibold text-brand-dark">
-                      {contact.name}
-                    </td>
-
-                    <td className="px-5 py-4 text-muted">
-                      {contact.email}
-                    </td>
-
-                    <td className="px-5 py-4 text-muted">
-                      {contact.phone || "—"}
-                    </td>
-
-                    <td className="px-5 py-4 text-brand-dark">
-                      {contact.subject}
-                    </td>
-
-                    <td className="px-5 py-4 text-muted">
-                      {formatDate(contact.createdAt)}
-                    </td>
-
-                    <td className="px-5 py-4">
-                      <button
-                        type="button"
-                        onClick={() => setSelectedContact(contact)}
-                        className="rounded-lg bg-brand-soft px-3 py-2 text-xs font-semibold text-brand hover:bg-brand/10"
-                      >
-                        View
-                      </button>
-                    </td>
-
-                  </tr>
-                ))
-              )}
-
-            </tbody>
-
-          </table>
-
-        </div>
+              ))
+            )}
+          </tbody>
+        </table>
       </div>
 
-      {/* View Message Modal */}
+      {/* VIEW INQUIRY */}
       {selectedContact && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4">
-
-          <div className="w-full max-w-lg rounded-2xl bg-white p-6 shadow-xl">
+          <div className="max-h-[85vh] w-full max-w-lg overflow-y-auto rounded-2xl bg-white p-6">
 
             <div className="mb-5 flex items-center justify-between">
-              <h2 className="text-xl font-bold text-brand-dark">
+              <h2 className="text-xl font-bold text-[#0B2B2A]">
                 Inquiry Details
               </h2>
 
               <button
                 type="button"
                 onClick={() => setSelectedContact(null)}
-                className="text-xl text-muted hover:text-red-500"
+                aria-label="Close"
+                className="text-2xl text-[#3F5A58]"
               >
-                ✕
+                &times;
               </button>
             </div>
 
             <div className="space-y-4">
+              <p>
+                <b>Name:</b> {selectedContact.name || "-"}
+              </p>
+
+              <p>
+                <b>Email:</b> {selectedContact.email || "-"}
+              </p>
+
+              <p>
+                <b>Phone:</b> {selectedContact.phone || "-"}
+              </p>
+
+              <p>
+                <b>Subject:</b> {selectedContact.subject || "-"}
+              </p>
 
               <div>
-                <p className="text-xs text-muted">Name</p>
-                <p className="font-semibold text-brand-dark">
-                  {selectedContact.name}
+                <p className="mb-1.5">
+                  <b>Message:</b>
                 </p>
-              </div>
 
-              <div>
-                <p className="text-xs text-muted">Email</p>
-                <p className="font-semibold text-brand-dark">
-                  {selectedContact.email}
-                </p>
-              </div>
-
-              <div>
-                <p className="text-xs text-muted">Phone</p>
-                <p className="font-semibold text-brand-dark">
-                  {selectedContact.phone || "—"}
-                </p>
-              </div>
-
-              <div>
-                <p className="text-xs text-muted">Subject</p>
-                <p className="font-semibold text-brand-dark">
-                  {selectedContact.subject}
-                </p>
-              </div>
-
-              <div>
-                <p className="text-xs text-muted">Message</p>
-                <p className="mt-1 whitespace-pre-wrap rounded-xl bg-surface p-4 text-sm leading-6 text-brand-dark">
+                <p className="whitespace-pre-wrap rounded-xl border border-[#CFE5E2] bg-[#F1F8F7] p-4 text-sm leading-6">
                   {selectedContact.message}
                 </p>
               </div>
-
             </div>
 
             <button
               type="button"
               onClick={() => setSelectedContact(null)}
-              className="mt-6 w-full rounded-xl bg-accent px-4 py-3 text-sm font-bold text-white hover:bg-[#cf4a24]"
+              className="mt-6 rounded-lg bg-teal-700 px-5 py-2.5 text-sm font-semibold text-white hover:bg-teal-800"
             >
               Close
             </button>
-
           </div>
         </div>
       )}
-
     </div>
   );
 }

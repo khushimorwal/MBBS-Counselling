@@ -6,10 +6,11 @@ import {
   FiCheckCircle,
   FiXCircle,
   FiClock,
-  FiSearch,
-  FiRefreshCw,
   FiX,
 } from "react-icons/fi";
+
+const actionButton =
+  "inline-flex h-9 w-9 items-center justify-center rounded-lg border transition disabled:cursor-not-allowed disabled:opacity-50";
 
 export default function DocumentVerification() {
   const [profiles, setProfiles] = useState([]);
@@ -31,7 +32,7 @@ export default function DocumentVerification() {
 
       alert(
         error.response?.data?.message ||
-          "Unable to fetch student documents"
+        "Unable to fetch student documents"
       );
     } finally {
       setLoading(false);
@@ -69,7 +70,7 @@ export default function DocumentVerification() {
 
       alert(
         error.response?.data?.message ||
-          "Unable to update document status"
+        "Unable to update document status"
       );
     } finally {
       setUpdating("");
@@ -111,7 +112,7 @@ export default function DocumentVerification() {
   const getStatusStyle = (status) => {
     switch (status) {
       case "Verified":
-        return "bg-green-50 text-green-700";
+        return "bg-teal-50 text-teal-700";
 
       case "Rejected":
         return "bg-red-50 text-red-700";
@@ -122,231 +123,223 @@ export default function DocumentVerification() {
   };
 
   return (
-    <div className="min-h-screen space-y-6 bg-[#f8fafc] p-4 sm:p-6 lg:p-8">
+    <div className="min-w-0 space-y-6">
 
-      {/* HEADER */}
-      <div className="flex flex-col justify-between gap-4 sm:flex-row sm:items-center">
+      {/* PAGE HEADER */}
+      <div className="flex flex-wrap items-center justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-bold text-[#142653]">
+          <h1 className="text-2xl font-bold text-[#0B2B2A]">
             Document Verification
           </h1>
 
-          <p className="mt-1 text-sm text-muted">
-            Review and verify student admission documents.
+          <p className="mt-1 text-sm text-[#3F5A58]">
+            Review and verify student admission documents
           </p>
         </div>
 
         <button
+          type="button"
           onClick={fetchDocuments}
-          className="flex items-center justify-center gap-2 rounded-xl bg-white px-4 py-3 text-sm font-semibold text-brand-dark shadow-sm border border-line hover:bg-surface"
+          className="rounded-xl border border-[#CFE5E2] bg-white px-5 py-2.5 text-sm font-semibold text-[#0B2B2A] hover:bg-teal-50"
         >
-          <FiRefreshCw />
-          Refresh
+          ↻ Refresh
         </button>
       </div>
 
       {/* SUMMARY CARDS */}
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-4">
-
         <SummaryCard
           title="Total Documents"
           value={allDocuments.length}
           icon={<FiFileText />}
-          color="bg-brand-soft text-brand"
+          color="border-teal-200 bg-teal-50 text-teal-700"
         />
 
         <SummaryCard
           title="Pending"
           value={pendingCount}
           icon={<FiClock />}
-          color="bg-amber-50 text-amber-600"
+          color="border-amber-200 bg-amber-50 text-amber-600"
         />
 
         <SummaryCard
           title="Verified"
           value={verifiedCount}
           icon={<FiCheckCircle />}
-          color="bg-green-50 text-green-600"
+          color="border-teal-200 bg-teal-50 text-teal-700"
         />
 
         <SummaryCard
           title="Rejected"
           value={rejectedCount}
           icon={<FiXCircle />}
-          color="bg-red-50 text-red-600"
+          color="border-red-200 bg-red-50 text-red-600"
         />
-
       </div>
 
       {/* SEARCH */}
-      <div className="flex items-center gap-3 rounded-xl border border-line bg-white px-4 py-3">
-        <FiSearch className="text-muted" />
+      <input
+        type="text"
+        placeholder="Search student, email or document..."
+        value={search}
+        onChange={(e) => setSearch(e.target.value)}
+        className="w-full max-w-sm rounded-xl border border-[#9DBDBA] bg-white/80 px-4 py-2.5 text-sm text-[#0B2B2A] outline-none placeholder:text-[#4B6463] focus:border-teal-700 focus:ring-2 focus:ring-teal-200"
+      />
 
-        <input
-          type="text"
-          placeholder="Search student, email or document..."
-          value={search}
-          onChange={(e) => setSearch(e.target.value)}
-          className="w-full text-sm outline-none"
-        />
-      </div>
+      {/* DOCUMENTS TABLE */}
+      <div className="overflow-x-auto rounded-2xl border border-white bg-white/65 text-[#0B2B2A] shadow-[0_4px_24px_rgba(15,118,110,0.08)] backdrop-blur-xl">
+        <table className="w-full min-w-[1050px] text-left text-sm">
+          <thead className="bg-[#F1F8F7] text-[11px] font-bold uppercase tracking-wider text-[#3F5A58]">
+            <tr>
+              <th className="px-4 py-4">Student</th>
+              <th className="px-4 py-4">Document</th>
+              <th className="px-4 py-4">File Name</th>
+              <th className="px-4 py-4">Uploaded At</th>
+              <th className="px-4 py-4">Status</th>
+              <th className="px-4 py-4">Actions</th>
+            </tr>
+          </thead>
 
-      {/* DOCUMENT TABLE */}
-      <div className="overflow-hidden rounded-2xl border border-line bg-white shadow-sm">
-
-        <div className="border-b border-line px-5 py-5">
-          <h2 className="text-lg font-bold text-[#142653]">
-            Uploaded Documents
-          </h2>
-        </div>
-
-        <div className="overflow-x-auto">
-          <table className="w-full min-w-[1050px] text-left">
-
-            <thead className="bg-[#F9FBFA] text-[11px] font-bold uppercase tracking-wider text-muted">
+          <tbody>
+            {loading ? (
               <tr>
-                <th className="px-6 py-4">Student</th>
-                <th className="px-6 py-4">Document</th>
-                <th className="px-6 py-4">File Name</th>
-                <th className="px-6 py-4">Uploaded At</th>
-                <th className="px-6 py-4">Status</th>
-                <th className="px-6 py-4">Actions</th>
+                <td
+                  colSpan="6"
+                  className="px-4 py-10 text-center text-[#3F5A58]"
+                >
+                  Loading documents...
+                </td>
               </tr>
-            </thead>
+            ) : filteredDocuments.length === 0 ? (
+              <tr>
+                <td
+                  colSpan="6"
+                  className="px-4 py-10 text-center text-[#3F5A58]"
+                >
+                  No documents found.
+                </td>
+              </tr>
+            ) : (
+              filteredDocuments.map((doc, index) => {
+                const key = `${doc.userId}-${doc.documentType}`;
 
-            <tbody className="divide-y divide-line">
+                return (
+                  <tr
+                    key={`${key}-${index}`}
+                    className="border-t border-[#CFE5E2] hover:bg-teal-50/70"
+                  >
+                    <td className="px-4 py-4">
+                      <p className="font-medium text-[#0B2B2A]">
+                        {doc.studentName}
+                      </p>
 
-              {loading ? (
-                <tr>
-                  <td colSpan="6" className="px-6 py-12 text-center text-muted">
-                    Loading documents...
-                  </td>
-                </tr>
-              ) : filteredDocuments.length === 0 ? (
-                <tr>
-                  <td colSpan="6" className="px-6 py-12 text-center text-muted">
-                    No documents found.
-                  </td>
-                </tr>
-              ) : (
-                filteredDocuments.map((doc, index) => {
-                  const key = `${doc.userId}-${doc.documentType}`;
+                      <p className="mt-0.5 text-xs text-[#3F5A58]">
+                        {doc.studentEmail}
+                      </p>
+                    </td>
 
-                  return (
-                    <tr key={`${key}-${index}`} className="transition hover:bg-surface">
+                    <td className="px-4 py-4 font-medium">
+                      {doc.documentType}
+                    </td>
 
-                      <td className="px-6 py-5">
-                        <p className="text-sm font-semibold text-brand-dark">
-                          {doc.studentName}
-                        </p>
+                    <td className="px-4 py-4">{doc.fileName}</td>
 
-                        <p className="mt-1 text-xs text-muted">
-                          {doc.studentEmail}
-                        </p>
-                      </td>
+                    <td className="px-4 py-4">
+                      {doc.uploadedAt
+                        ? new Date(doc.uploadedAt).toLocaleDateString()
+                        : "N/A"}
+                    </td>
 
-                      <td className="px-6 py-5 text-sm font-medium text-brand-dark">
-                        {doc.documentType}
-                      </td>
+                    <td className="px-4 py-4">
+                      <span
+                        className={`rounded-full px-3 py-1.5 text-xs font-semibold ${getStatusStyle(doc.status)}`}
+                      >
+                        {doc.status}
+                      </span>
+                    </td>
 
-                      <td className="px-6 py-5 text-sm text-muted">
-                        {doc.fileName}
-                      </td>
-
-                      <td className="px-6 py-5 text-sm text-muted">
-                        {doc.uploadedAt
-                          ? new Date(doc.uploadedAt).toLocaleDateString()
-                          : "N/A"}
-                      </td>
-
-                      <td className="px-6 py-5">
-                        <span
-                          className={`rounded-full px-3 py-1.5 text-xs font-semibold ${getStatusStyle(doc.status)}`}
+                    <td className="px-4 py-4">
+                      <div className="flex items-center gap-2">
+                        <button
+                          type="button"
+                          onClick={() => setPreview(doc)}
+                          title="View Document"
+                          aria-label="View Document"
+                          className={`${actionButton} border-teal-200 bg-teal-50 text-teal-700 hover:bg-teal-700 hover:text-white`}
                         >
-                          {doc.status}
-                        </span>
-                      </td>
+                          <FiEye size={17} />
+                        </button>
 
-                      <td className="px-6 py-5">
-                        <div className="flex items-center gap-3">
-
+                        {doc.status !== "Verified" && (
                           <button
-                            onClick={() => setPreview(doc)}
-                            title="View Document"
-                            className="text-blue-600 hover:text-blue-800"
+                            type="button"
+                            disabled={updating === key}
+                            onClick={() =>
+                              updateStatus(
+                                doc.userId,
+                                doc.documentType,
+                                "Verified"
+                              )
+                            }
+                            title="Verify Document"
+                            aria-label="Verify Document"
+                            className={`${actionButton} border-[#CFE5E2] bg-white text-[#3F5A58] hover:bg-[#0B2B2A] hover:text-white`}
                           >
-                            <FiEye size={18} />
+                            <FiCheckCircle size={17} />
                           </button>
+                        )}
 
-                          {doc.status !== "Verified" && (
-                            <button
-                              disabled={updating === key}
-                              onClick={() =>
-                                updateStatus(
-                                  doc.userId,
-                                  doc.documentType,
-                                  "Verified"
-                                )
-                              }
-                              title="Verify"
-                              className="text-green-600 hover:text-green-800 disabled:opacity-50"
-                            >
-                              <FiCheckCircle size={19} />
-                            </button>
-                          )}
-
-                          {doc.status !== "Rejected" && (
-                            <button
-                              disabled={updating === key}
-                              onClick={() =>
-                                updateStatus(
-                                  doc.userId,
-                                  doc.documentType,
-                                  "Rejected"
-                                )
-                              }
-                              title="Reject"
-                              className="text-red-500 hover:text-red-700 disabled:opacity-50"
-                            >
-                              <FiXCircle size={19} />
-                            </button>
-                          )}
-
-                        </div>
-                      </td>
-
-                    </tr>
-                  );
-                })
-              )}
-
-            </tbody>
-          </table>
-        </div>
+                        {doc.status !== "Rejected" && (
+                          <button
+                            type="button"
+                            disabled={updating === key}
+                            onClick={() =>
+                              updateStatus(
+                                doc.userId,
+                                doc.documentType,
+                                "Rejected"
+                              )
+                            }
+                            title="Reject Document"
+                            aria-label="Reject Document"
+                            className={`${actionButton} border-red-200 bg-red-50 text-red-600 hover:bg-red-600 hover:text-white`}
+                          >
+                            <FiXCircle size={17} />
+                          </button>
+                        )}
+                      </div>
+                    </td>
+                  </tr>
+                );
+              })
+            )}
+          </tbody>
+        </table>
       </div>
 
-      {/* DOCUMENT PREVIEW MODAL */}
+      {/* DOCUMENT PREVIEW */}
       {preview && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4">
-
-          <div className="w-full max-w-3xl rounded-2xl bg-white p-5 shadow-xl">
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4">
+          <div className="max-h-[90vh] w-full max-w-3xl overflow-y-auto rounded-2xl bg-white p-6">
 
             <div className="mb-5 flex items-center justify-between">
               <div>
-                <h2 className="text-lg font-bold text-[#142653]">
+                <h2 className="text-xl font-bold text-[#0B2B2A]">
                   Document Preview
                 </h2>
 
-                <p className="mt-1 text-sm text-muted">
+                <p className="mt-1 text-sm text-[#3F5A58]">
                   {preview.documentType} - {preview.studentName}
                 </p>
               </div>
 
               <button
+                type="button"
                 onClick={() => setPreview(null)}
-                className="text-xl text-muted hover:text-red-500"
+                aria-label="Close"
+                className="text-[#3F5A58] hover:text-red-600"
               >
-                <FiX />
+                <FiX size={24} />
               </button>
             </div>
 
@@ -354,13 +347,13 @@ export default function DocumentVerification() {
               <img
                 src={preview.url}
                 alt={preview.documentType}
-                className="mx-auto max-h-[65vh] rounded-xl object-contain"
+                className="mx-auto max-h-[60vh] rounded-xl border border-[#CFE5E2] object-contain"
               />
             ) : (
-              <div className="rounded-xl bg-surface p-8 text-center">
-                <FiFileText className="mx-auto mb-3 text-5xl text-brand" />
+              <div className="rounded-xl border border-[#CFE5E2] bg-[#F1F8F7] p-8 text-center">
+                <FiFileText className="mx-auto mb-3 text-5xl text-teal-700" />
 
-                <p className="font-semibold text-brand-dark">
+                <p className="font-medium text-[#0B2B2A]">
                   {preview.fileName}
                 </p>
 
@@ -368,36 +361,42 @@ export default function DocumentVerification() {
                   href={preview.url}
                   target="_blank"
                   rel="noreferrer"
-                  className="mt-4 inline-block rounded-lg bg-teal-600 px-5 py-2 text-sm font-semibold text-white"
+                  className="mt-4 inline-block rounded-lg bg-teal-700 px-5 py-2.5 text-sm font-semibold text-white hover:bg-teal-800"
                 >
                   Open Document
                 </a>
               </div>
             )}
 
+            <button
+              type="button"
+              onClick={() => setPreview(null)}
+              className="mt-6 rounded-lg border border-[#CFE5E2] px-5 py-2 text-sm font-semibold text-[#0B2B2A] hover:bg-teal-50"
+            >
+              Close
+            </button>
           </div>
         </div>
       )}
-
     </div>
   );
 }
 
 function SummaryCard({ title, value, icon, color }) {
   return (
-    <div className="rounded-2xl border border-line bg-white p-5 shadow-sm">
+    <div className="rounded-2xl border border-white bg-white/65 p-5 text-[#0B2B2A] shadow-[0_4px_24px_rgba(15,118,110,0.08)] backdrop-blur-xl">
       <div className="flex items-center justify-between">
         <div>
-          <p className="text-sm font-medium text-muted">
-            {title}
-          </p>
+          <p className="text-sm font-medium text-[#3F5A58]">{title}</p>
 
-          <h3 className="mt-2 text-2xl font-bold text-[#142653]">
+          <h3 className="mt-2 text-3xl font-bold text-[#0B2B2A]">
             {value}
           </h3>
         </div>
 
-        <div className={`flex h-12 w-12 items-center justify-center rounded-xl text-xl ${color}`}>
+        <div
+          className={`flex h-11 w-11 items-center justify-center rounded-xl border text-xl ${color}`}
+        >
           {icon}
         </div>
       </div>

@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { FiEye } from "react-icons/fi";
 import { API } from "../api/axios.js";
 
 const statusOptions = [
@@ -13,9 +14,15 @@ const statusColors = {
   Submitted: "bg-blue-100 text-blue-700",
   Pending: "bg-yellow-100 text-yellow-700",
   "Under Review": "bg-purple-100 text-purple-700",
-  Approved: "bg-green-100 text-green-700",
+  Approved: "bg-teal-100 text-teal-800",
   Rejected: "bg-red-100 text-red-700",
 };
+
+const actionButton =
+  "inline-flex h-9 w-9 items-center justify-center rounded-lg border transition";
+
+const glassCard =
+  "rounded-2xl border border-white bg-white/65 p-5 text-[#0B2B2A] shadow-[0_4px_24px_rgba(15,118,110,0.08)] backdrop-blur-xl";
 
 const CollegeApplications = () => {
   const [applications, setApplications] = useState([]);
@@ -104,295 +111,269 @@ const CollegeApplications = () => {
   ).length;
 
   return (
-    <div className="space-y-6 p-4 sm:p-6">
-      {/* Header */}
-      <div className="flex flex-col justify-between gap-4 sm:flex-row sm:items-center">
+    <div className="min-w-0 space-y-6">
+
+      {/* PAGE HEADER */}
+      <div className="flex flex-wrap items-center justify-between gap-4">
         <div>
-          <h1 className="font-display text-2xl font-bold text-brand-dark">
+          <h1 className="text-2xl font-bold text-[#0B2B2A]">
             College Applications
           </h1>
-          <p className="mt-1 text-sm text-muted">
-            Manage and track student college applications.
+
+          <p className="mt-1 text-sm text-[#3F5A58]">
+            Manage and track student college applications
           </p>
         </div>
 
         <button
+          type="button"
           onClick={fetchApplications}
-          className="rounded-xl bg-accent px-5 py-2.5 text-sm font-bold text-white transition hover:bg-[#cf4a24]"
+          className="rounded-xl border border-[#CFE5E2] bg-white px-5 py-2.5 text-sm font-semibold text-[#0B2B2A] hover:bg-teal-50"
         >
           ↻ Refresh
         </button>
       </div>
 
-      {/* Statistics */}
+      {/* STATISTICS */}
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-4">
-        <div className="rounded-2xl border border-line bg-white p-5 shadow-sm">
-          <p className="text-sm text-muted">Total Applications</p>
-          <h2 className="mt-2 text-3xl font-bold text-brand-dark">
+        <div className={glassCard}>
+          <p className="text-sm font-medium text-[#3F5A58]">
+            Total Applications
+          </p>
+          <h2 className="mt-2 text-3xl font-bold text-[#0B2B2A]">
             {totalApplications}
           </h2>
-          <span className="mt-2 block text-xs text-brand">
+          <span className="mt-2 block text-xs text-[#3F5A58]">
             All applications
           </span>
         </div>
 
-        <div className="rounded-2xl border border-line bg-white p-5 shadow-sm">
-          <p className="text-sm text-muted">In Progress</p>
+        <div className={glassCard}>
+          <p className="text-sm font-medium text-[#3F5A58]">In Progress</p>
           <h2 className="mt-2 text-3xl font-bold text-yellow-600">
             {pendingApplications}
           </h2>
-          <span className="mt-2 block text-xs text-gray-400">
+          <span className="mt-2 block text-xs text-[#3F5A58]">
             Awaiting decision
           </span>
         </div>
 
-        <div className="rounded-2xl border border-line bg-white p-5 shadow-sm">
-          <p className="text-sm text-muted">Approved</p>
-          <h2 className="mt-2 text-3xl font-bold text-green-600">
+        <div className={glassCard}>
+          <p className="text-sm font-medium text-[#3F5A58]">Approved</p>
+          <h2 className="mt-2 text-3xl font-bold text-teal-700">
             {approvedApplications}
           </h2>
-          <span className="mt-2 block text-xs text-gray-400">
+          <span className="mt-2 block text-xs text-[#3F5A58]">
             Successfully approved
           </span>
         </div>
 
-        <div className="rounded-2xl border border-line bg-white p-5 shadow-sm">
-          <p className="text-sm text-muted">Rejected</p>
+        <div className={glassCard}>
+          <p className="text-sm font-medium text-[#3F5A58]">Rejected</p>
           <h2 className="mt-2 text-3xl font-bold text-red-600">
             {rejectedApplications}
           </h2>
-          <span className="mt-2 block text-xs text-gray-400">
+          <span className="mt-2 block text-xs text-[#3F5A58]">
             Rejected applications
           </span>
         </div>
       </div>
 
-      {/* Applications Table */}
-      <div className="overflow-hidden rounded-2xl border border-line bg-white shadow-sm">
-        <div className="flex flex-col justify-between gap-3 border-b border-line p-5 sm:flex-row sm:items-center">
-          <div>
-            <h2 className="font-bold text-brand-dark">All Applications</h2>
-            <p className="mt-1 text-xs text-muted">
-              {filteredApplications.length} applications found
-            </p>
-          </div>
+      {/* SEARCH */}
+      <input
+        type="text"
+        placeholder="Search student, college, course..."
+        value={search}
+        onChange={(event) => setSearch(event.target.value)}
+        className="w-full max-w-sm rounded-xl border border-[#9DBDBA] bg-white/80 px-4 py-2.5 text-sm text-[#0B2B2A] outline-none placeholder:text-[#4B6463] focus:border-teal-700 focus:ring-2 focus:ring-teal-200"
+      />
 
-          <input
-            type="text"
-            placeholder="Search student, college, course..."
-            value={search}
-            onChange={(event) => setSearch(event.target.value)}
-            className="w-full rounded-xl border border-line px-4 py-2.5 text-sm outline-none focus:border-brand sm:max-w-xs"
-          />
-        </div>
+      {/* APPLICATIONS TABLE */}
+      <div className="overflow-x-auto rounded-2xl border border-white bg-white/65 text-[#0B2B2A] shadow-[0_4px_24px_rgba(15,118,110,0.08)] backdrop-blur-xl">
+        <table className="w-full min-w-[1050px] text-left text-sm">
+          <thead className="bg-[#F1F8F7] text-[11px] font-bold uppercase tracking-wider text-[#3F5A58]">
+            <tr>
+              <th className="px-4 py-4">Application ID</th>
+              <th className="px-4 py-4">Student</th>
+              <th className="px-4 py-4">College</th>
+              <th className="px-4 py-4">Course</th>
+              <th className="px-4 py-4">Round</th>
+              <th className="px-4 py-4">Status</th>
+              <th className="px-4 py-4">Submitted</th>
+              <th className="px-4 py-4">Actions</th>
+            </tr>
+          </thead>
 
-        {loading ? (
-          <div className="p-12 text-center text-sm text-muted">
-            Loading applications...
-          </div>
-        ) : filteredApplications.length === 0 ? (
-          <div className="p-12 text-center">
-            <div className="mb-3 text-4xl">📋</div>
-            <h3 className="font-semibold text-gray-700">
-              No Applications Found
-            </h3>
-            <p className="mt-1 text-sm text-gray-400">
-              Student applications will appear here.
-            </p>
-          </div>
-        ) : (
-          <div className="overflow-x-auto">
-            <table className="w-full min-w-[1050px] text-left text-sm">
-              <thead className="bg-gray-50 text-xs uppercase text-muted">
-                <tr>
-                  <th className="px-5 py-4">Application ID</th>
-                  <th className="px-5 py-4">Student</th>
-                  <th className="px-5 py-4">College</th>
-                  <th className="px-5 py-4">Course</th>
-                  <th className="px-5 py-4">Round</th>
-                  <th className="px-5 py-4">Status</th>
-                  <th className="px-5 py-4">Submitted</th>
-                  <th className="px-5 py-4">Action</th>
-                </tr>
-              </thead>
+          <tbody>
+            {loading ? (
+              <tr>
+                <td
+                  colSpan="8"
+                  className="px-4 py-10 text-center text-[#3F5A58]"
+                >
+                  Loading applications...
+                </td>
+              </tr>
+            ) : filteredApplications.length === 0 ? (
+              <tr>
+                <td
+                  colSpan="8"
+                  className="px-4 py-10 text-center text-[#3F5A58]"
+                >
+                  No applications found.
+                </td>
+              </tr>
+            ) : (
+              filteredApplications.map((application) => (
+                <tr
+                  key={application._id}
+                  className="border-t border-[#CFE5E2] hover:bg-teal-50/70"
+                >
+                  <td className="px-4 py-4 font-semibold text-teal-700">
+                    {application.applicationId}
+                  </td>
 
-              <tbody className="divide-y divide-gray-100">
-                {filteredApplications.map((application) => (
-                  <tr
-                    key={application._id}
-                    className="transition hover:bg-gray-50"
-                  >
-                    <td className="px-5 py-4 font-semibold text-brand">
-                      {application.applicationId}
-                    </td>
+                  <td className="px-4 py-4">
+                    <p className="font-medium text-[#0B2B2A]">
+                      {application.student?.name || "Student unavailable"}
+                    </p>
+                    <p className="mt-0.5 text-xs text-[#3F5A58]">
+                      {application.student?.email || "-"}
+                    </p>
+                  </td>
 
-                    <td className="px-5 py-4">
-                      <p className="font-semibold text-brand-dark">
-                        {application.student?.name || "Student unavailable"}
-                      </p>
-                      <p className="mt-1 text-xs text-gray-400">
-                        {application.student?.email || "—"}
-                      </p>
-                    </td>
+                  <td className="px-4 py-4">{application.collegeName}</td>
 
-                    <td className="px-5 py-4 font-medium text-gray-700">
-                      {application.collegeName}
-                    </td>
+                  <td className="px-4 py-4">{application.course}</td>
 
-                    <td className="px-5 py-4 text-gray-600">
-                      {application.course}
-                    </td>
+                  <td className="px-4 py-4">{application.round}</td>
 
-                    <td className="px-5 py-4 text-gray-600">
-                      {application.round}
-                    </td>
-
-                    <td className="px-5 py-4">
-                      <select
-                        value={application.status}
-                        disabled={updatingId === application._id}
-                        onChange={(event) =>
-                          updateStatus(application._id, event.target.value)
-                        }
-                        className={`rounded-full border-0 px-3 py-1.5 text-xs font-semibold outline-none disabled:opacity-50 ${
-                          statusColors[application.status] ||
-                          "bg-gray-100 text-gray-600"
+                  <td className="px-4 py-4">
+                    <select
+                      value={application.status}
+                      disabled={updatingId === application._id}
+                      onChange={(event) =>
+                        updateStatus(application._id, event.target.value)
+                      }
+                      className={`rounded-full border-0 px-3 py-1.5 text-xs font-semibold outline-none disabled:opacity-50 ${statusColors[application.status] ||
+                        "bg-gray-100 text-gray-600"
                         }`}
-                      >
-                        {statusOptions.map((status) => (
-                          <option key={status} value={status}>
-                            {status}
-                          </option>
-                        ))}
-                      </select>
-                    </td>
+                    >
+                      {statusOptions.map((status) => (
+                        <option key={status} value={status}>
+                          {status}
+                        </option>
+                      ))}
+                    </select>
+                  </td>
 
-                    <td className="px-5 py-4 text-muted">
-                      {application.submittedAt
-                        ? new Date(application.submittedAt).toLocaleDateString()
-                        : "—"}
-                    </td>
+                  <td className="px-4 py-4">
+                    {application.submittedAt
+                      ? new Date(application.submittedAt).toLocaleDateString()
+                      : "-"}
+                  </td>
 
-                    <td className="px-5 py-4">
-                      <button
-                        onClick={() => setSelectedApplication(application)}
-                        className="rounded-lg border border-line px-3 py-1.5 text-xs font-semibold text-brand transition hover:bg-brand hover:text-white"
-                      >
-                        View
-                      </button>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-        )}
+                  <td className="px-4 py-4">
+                    <button
+                      type="button"
+                      onClick={() => setSelectedApplication(application)}
+                      title="View Application"
+                      aria-label="View Application"
+                      className={`${actionButton} border-teal-200 bg-teal-50 text-teal-700 hover:bg-teal-700 hover:text-white`}
+                    >
+                      <FiEye size={17} />
+                    </button>
+                  </td>
+                </tr>
+              ))
+            )}
+          </tbody>
+        </table>
       </div>
 
-      {/* Application Details Modal */}
+      {/* VIEW APPLICATION */}
       {selectedApplication && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4">
-          <div className="max-h-[90vh] w-full max-w-xl overflow-y-auto rounded-2xl bg-white shadow-xl">
-            <div className="flex items-center justify-between border-b p-5">
+          <div className="max-h-[85vh] w-full max-w-2xl overflow-y-auto rounded-2xl bg-white p-6">
+
+            <div className="mb-5 flex items-center justify-between">
               <div>
-                <h2 className="text-lg font-bold text-brand-dark">
+                <h2 className="text-xl font-bold text-[#0B2B2A]">
                   Application Details
                 </h2>
-                <p className="mt-1 text-xs text-gray-400">
+
+                <p className="mt-1 text-xs text-[#3F5A58]">
                   {selectedApplication.applicationId}
                 </p>
               </div>
 
               <button
+                type="button"
                 onClick={() => setSelectedApplication(null)}
-                className="rounded-lg px-3 py-1 text-xl text-muted hover:bg-gray-100"
+                aria-label="Close"
+                className="text-2xl text-[#3F5A58]"
               >
-                ×
+                &times;
               </button>
             </div>
 
-            <div className="grid grid-cols-1 gap-5 p-5 sm:grid-cols-2">
-              <div>
-                <p className="text-xs text-gray-400">Student Name</p>
-                <p className="mt-1 font-semibold text-brand-dark">
-                  {selectedApplication.student?.name || "—"}
-                </p>
-              </div>
+            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+              <p>
+                <b>Student Name:</b> {selectedApplication.student?.name || "-"}
+              </p>
 
-              <div>
-                <p className="text-xs text-gray-400">Student Email</p>
-                <p className="mt-1 font-semibold text-brand-dark">
-                  {selectedApplication.student?.email || "—"}
-                </p>
-              </div>
+              <p className="break-all">
+                <b>Student Email:</b>{" "}
+                {selectedApplication.student?.email || "-"}
+              </p>
 
-              <div>
-                <p className="text-xs text-gray-400">College Name</p>
-                <p className="mt-1 font-semibold text-brand-dark">
-                  {selectedApplication.collegeName}
-                </p>
-              </div>
+              <p>
+                <b>College:</b> {selectedApplication.collegeName || "-"}
+              </p>
 
-              <div>
-                <p className="text-xs text-gray-400">Course</p>
-                <p className="mt-1 font-semibold text-brand-dark">
-                  {selectedApplication.course}
-                </p>
-              </div>
+              <p>
+                <b>Course:</b> {selectedApplication.course || "-"}
+              </p>
 
-              <div>
-                <p className="text-xs text-gray-400">State</p>
-                <p className="mt-1 font-semibold text-brand-dark">
-                  {selectedApplication.state}
-                </p>
-              </div>
+              <p>
+                <b>State:</b> {selectedApplication.state || "-"}
+              </p>
 
-              <div>
-                <p className="text-xs text-gray-400">Round</p>
-                <p className="mt-1 font-semibold text-brand-dark">
-                  {selectedApplication.round}
-                </p>
-              </div>
+              <p>
+                <b>Round:</b> {selectedApplication.round || "-"}
+              </p>
 
-              <div>
-                <p className="text-xs text-gray-400">Submitted Date</p>
-                <p className="mt-1 font-semibold text-brand-dark">
-                  {selectedApplication.submittedAt
-                    ? new Date(
-                        selectedApplication.submittedAt
-                      ).toLocaleString()
-                    : "—"}
-                </p>
-              </div>
+              <p>
+                <b>Submitted:</b>{" "}
+                {selectedApplication.submittedAt
+                  ? new Date(selectedApplication.submittedAt).toLocaleString()
+                  : "-"}
+              </p>
 
-              <div>
-                <p className="text-xs text-gray-400">Status</p>
+              <p>
+                <b>Status:</b>{" "}
                 <span
-                  className={`mt-1 inline-block rounded-full px-3 py-1 text-xs font-semibold ${
-                    statusColors[selectedApplication.status] ||
+                  className={`inline-block rounded-full px-3 py-1 text-xs font-semibold ${statusColors[selectedApplication.status] ||
                     "bg-gray-100 text-gray-600"
-                  }`}
+                    }`}
                 >
                   {selectedApplication.status}
                 </span>
-              </div>
+              </p>
 
-              <div className="sm:col-span-2">
-                <p className="text-xs text-gray-400">Remarks</p>
-                <p className="mt-1 whitespace-pre-wrap text-sm text-gray-700">
-                  {selectedApplication.remarks || "No remarks available"}
-                </p>
-              </div>
+              <p className="whitespace-pre-wrap sm:col-span-2">
+                <b>Remarks:</b>{" "}
+                {selectedApplication.remarks || "No remarks available"}
+              </p>
             </div>
 
-            <div className="flex justify-end border-t p-5">
-              <button
-                onClick={() => setSelectedApplication(null)}
-                className="rounded-xl bg-gray-100 px-5 py-2 text-sm font-semibold text-gray-700 hover:bg-gray-200"
-              >
-                Close
-              </button>
-            </div>
+            <button
+              type="button"
+              onClick={() => setSelectedApplication(null)}
+              className="mt-6 rounded-lg bg-teal-700 px-5 py-2.5 text-sm font-semibold text-white hover:bg-teal-800"
+            >
+              Close
+            </button>
           </div>
         </div>
       )}

@@ -2,6 +2,9 @@
 
 import { useState } from "react";
 
+// Read API base URL from environment variable with fallback
+const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3000";
+
 export default function ContactPage() {
   const initialForm = {
     name: "",
@@ -33,7 +36,7 @@ export default function ContactPage() {
     setIsError(false);
 
     try {
-      const response = await fetch("http://localhost:3000/contact", {
+      const response = await fetch(`${API_URL}/contact`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
