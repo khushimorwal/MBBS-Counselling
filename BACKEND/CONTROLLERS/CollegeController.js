@@ -1,17 +1,36 @@
-
 const College = require("../Models/College");
+const cloudinary = require("../config/cloudnary");
+
+// Upload college logo to Cloudinary
+const uploadLogo = async (file) => {
+  return new Promise((resolve, reject) => {
+    const stream = cloudinary.uploader.upload_stream(
+      {
+        folder: "mbbs-counselling/college-logos",
+        resource_type: "image",
+      },
+      (error, result) => {
+        if (error) {
+          return reject(error);
+        }
+
+        resolve(result.secure_url);
+      }
+    );
+
+    stream.end(file.buffer);
+  });
+};
 
 // Add College
 const addCollege = async (req, res) => {
   try {
-    // FormData se college data receive karna
     const collegeData = JSON.parse(
       req.body.collegeData || "{}"
     );
 
-    // Uploaded logo ka path save karna
     if (req.file) {
-      collegeData.logo = `/uploads/college-logos/${req.file.filename}`;
+      collegeData.logo = await uploadLogo(req.file);
     }
 
     const college = await College.create(collegeData);
@@ -74,14 +93,12 @@ const getCollegeById = async (req, res) => {
 // Update College
 const updateCollege = async (req, res) => {
   try {
-    // FormData se college data receive karna
     const updateData = JSON.parse(
       req.body.collegeData || "{}"
     );
 
-    // Naya logo upload hua hai toh uska path update karo
     if (req.file) {
-      updateData.logo = `/uploads/college-logos/${req.file.filename}`;
+      updateData.logo = await uploadLogo(req.file);
     }
 
     const college = await College.findByIdAndUpdate(
