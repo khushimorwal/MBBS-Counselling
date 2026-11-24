@@ -62,35 +62,19 @@ function College() {
     status: "pending",
   });
 
-  // Get complete logo URL
   // Check whether logo is an actual image path
   const isValidLogo = (logo) => {
     if (!logo || typeof logo !== "string") return false;
 
-    const imagePattern =
-      /\.(jpg|jpeg|png|webp|gif|svg)(\?.*)?$/i;
-
-    if (logo.startsWith("http")) {
-      return imagePattern.test(logo);
-    }
-
-    return (
-      logo.startsWith("/uploads/") &&
-      imagePattern.test(logo)
-    );
+    return logo.startsWith("https://res.cloudinary.com/");
   };
 
   // Get complete logo URL
   const getLogoUrl = (logo) => {
     if (!isValidLogo(logo)) return "";
 
-    if (logo.startsWith("http")) {
-      return logo;
-    }
-
-    return `${API_BASE_URL}${logo}`;
+    return logo;
   };
-
 
   // Logo to display: uploaded logo, otherwise the static default
   const getLogoSrc = (logo) => getLogoUrl(logo) || DEFAULT_LOGO;
@@ -102,20 +86,19 @@ function College() {
   };
 
   // Fetch Colleges = async () => {
-    // Fetch Colleges
-const fetchColleges = async () => {
-  try {
-    const response = await API.get("/college/get-college");
+  const fetchColleges = async () => {
+    try {
+      const response = await API.get("/college/get-college");
 
-    setColleges(
-      Array.isArray(response.data)
-        ? response.data
-        : response.data.colleges || []
-    );
-  } catch (error) {
-    console.log("Error fetching colleges:", error);
-  }
-};
+      setColleges(
+        Array.isArray(response.data)
+          ? response.data
+          : response.data.colleges || []
+      );
+    } catch (error) {
+      console.log("Error fetching colleges:", error);
+    }
+  };
 
 
   useEffect(() => {
@@ -686,14 +669,14 @@ const fetchColleges = async () => {
                         type="button"
                         onClick={() => handleStatusToggle(college)}
                         className={`relative h-7 w-12 rounded-full transition ${college.status === "active"
-                            ? "bg-teal-700"
-                            : "bg-slate-400"
+                          ? "bg-teal-700"
+                          : "bg-slate-400"
                           }`}
                       >
                         <span
                           className={`absolute top-1 h-5 w-5 rounded-full bg-white transition ${college.status === "active"
-                              ? "left-6"
-                              : "left-1"
+                            ? "left-6"
+                            : "left-1"
                             }`}
                         />
                       </button>
@@ -755,23 +738,23 @@ const fetchColleges = async () => {
                         <button
                           type="button"
                           title="Delete College"
-                        aria-label="Delete College"
+                          aria-label="Delete College"
                           onClick={() => handleDelete(college._id)}
                           className={`${actionButton} border-red-200 bg-red-50 text-red-600 hover:bg-red-600 hover:text-white`}
                         >
-                        <svg
-                          width="17"
-                          height="17"
-                          viewBox="0 0 24 24"
-                          fill="none"
-                          stroke="currentColor"
-                          strokeWidth="1.8"
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          aria-hidden="true"
-                        >
-                          <path d="M3 6h18M8 6V4h8v2m3 0-1 14H6L5 6m4 4v6m6-6v6" />
-                        </svg>
+                          <svg
+                            width="17"
+                            height="17"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke="currentColor"
+                            strokeWidth="1.8"
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            aria-hidden="true"
+                          >
+                            <path d="M3 6h18M8 6V4h8v2m3 0-1 14H6L5 6m4 4v6m6-6v6" />
+                          </svg>
                         </button>
                       )}
                     </div>
